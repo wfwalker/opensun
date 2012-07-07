@@ -61,9 +61,9 @@ require(['jquery', 'date'], function($) {
 
         map.setCenter(lonLat, zoom);  
 
-        var size = new OpenLayers.Size(21,25);
-        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-        var anIcon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+        var size = new OpenLayers.Size(64, 64);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
+        var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
 
         var aMarker = new OpenLayers.Marker(lonLat, anIcon);
         markers.addMarker(aMarker);
