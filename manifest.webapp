@@ -3,7 +3,7 @@
   "name": "Open Sun",
   "description": "sun angle calculator for wildlife photographers",
   "icons": {
-    "256": "/img/opensun-logo.png",
+    "256": "/img/opensun-logo.png"
   },
   "developer": {
     "name": "Bill Walker",
