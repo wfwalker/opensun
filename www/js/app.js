@@ -5,15 +5,17 @@
 // Set the path to jQuery, which will fall back to the local version
 // if google is down
 require.config({
+     baseUrl: "js/lib",
+
      paths: {'jquery':
-             ['lib/jquery']}
+             ['jquery']}
 });
 
 var global = this;
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery'], function($) {
+require(['jquery', 'date'], function($) {
 
     function drawLine(map, lineLayer, position, angleInDegrees) {
         lineLayer.removeAllFeatures();
@@ -69,7 +71,7 @@ require(['jquery'], function($) {
     };
 
     function getShortTimeString(theDate) {
-        return theDate.getHours() + ":" + theDate.getMinutes();
+        return theDate.toString("HH:mm");
     }
 
     function logCurrentSunPosition(map, lineLayer, position) {
