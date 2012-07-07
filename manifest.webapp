@@ -3,13 +3,11 @@
   "name": "Open Sun",
   "description": "sun angle calculator for wildlife photographers",
   "icons": {
-    "16": "/img/icons/mortar-16.png",
-    "48": "/img/icons/mortar-48.png",
-    "128": "/img/icons/mortar-128.png"
+    "256": "/img/opensun-logo.png",
   },
   "developer": {
     "name": "Bill Walker",
-    "url": "http://yourawesomeapp.com"
+    "url": "http://wfwalker.github.com/opensun/"
   },
   "installs_allowed_from": ["*"],
   "appcache_path": "/cache.manifest",
@@ -17,13 +15,13 @@
     "es": {
       "description": "Su nueva aplicación impresionante Open Web",
       "developer": {
-        "url": "http://yourawesomeapp.com"
+        "url": "http://wfwalker.github.com/opensun/"
       }
     },
     "it": {
       "description": "Il vostro nuovo fantastico Open Web App",
       "developer": {
-        "url": "http://yourawesomeapp.com"
+        "url": "http://wfwalker.github.com/opensun/"
       }
     }
   },
