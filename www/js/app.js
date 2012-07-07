@@ -39,7 +39,7 @@ require(['jquery'], function($) {
 
         var style = { 
           strokeColor: '#0000ff', 
-          strokeOpacity: 1,
+          strokeOpacity: 0.8,
           strokeWidth: 5
         };
 
@@ -54,7 +54,7 @@ require(['jquery'], function($) {
                 map.getProjectionObject() // to Spherical Mercator Projection
               );
 
-        var zoom=11;
+        var zoom=15;
 
         map.setCenter(lonLat, zoom);  
 
@@ -68,6 +68,10 @@ require(['jquery'], function($) {
 
     };
 
+    function getShortTimeString(theDate) {
+        return theDate.getHours() + ":" + theDate.getMinutes();
+    }
+
     function logCurrentSunPosition(map, lineLayer, position) {
         var currently = new Date();
 
@@ -76,7 +80,9 @@ require(['jquery'], function($) {
 
         drawLine(map, lineLayer, position, currentAzimuth);
 
-        $("#sunposition").text(currently + ", Azimuth " + currentAzimuth.toFixed(2) + ", Altitude " + currentAltitude.toFixed(2));
+        $("#currenttime").text(getShortTimeString(currently));
+        $("#azimuth").text(currentAzimuth.toFixed(0));
+        $("#altitude").text(currentAltitude.toFixed(0));
     }
 
     function getUniversalTime(h,m,z)
@@ -159,6 +165,35 @@ require(['jquery'], function($) {
         }
     }
 
+    function getFirstLight(position, theDate) {
+        for (hours = 0; hours < 24; hours++) {
+            for (minutes = 0; minutes < 60; minutes++) {
+                var tempDate = theDate;
+                tempDate.setHours(hours);
+                tempDate.setMinutes(minutes);
+
+                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= 5) {
+                    return tempDate;
+                }
+            }
+        }
+    }
+
+    function getLastLight(position, theDate) {
+        for (hours = 23; hours >= 0; hours--) {
+            for (minutes = 59; minutes >= 0; minutes--) {
+                var tempDate = theDate;
+                tempDate.setHours(hours);
+                tempDate.setMinutes(minutes);
+
+                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= 5) {
+                    return tempDate;
+                }
+            }
+        }
+    }
+
+
 
     $(document).ready(function(){
 
@@ -183,6 +218,8 @@ require(['jquery'], function($) {
       navigator.geolocation.getCurrentPosition(function(position) {
         centerMapAt(map, markers, position);
         logCurrentSunPosition(map, lineLayer, position);
+        $('#firstlight').text(getShortTimeString(getFirstLight(position, new Date())));
+        $('#lastlight').text(getShortTimeString(getLastLight(position, new Date())));
         window.setInterval(function() {logCurrentSunPosition(map, lineLayer, position)}, 10000);
       }); 
 
