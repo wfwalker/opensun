@@ -71,8 +71,8 @@ require(['jquery'], function($) {
     function logCurrentSunPosition(map, lineLayer, position) {
         var currently = new Date();
 
-        var currentAzimuth = azimuth(position.coords.longitude, position.coords.latitude, currently.getFullYear(), currently.getMonth() + 1, currently.getDate(), currently.getUTCHours(), currently.getUTCMinutes(), 0);
-        var currentAltitude = altitude(position.coords.longitude, position.coords.latitude, currently.getFullYear(), currently.getMonth() + 1, currently.getDate(), currently.getUTCHours(), currently.getUTCMinutes(), 0);
+        var currentAzimuth = azimuth(position.coords.longitude, position.coords.latitude, currently);
+        var currentAltitude = altitude(position.coords.longitude, position.coords.latitude, currently);
 
         drawLine(map, lineLayer, position, currentAzimuth);
 
@@ -94,11 +94,11 @@ require(['jquery'], function($) {
         return Math.round(n*1000)/1000
     }
 
-    function azimuth(lg,la,ye,mo,da,ho,mi,zo)
+    function azimuth(lg, la, theDate)
     {
         with (Math) {
-            var uu=getUniversalTime(ho,mi,zo);
-            var jj=getJulianDate(ye,mo,da,uu);
+            var uu=getUniversalTime(theDate.getUTCHours(), theDate.getUTCMinutes(), 0);
+            var jj=getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
             var T=jj/36525;
             var k=PI/180.0;
             var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
@@ -132,11 +132,11 @@ require(['jquery'], function($) {
         }
     }
 
-    function altitude(lg,la,ye,mo,da,ho,mi,zo)
+    function altitude(lg, la, theDate)
     {
         with (Math) {
-            var uu=getUniversalTime(ho,mi,zo);
-            var jj=getJulianDate(ye,mo,da,uu);
+            var uu=getUniversalTime(theDate.getUTCHours(), theDate.getUTCMinutes(), 0);
+            var jj=getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
             var T=jj/36525;
             var k=PI/180.0;
             var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
