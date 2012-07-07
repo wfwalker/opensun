@@ -49,6 +49,7 @@ require(['jquery', 'date'], function($) {
         lineLayer.addFeatures([lineFeature]);
     }
 
+    // center the map on the given location, add a marker
     function centerMapAt(map, markers, position) {
         //Set center and zoom
         var lonLat = new OpenLayers.LonLat(position.coords.longitude, position.coords.latitude).transform(
@@ -70,10 +71,13 @@ require(['jquery', 'date'], function($) {
 
     };
 
+    // returns a short time string for the given object, using hours:minutes
     function getShortTimeString(theDate) {
         return theDate.toString("HH:mm");
     }
 
+    // draws a line on the map for the current sun angle
+    // insert the current azimuth and altitude into the HTML
     function logCurrentSunPosition(map, lineLayer, position) {
         var currently = new Date();
 
@@ -87,19 +91,16 @@ require(['jquery', 'date'], function($) {
         $("#altitude").text(currentAltitude.toFixed(0));
     }
 
+    // get the universal time in fractional hours
     function getUniversalTime(h,m,z)
     {
         return (h-z+m/60);
     }
 
+    // get the julian date (I think) for the given year, month, date, and universal time
     function getJulianDate(y,m,d,u)
     {
         return (367*y)-Math.floor((7/4)*(Math.floor((m+9)/12)+y))+Math.floor(275*m/9)+d-730531.5+(u/24)
-    }
-
-    function frm(n)
-    {
-        return Math.round(n*1000)/1000
     }
 
     function azimuth(lg, la, theDate)
@@ -167,34 +168,34 @@ require(['jquery', 'date'], function($) {
         }
     }
 
-    function getFirstLight(position, theDate) {
-        for (hours = 0; hours < 24; hours++) {
-            for (minutes = 0; minutes < 60; minutes++) {
-                var tempDate = theDate;
+    // returns the first time when the sun goes above the given angle
+    function getFirstLight(position, theDate, angleInDegrees) {
+        for (var hours = 0; hours < 24; hours++) {
+            for (var minutes = 0; minutes < 60; minutes++) {
+                var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= 5) {
+                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= angleInDegrees) {
                     return tempDate;
                 }
             }
         }
     }
 
-    function getLastLight(position, theDate) {
+    function getLastLight(position, theDate, angleInDegrees) {
         for (hours = 23; hours >= 0; hours--) {
             for (minutes = 59; minutes >= 0; minutes--) {
-                var tempDate = theDate;
+                var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= 5) {
+                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= angleInDegrees) {
                     return tempDate;
                 }
             }
         }
     }
-
 
 
     $(document).ready(function(){
@@ -220,8 +221,15 @@ require(['jquery', 'date'], function($) {
       navigator.geolocation.getCurrentPosition(function(position) {
         centerMapAt(map, markers, position);
         logCurrentSunPosition(map, lineLayer, position);
-        $('#firstlight').text(getShortTimeString(getFirstLight(position, new Date())));
-        $('#lastlight').text(getShortTimeString(getLastLight(position, new Date())));
+
+        var today = new Date();
+        var morningStart = getFirstLight(position, today, 5);
+        var morningStop = getFirstLight(position, today, 35);
+        var eveningStart = getLastLight(position, today, 35);
+        var eveningStop = getLastLight(position, today, 5);
+
+        $('#firstlight').text(getShortTimeString(morningStart) + " to " + getShortTimeString(morningStop));
+        $('#lastlight').text(getShortTimeString(eveningStart) + " to " + getShortTimeString(eveningStop));
         window.setInterval(function() {logCurrentSunPosition(map, lineLayer, position)}, 10000);
       }); 
 
