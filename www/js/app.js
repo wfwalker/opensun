@@ -17,14 +17,16 @@ var global = this;
 // dependencies along with jquery
 require(['jquery', 'date'], function($) {
 
-    function drawLine(map, lineLayer, position, angleInDegrees) {
+    // draw a line at the given angle centered on the given point
+    function drawLine(map, lineLayer, longitude, latitude, angleInDegrees) {
         lineLayer.removeAllFeatures();
 
-        var lon1 = position.coords.longitude;
-        var lat1 = position.coords.latitude;
         var angleInRadians = 2 * Math.PI * angleInDegrees / 360;
-        var lon2 = position.coords.longitude + 0.01 * Math.sin(angleInRadians);
-        var lat2 = position.coords.latitude + 0.01 * Math.cos(angleInRadians);
+
+        var lon1 = longitude - 0.01 * Math.sin(angleInRadians);
+        var lat1 = latitude - 0.01 * Math.cos(angleInRadians);
+        var lon2 = longitude + 0.01 * Math.sin(angleInRadians);
+        var lat2 = latitude + 0.01 * Math.cos(angleInRadians);
 
         var points = new Array(
            new OpenLayers.Geometry.Point(lon1, lat1).transform(
@@ -49,26 +51,23 @@ require(['jquery', 'date'], function($) {
         lineLayer.addFeatures([lineFeature]);
     }
 
-    // center the map on the given location, add a marker
-    function centerMapAt(map, markers, position) {
+    function drawMarker(map, markers, longitude, latitude) {
+        var markerPosition = new OpenLayers.Geometry.Point(longitude, latitude).transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            map.getProjectionObject() // to Spherical Mercator Projection
+        );
+
+    }
+
+    // center the map on the given location
+    function centerMapAt(map, longitude, latitude, zoom) {
         //Set center and zoom
-        var lonLat = new OpenLayers.LonLat(position.coords.longitude, position.coords.latitude).transform(
+        var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 map.getProjectionObject() // to Spherical Mercator Projection
               );
 
-        var zoom=15;
-
-        map.setCenter(lonLat, zoom);  
-
-        var size = new OpenLayers.Size(64, 64);
-        var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
-        var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
-
-        var aMarker = new OpenLayers.Marker(lonLat, anIcon);
-        markers.addMarker(aMarker);
-
-
+        map.setCenter(newMapCenter, zoom);  
     };
 
     // returns a short time string for the given object, using hours:minutes
@@ -76,19 +75,52 @@ require(['jquery', 'date'], function($) {
         return theDate.toString("HH:mm");
     }
 
+    // for a given date and location, show when we think the golden light is
+    // note: time expressed in local time for the user
+    function drawGoldenHours(theDate, longitude, latitude) {
+        var morningStart = getFirstLight(longitude, latitude, theDate, 5);
+        var morningStop = getFirstLight(longitude, latitude, theDate, 35);
+        var eveningStart = getLastLight(longitude, latitude, theDate, 35);
+        var eveningStop = getLastLight(longitude, latitude, theDate, 5);
+
+        $('#firstlight').text(getShortTimeString(morningStart) + " to " + getShortTimeString(morningStop));
+        $('#lastlight').text(getShortTimeString(eveningStart) + " to " + getShortTimeString(eveningStop));
+    }
+
     // draws a line on the map for the current sun angle
     // insert the current azimuth and altitude into the HTML
-    function logCurrentSunPosition(map, lineLayer, position) {
+    function logCurrentSunPosition(map, markers, lineLayer) {
         var currently = new Date();
 
-        var currentAzimuth = azimuth(position.coords.longitude, position.coords.latitude, currently);
-        var currentAltitude = altitude(position.coords.longitude, position.coords.latitude, currently);
+        var mapCenterPosition = map.getCenter().transform(
+                map.getProjectionObject(), // to Spherical Mercator Projection
+                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
+              );
 
-        drawLine(map, lineLayer, position, currentAzimuth);
+        drawGoldenHours(currently, mapCenterPosition.lon, mapCenterPosition.lat);
 
-        $("#currenttime").text(getShortTimeString(currently));
+        var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
+        var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
+
+        if (currentAltitude > 0) {
+            drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
+        }
+
+        var size = new OpenLayers.Size(64, 64);
+        var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
+        var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
+        var aMarker = new OpenLayers.Marker(map.getCenter(), anIcon);
+        markers.clearMarkers();
+        markers.addMarker(aMarker);
+
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
+    }
+
+    // Logs the current time
+    function logCurrentTime() {
+        var currently = new Date();
+        $("#currenttime").text(getShortTimeString(currently));
     }
 
     // get the universal time in fractional hours
@@ -169,70 +201,63 @@ require(['jquery', 'date'], function($) {
     }
 
     // returns the first time when the sun goes above the given angle
-    function getFirstLight(position, theDate, angleInDegrees) {
+    function getFirstLight(longitude, latitude, theDate, angleInDegrees) {
         for (var hours = 0; hours < 24; hours++) {
             for (var minutes = 0; minutes < 60; minutes++) {
                 var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= angleInDegrees) {
+                if (altitude(longitude, latitude, tempDate) >= angleInDegrees) {
                     return tempDate;
                 }
             }
         }
     }
 
-    function getLastLight(position, theDate, angleInDegrees) {
-        for (hours = 23; hours >= 0; hours--) {
-            for (minutes = 59; minutes >= 0; minutes--) {
+    // returns the last time when the sun goes below the given angle
+    function getLastLight(longitude, latitude, theDate, angleInDegrees) {
+        for (var hours = 23; hours >= 0; hours--) {
+            for (var minutes = 59; minutes >= 0; minutes--) {
                 var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (altitude(position.coords.longitude, position.coords.latitude, tempDate) >= angleInDegrees) {
+                if (altitude(longitude, latitude, tempDate) >= angleInDegrees) {
                     return tempDate;
                 }
             }
         }
     }
 
-
     $(document).ready(function(){
-
+        // create the map associated with the div
         var map = new OpenLayers.Map("mapdiv");
         map.addLayer(new OpenLayers.Layer.OSM());
 
-        markers = new OpenLayers.Layer.Markers("Markers");
+        // create a markers layer to show markers indicating your position
+        var markers = new OpenLayers.Layer.Markers("Markers");
         map.addLayer(markers);
 
+        // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
-
         map.addLayer(lineLayer);                    
-        map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));                                     
 
-      //    var pois = new OpenLayers.Layer.Text( "My Points",
-      //                    { location:"./textfile.txt",
-      //                      projection: map.displayProjection
-      //                    });
+        // add controls 
+        map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));   
 
-      //    map.addLayer(pois);
+        centerMapAt(map, -98, 38, 4);
 
-      navigator.geolocation.getCurrentPosition(function(position) {
-        centerMapAt(map, markers, position);
-        logCurrentSunPosition(map, lineLayer, position);
+        window.setInterval(function() {logCurrentSunPosition(map, markers, lineLayer)}, 1000);
+        window.setInterval(function() {logCurrentTime()}, 1000);
 
-        var today = new Date();
-        var morningStart = getFirstLight(position, today, 5);
-        var morningStop = getFirstLight(position, today, 35);
-        var eveningStart = getLastLight(position, today, 35);
-        var eveningStop = getLastLight(position, today, 5);
-
-        $('#firstlight').text(getShortTimeString(morningStart) + " to " + getShortTimeString(morningStop));
-        $('#lastlight').text(getShortTimeString(eveningStart) + " to " + getShortTimeString(eveningStop));
-        window.setInterval(function() {logCurrentSunPosition(map, lineLayer, position)}, 10000);
-      }); 
-
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                centerMapAt(map, position.coords.longitude, position.coords.latitude, 15);
+            },
+            function(err) {
+                console.log("GEOLOCATION FAIL");
+            });
     });
 
 
