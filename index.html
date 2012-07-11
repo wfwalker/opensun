@@ -44,13 +44,16 @@
 
     <!-- Add your site or application content here -->
 
-    <div style="position: absolute; z-index: 100000; top: 30px; left: 100px; background: white">
+    <div style="position: absolute; z-index: 100000; top: 10px; left: 50px; background: white; padding: 10px">
       <span id="currenttime">NN:NN</span> hrs,
       sun from <span id="azimuth">NNN</span>&deg;,
-      altitude <span id="altitude">NNN</span>&deg; |
-      morning light <span id="firstlight">NNN</span>,
+      altitude <span id="altitude">NNN</span>&deg;<br />
+      morning light <span id="firstlight">NNN</span><br />
       evening light <span id="lastlight">NNN</span>
-      <span id="herebutton">HERE</span>
+    </div>
+
+    <div style="position: absolute; z-index: 100000; bottom: 10px; left: 50px; padding: 10px; background: white">
+      <span class="myButton" id="herebutton">HERE</span>
     </div>
 
     <div id="mapdiv">
