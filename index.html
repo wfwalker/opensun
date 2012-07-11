@@ -36,23 +36,27 @@
          Modernizr enables HTML5 elements & feature detects for optimal performance.
          Create your own custom Modernizr build: www.modernizr.com/download/ -->
     <script src="js/lib/modernizr-2.5.3.min.js"></script>
+
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+
   </head>
   <body>
 
     <!-- Add your site or application content here -->
 
-    <div>
-      <img src="img/opensun-logo.png" width="32px" height="32px"/>
-      Open Sun | 
-      At <span id="currenttime">NN:NN</span>, sun from <span id="azimuth">NNN</span>&deg;, altitude <span id="altitude">NNN</span>&deg; |
-      morning light <span id="firstlight">NNN</span>, evening light <span id="lastlight">NNN</span>
+    <div style="position: absolute; z-index: 100000; top: 30px; left: 100px; background: white">
+      <span id="currenttime">NN:NN</span> hrs,
+      sun from <span id="azimuth">NNN</span>&deg;,
+      altitude <span id="altitude">NNN</span>&deg; |
+      morning light <span id="firstlight">NNN</span>,
+      evening light <span id="lastlight">NNN</span>
+      <span id="herebutton">HERE</span>
     </div>
-    
-    <div id="mapdiv"></div>
+
+    <div id="mapdiv">
+    </div>
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
-
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 
     <!-- Using require.js, a module system for javascript, include the
          js files. This loads "main.js", which in turn can load other
