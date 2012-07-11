@@ -51,14 +51,6 @@ require(['jquery', 'date'], function($) {
         lineLayer.addFeatures([lineFeature]);
     }
 
-    function drawMarker(map, markers, longitude, latitude) {
-        var markerPosition = new OpenLayers.Geometry.Point(longitude, latitude).transform(
-            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-            map.getProjectionObject() // to Spherical Mercator Projection
-        );
-
-    }
-
     // center the map on the given location
     function centerMapAt(map, longitude, latitude, zoom) {
         //Set center and zoom
