@@ -105,7 +105,7 @@ require(['jquery', 'date'], function($) {
         if (currentAltitude > 0) {
             drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
         }
-
+        
         var size = new OpenLayers.Size(64, 64);
         var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
         var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
@@ -251,13 +251,17 @@ require(['jquery', 'date'], function($) {
         window.setInterval(function() {logCurrentSunPosition(map, markers, lineLayer)}, 1000);
         window.setInterval(function() {logCurrentTime()}, 1000);
 
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                centerMapAt(map, position.coords.longitude, position.coords.latitude, 15);
-            },
-            function(err) {
-                console.log("GEOLOCATION FAIL");
-            });
+        $("#herebutton").click(function() {
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    centerMapAt(map, position.coords.longitude, position.coords.latitude, 15);
+                },
+                function(err) {
+                    console.log("GEOLOCATION FAIL");
+                });
+
+        });
     });
 
 
