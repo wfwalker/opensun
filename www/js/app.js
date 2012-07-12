@@ -97,6 +97,11 @@ require(['jquery', 'date'], function($) {
         if (currentAltitude > 0) {
             drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
         }
+
+//        if (currentAltitude > 0) {
+            // drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth); 
+            $('#arrows').css("-moz-transform", "rotate("+currentAzimuth+"deg)");
+//        }
         
         var size = new OpenLayers.Size(64, 64);
         var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
