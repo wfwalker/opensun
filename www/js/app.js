@@ -23,8 +23,8 @@ require(['jquery', 'date'], function($) {
 
         var angleInRadians = 2 * Math.PI * angleInDegrees / 360;
 
-        var lon1 = longitude - 0.01 * Math.sin(angleInRadians);
-        var lat1 = latitude - 0.01 * Math.cos(angleInRadians);
+        var lon1 = longitude - 0.00 * Math.sin(angleInRadians);
+        var lat1 = latitude - 0.00 * Math.cos(angleInRadians);
         var lon2 = longitude + 0.01 * Math.sin(angleInRadians);
         var lat2 = latitude + 0.01 * Math.cos(angleInRadians);
 
@@ -41,14 +41,24 @@ require(['jquery', 'date'], function($) {
 
         var line = new OpenLayers.Geometry.LineString(points);
 
-        var style = { 
-          strokeColor: '#0000ff', 
-          strokeOpacity: 0.8,
-          strokeWidth: 5
+        var lineStyle = { 
+          strokeColor: '#333333', 
+          strokeOpacity: 0.7,
+          strokeWidth: 5, 
+          fillColor: "#999999",
         };
 
-        var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+
+        var circleOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+            );
+        var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(circleOrigin, 100, 20);
+        var dotFeature = new OpenLayers.Feature.Vector(circle, null, lineStyle);
+
         lineLayer.addFeatures([lineFeature]);
+        lineLayer.addFeatures([dotFeature]);
     }
 
     // center the map on the given location
@@ -94,21 +104,20 @@ require(['jquery', 'date'], function($) {
         var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
         var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
-        if (currentAltitude > 0) {
+        // if (currentAltitude > 0) {
             drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
-        }
+        // }
 
-//        if (currentAltitude > 0) {
-            // drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth); 
-            $('#arrows').css("-moz-transform", "rotate("+currentAzimuth+"deg)");
-//        }
+       // if (currentAltitude > 0) {
+       //      $('#arrows').css("-moz-transform", "rotate("+currentAzimuth+"deg)");
+       // }
         
         var size = new OpenLayers.Size(64, 64);
         var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
         var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
         var aMarker = new OpenLayers.Marker(map.getCenter(), anIcon);
-        markers.clearMarkers();
-        markers.addMarker(aMarker);
+        //markers.clearMarkers();
+        //markers.addMarker(aMarker);
 
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
