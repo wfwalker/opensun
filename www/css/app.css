@@ -203,6 +203,13 @@ td { vertical-align: top; }
   height: 100%;
 }
 
+div.olControlZoom {
+  position: relative !important;
+  float: right !important;
+  left: -15px !important;
+  width: 24px;
+}
+
 .myButton {
   -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
   -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
