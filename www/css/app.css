@@ -218,9 +218,9 @@ td { vertical-align: top; }
   display:inline-block;
   color:#777777;
   font-family:arial;
-  font-size:15px;
+  font-size:12px;
   font-weight:bold;
-  padding:6px 24px;
+  padding:6px 20px;
   text-decoration:none;
   text-shadow:1px 1px 0px #ffffff;
 }.myButton:hover {
