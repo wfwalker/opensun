@@ -17,6 +17,32 @@ var global = this;
 // dependencies along with jquery
 require(['jquery', 'date'], function($) {
 
+    function getNOAAWeather(longitude, latitude) {
+        //http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=38.99&lon=-77.01&product=time-series&begin=2012-07-23T00:00:00&end=2012-07-24T00:00:00&maxt=maxt&mint=mint&sky=sky
+        var queryURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=" + latitude +"&lon=" + longitude + "&product=time-series&begin=2012-07-23T00:00:00&end=2012-07-24T00:00:00&maxt=maxt&mint=mint&sky=sky";
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", transferComplete, false);
+        request.addEventListener("error", transferFailed, false);
+        request.addEventListener("abort", transferCancelled, false);
+        console.log("about to open");  
+        request.open("GET", queryURL);
+        console.log("about to send");  
+        request.send();
+        console.log("response " + request.responseText);  
+    }
+    function transferComplete(evt) {  
+        console.log("The transfer is complete. " + evt);  
+    }  
+
+    function transferFailed(evt) {  
+        console.log("The transfer failed. " + evt);  
+    }  
+
+    function transferCancelled(evt) {  
+        console.log("The transfer cancelled. " + evt);  
+    }  
+
+
     // draw a line at the given angle centered on the given point
     function drawLine(map, lineLayer, longitude, latitude, angleInDegrees) {
         lineLayer.removeAllFeatures();
@@ -44,6 +70,7 @@ require(['jquery', 'date'], function($) {
         var lineStyle = { 
           strokeColor: '#333333', 
           strokeOpacity: 0.7,
+          fillOpacity: 0.5,
           strokeWidth: 5, 
           fillColor: "#999999",
         };
@@ -57,8 +84,8 @@ require(['jquery', 'date'], function($) {
         var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(circleOrigin, 100, 20);
         var dotFeature = new OpenLayers.Feature.Vector(circle, null, lineStyle);
 
-        lineLayer.addFeatures([lineFeature]);
         lineLayer.addFeatures([dotFeature]);
+        lineLayer.addFeatures([lineFeature]);
     }
 
     // center the map on the given location
@@ -249,9 +276,6 @@ require(['jquery', 'date'], function($) {
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
         map.addLayer(lineLayer);                    
 
-        // add controls 
-        map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));   
-
         centerMapAt(map, -98, 38, 4);
 
         window.setInterval(function() {logCurrentSunPosition(map, markers, lineLayer)}, 1000);
@@ -266,7 +290,6 @@ require(['jquery', 'date'], function($) {
                 function(err) {
                     console.log("GEOLOCATION FAIL");
                 });
-
         });
     });
 
