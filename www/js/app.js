@@ -67,24 +67,35 @@ require(['jquery', 'date'], function($) {
 
         var line = new OpenLayers.Geometry.LineString(points);
 
+        var crossStyle = {
+                graphicName: 'cross',
+                strokeColor: '#000',
+                strokeWidth: 2,
+                fillOpacity: 0,
+                pointRadius: 15,
+                label: "sun angle " + angleInDegrees.toFixed(1),
+                labelYOffset: -30,
+        };
+
         var lineStyle = { 
           strokeColor: '#333333', 
           strokeOpacity: 0.7,
           fillOpacity: 0.5,
-          strokeWidth: 5, 
-          fillColor: "#999999",
+          strokeWidth: 3, 
+          fillColor: "#999999"
         };
+
 
         var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
 
-        var circleOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
+        var crossOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 map.getProjectionObject() // to Spherical Mercator Projection
             );
-        var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(circleOrigin, 100, 20);
-        var dotFeature = new OpenLayers.Feature.Vector(circle, null, lineStyle);
+//        var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(circleOrigin, 100, 20);
+        var crossFeature = new OpenLayers.Feature.Vector(crossOrigin, {}, crossStyle);
 
-        lineLayer.addFeatures([dotFeature]);
+        lineLayer.addFeatures([crossFeature]);
         lineLayer.addFeatures([lineFeature]);
     }
 
@@ -135,10 +146,6 @@ require(['jquery', 'date'], function($) {
             drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
         // }
 
-       // if (currentAltitude > 0) {
-       //      $('#arrows').css("-moz-transform", "rotate("+currentAzimuth+"deg)");
-       // }
-        
         var size = new OpenLayers.Size(64, 64);
         var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
         var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
