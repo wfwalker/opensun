@@ -67,35 +67,33 @@ require(['jquery', 'date'], function($) {
 
         var line = new OpenLayers.Geometry.LineString(points);
 
-        var crossStyle = {
-                graphicName: 'cross',
-                strokeColor: '#000',
-                strokeWidth: 2,
-                fillOpacity: 0,
-                pointRadius: 15,
-                label: "sun angle " + angleInDegrees.toFixed(1),
-                labelYOffset: -30,
+        var markerStyle = {
+            graphicName: 'circle',
+            strokeColor: '#000',
+            strokeWidth: 2,
+            fillOpacity: 0,
+            pointRadius: 15,
+            label: "sun angle " + angleInDegrees.toFixed(1),
+            labelYOffset: -30,
         };
 
         var lineStyle = { 
-          strokeColor: '#333333', 
-          strokeOpacity: 0.7,
-          fillOpacity: 0.5,
-          strokeWidth: 3, 
-          fillColor: "#999999"
+            strokeColor: '#333333', 
+            strokeOpacity: 0.7,
+            fillOpacity: 0.5,
+            strokeWidth: 3, 
+            fillColor: "#999999"
         };
-
 
         var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
 
-        var crossOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
+        var markerOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 map.getProjectionObject() // to Spherical Mercator Projection
             );
-//        var circle = OpenLayers.Geometry.Polygon.createRegularPolygon(circleOrigin, 100, 20);
-        var crossFeature = new OpenLayers.Feature.Vector(crossOrigin, {}, crossStyle);
+        var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
 
-        lineLayer.addFeatures([crossFeature]);
+        lineLayer.addFeatures([markerFeature]);
         lineLayer.addFeatures([lineFeature]);
     }
 
@@ -145,13 +143,6 @@ require(['jquery', 'date'], function($) {
         // if (currentAltitude > 0) {
             drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
         // }
-
-        var size = new OpenLayers.Size(64, 64);
-        var offset = new OpenLayers.Pixel(-(size.w/2), -(size.h*.75));
-        var anIcon = new OpenLayers.Icon('img/opensun-logo-clear.png', size, offset);
-        var aMarker = new OpenLayers.Marker(map.getCenter(), anIcon);
-        //markers.clearMarkers();
-        //markers.addMarker(aMarker);
 
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
