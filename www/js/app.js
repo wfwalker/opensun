@@ -113,6 +113,10 @@ require(['jquery', 'date'], function($) {
         return theDate.toString("HH:mm");
     }
 
+    function getFractionOfDay(theDate) {
+        return (theDate.getHours() + (theDate.getMinutes() / 60.0)) / 24.0;
+    }
+
     // for a given date and location, show when we think the golden light is
     // note: time expressed in local time for the user
     function drawGoldenHours(theDate, longitude, latitude) {
@@ -121,8 +125,45 @@ require(['jquery', 'date'], function($) {
         var eveningStart = getLastLight(longitude, latitude, theDate, 35);
         var eveningStop = getLastLight(longitude, latitude, theDate, 5);
 
-        $('#firstlight').text(getShortTimeString(morningStart) + " to " + getShortTimeString(morningStop));
-        $('#lastlight').text(getShortTimeString(eveningStart) + " to " + getShortTimeString(eveningStop));
+        var timelineCanvas = $('#timeline')[0];
+        var timelineContext = timelineCanvas.getContext('2d');
+
+        var timelineWidth = window.innerWidth;
+        console.log("WIDTH " + timelineWidth);
+        var timelineOffset = 0;
+
+        // set canvas to be as wide as container
+        timelineCanvas.width = timelineWidth;
+        timelineCanvas.height = 50;
+
+        // clear the Canvas
+        timelineContext.clearRect(0, 0, 320, 50);
+
+        // draw pre sunrise
+        timelineContext.fillStyle = "rgb(150, 150, 150)";
+        timelineContext.fillRect(timelineOffset, 20, getFractionOfDay(morningStart) * timelineWidth, 15);
+
+        // draw post sunset
+        postSunsetFraction = 1.0 - getFractionOfDay(eveningStop);
+        timelineContext.fillStyle = "rgb(150, 150, 150)";
+        timelineContext.fillRect(timelineOffset + getFractionOfDay(eveningStop) * timelineWidth, 20, postSunsetFraction * timelineWidth, 15);
+
+        // draw morning light
+        timelineContext.fillStyle = "rgb(0, 200, 0)";
+        morningLightFraction = getFractionOfDay(morningStop) - getFractionOfDay(morningStart);
+        timelineContext.fillRect(timelineOffset + getFractionOfDay(morningStart) * timelineWidth, 20, morningLightFraction * timelineWidth, 15);
+
+        // draw evening light
+        timelineContext.fillStyle = "rgb(0, 200, 0)";
+        eveningLightFraction = getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart);
+        timelineContext.fillRect(timelineOffset + getFractionOfDay(eveningStart) * timelineWidth, 20, eveningLightFraction * timelineWidth, 15);
+
+        // draw the timeline
+        timelineContext.fillStyle = "rgb(0, 0, 0)";
+        timelineContext.fillRect(timelineOffset, 27, timelineWidth, 1);
+        // mark the current time of day
+        timelineContext.fillRect(timelineOffset + getFractionOfDay(theDate) * timelineWidth, 16, 2, 25);
+        timelineContext.fillText(getShortTimeString(theDate), timelineOffset + getFractionOfDay(theDate) * timelineWidth, 15);
     }
 
     // draws a line on the map for the current sun angle
@@ -144,12 +185,6 @@ require(['jquery', 'date'], function($) {
 
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
-    }
-
-    // Logs the current time
-    function logCurrentTime() {
-        var currently = new Date();
-        $("#currenttime").text(getShortTimeString(currently));
     }
 
     // get the universal time in fractional hours
@@ -271,7 +306,6 @@ require(['jquery', 'date'], function($) {
         centerMapAt(map, -98, 38, 4);
 
         window.setInterval(function() {logCurrentSunPosition(map, lineLayer)}, 1000);
-        window.setInterval(function() {logCurrentTime()}, 1000);
 
         $("#herebutton").click(function() {
 
