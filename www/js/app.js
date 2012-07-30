@@ -127,7 +127,7 @@ require(['jquery', 'date'], function($) {
 
     // draws a line on the map for the current sun angle
     // insert the current azimuth and altitude into the HTML
-    function logCurrentSunPosition(map, markers, lineLayer) {
+    function logCurrentSunPosition(map, lineLayer) {
         var currently = new Date();
 
         var mapCenterPosition = map.getCenter().transform(
@@ -140,9 +140,7 @@ require(['jquery', 'date'], function($) {
         var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
         var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
-        // if (currentAltitude > 0) {
-            drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
-        // }
+        drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
 
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
@@ -266,17 +264,13 @@ require(['jquery', 'date'], function($) {
         var map = new OpenLayers.Map("mapdiv");
         map.addLayer(new OpenLayers.Layer.OSM());
 
-        // create a markers layer to show markers indicating your position
-        var markers = new OpenLayers.Layer.Markers("Markers");
-        map.addLayer(markers);
-
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
         map.addLayer(lineLayer);                    
 
         centerMapAt(map, -98, 38, 4);
 
-        window.setInterval(function() {logCurrentSunPosition(map, markers, lineLayer)}, 1000);
+        window.setInterval(function() {logCurrentSunPosition(map, lineLayer)}, 1000);
         window.setInterval(function() {logCurrentTime()}, 1000);
 
         $("#herebutton").click(function() {
