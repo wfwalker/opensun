@@ -17,36 +17,12 @@ var global = this;
 // dependencies along with jquery
 require(['jquery', 'date'], function($) {
 
-    function getNOAAWeather(longitude, latitude) {
-        //http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=38.99&lon=-77.01&product=time-series&begin=2012-07-23T00:00:00&end=2012-07-24T00:00:00&maxt=maxt&mint=mint&sky=sky
-        var queryURL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=" + latitude +"&lon=" + longitude + "&product=time-series&begin=2012-07-23T00:00:00&end=2012-07-24T00:00:00&maxt=maxt&mint=mint&sky=sky";
-        var request = new XMLHttpRequest();
-        request.addEventListener("load", transferComplete, false);
-        request.addEventListener("error", transferFailed, false);
-        request.addEventListener("abort", transferCancelled, false);
-        console.log("about to open");  
-        request.open("GET", queryURL);
-        console.log("about to send");  
-        request.send();
-        console.log("response " + request.responseText);  
-    }
-    function transferComplete(evt) {  
-        console.log("The transfer is complete. " + evt);  
-    }  
-
-    function transferFailed(evt) {  
-        console.log("The transfer failed. " + evt);  
-    }  
-
-    function transferCancelled(evt) {  
-        console.log("The transfer cancelled. " + evt);  
-    }  
-
-
     // draw a line at the given angle centered on the given point
-    function drawLine(map, lineLayer, longitude, latitude, angleInDegrees) {
+    function drawLine(map, lineLayer, longitude, latitude, angleInDegrees, altitudeInDegrees) {
+        // remove all features from the layer
         lineLayer.removeAllFeatures();
 
+        // compute line endpoints based around given lat and long
         var angleInRadians = 2 * Math.PI * angleInDegrees / 360;
 
         var lon1 = longitude - 0.00 * Math.sin(angleInRadians);
@@ -54,6 +30,7 @@ require(['jquery', 'date'], function($) {
         var lon2 = longitude + 0.01 * Math.sin(angleInRadians);
         var lat2 = latitude + 0.01 * Math.cos(angleInRadians);
 
+        // transform the lats and longs into the proper coordinate system
         var points = new Array(
            new OpenLayers.Geometry.Point(lon1, lat1).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
@@ -65,6 +42,7 @@ require(['jquery', 'date'], function($) {
               )
         );
 
+        // make a line from the transformed points
         var line = new OpenLayers.Geometry.LineString(points);
 
         var markerStyle = {
@@ -73,7 +51,7 @@ require(['jquery', 'date'], function($) {
             strokeWidth: 2,
             fillOpacity: 0,
             pointRadius: 15,
-            label: "sun angle " + angleInDegrees.toFixed(1),
+            label: "angle " + angleInDegrees.toFixed(1) + " altitude " + altitudeInDegrees.toFixed(1),
             labelYOffset: -30,
         };
 
@@ -85,14 +63,19 @@ require(['jquery', 'date'], function($) {
             fillColor: "#999999"
         };
 
+        // turn the line into a feature with the given style
         var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
 
+        // make an origin point
         var markerOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 map.getProjectionObject() // to Spherical Mercator Projection
             );
+
+        // place a circle graphic at the origin point
         var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
 
+        // add the line and the circle to the vector layer
         lineLayer.addFeatures([markerFeature]);
         lineLayer.addFeatures([lineFeature]);
     }
@@ -113,6 +96,7 @@ require(['jquery', 'date'], function($) {
         return theDate.toString("HH:mm");
     }
 
+    // returns a floating point value between 0 and 1 based on hours and minutes
     function getFractionOfDay(theDate) {
         return (theDate.getHours() + (theDate.getMinutes() / 60.0)) / 24.0;
     }
@@ -125,45 +109,21 @@ require(['jquery', 'date'], function($) {
         var eveningStart = getLastLight(longitude, latitude, theDate, 35);
         var eveningStop = getLastLight(longitude, latitude, theDate, 5);
 
-        var timelineCanvas = $('#timeline')[0];
-        var timelineContext = timelineCanvas.getContext('2d');
-
         var timelineWidth = window.innerWidth;
-        console.log("WIDTH " + timelineWidth);
-        var timelineOffset = 0;
 
-        // set canvas to be as wide as container
-        timelineCanvas.width = timelineWidth;
-        timelineCanvas.height = 50;
+        $('#morning').attr("x", 5 + getFractionOfDay(morningStart) * timelineWidth);
+        $('#morning').attr("width", 5 + (getFractionOfDay(morningStop) - getFractionOfDay(morningStart)) * timelineWidth);
 
-        // clear the Canvas
-        timelineContext.clearRect(0, 0, 320, 50);
+        $('#evening').attr("x", 5 + getFractionOfDay(eveningStart) * timelineWidth);
+        $('#evening').attr("width", 5 + (getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart)) * timelineWidth);
 
-        // draw pre sunrise
-        timelineContext.fillStyle = "rgb(150, 150, 150)";
-        timelineContext.fillRect(timelineOffset, 20, getFractionOfDay(morningStart) * timelineWidth, 15);
+        $('#now').attr("x", 5 + getFractionOfDay(theDate) * timelineWidth);
+        $('#nowLabel').attr("x", 8 + getFractionOfDay(theDate) * timelineWidth);
+        $('#nowLabel').text(getShortTimeString(theDate));
 
-        // draw post sunset
-        postSunsetFraction = 1.0 - getFractionOfDay(eveningStop);
-        timelineContext.fillStyle = "rgb(150, 150, 150)";
-        timelineContext.fillRect(timelineOffset + getFractionOfDay(eveningStop) * timelineWidth, 20, postSunsetFraction * timelineWidth, 15);
-
-        // draw morning light
-        timelineContext.fillStyle = "rgb(0, 200, 0)";
-        morningLightFraction = getFractionOfDay(morningStop) - getFractionOfDay(morningStart);
-        timelineContext.fillRect(timelineOffset + getFractionOfDay(morningStart) * timelineWidth, 20, morningLightFraction * timelineWidth, 15);
-
-        // draw evening light
-        timelineContext.fillStyle = "rgb(0, 200, 0)";
-        eveningLightFraction = getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart);
-        timelineContext.fillRect(timelineOffset + getFractionOfDay(eveningStart) * timelineWidth, 20, eveningLightFraction * timelineWidth, 15);
-
-        // draw the timeline
-        timelineContext.fillStyle = "rgb(0, 0, 0)";
-        timelineContext.fillRect(timelineOffset, 27, timelineWidth, 1);
-        // mark the current time of day
-        timelineContext.fillRect(timelineOffset + getFractionOfDay(theDate) * timelineWidth, 16, 2, 25);
-        timelineContext.fillText(getShortTimeString(theDate), timelineOffset + getFractionOfDay(theDate) * timelineWidth, 15);
+        $('#timeline').attr('width', timelineWidth);
+        $('#axis1').attr('x2', timelineWidth - 5);
+        $('#axis2').attr('x2', timelineWidth - 5);
     }
 
     // draws a line on the map for the current sun angle
@@ -181,7 +141,7 @@ require(['jquery', 'date'], function($) {
         var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
         var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
-        drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth);            
+        drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth, currentAltitude);            
 
         $("#azimuth").text(currentAzimuth.toFixed(0));
         $("#altitude").text(currentAltitude.toFixed(0));
@@ -294,6 +254,11 @@ require(['jquery', 'date'], function($) {
         }
     }
 
+    function sliderClick(event) {
+        var value = event.clientX - 8;
+        $('#thumb').attr("transform", "translate(" + (value) + " 0)");
+    }
+
     $(document).ready(function(){
         // create the map associated with the div
         var map = new OpenLayers.Map("mapdiv");
@@ -301,11 +266,25 @@ require(['jquery', 'date'], function($) {
 
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
-        map.addLayer(lineLayer);                    
+        map.addLayer(lineLayer);           
 
+        // initialize map to center of USA
         centerMapAt(map, -98, 38, 4);
 
-        window.setInterval(function() {logCurrentSunPosition(map, lineLayer)}, 1000);
+        // set up the day's timeline
+        logCurrentSunPosition(map, lineLayer); 
+
+        // redo the timeline whenever we resize
+        $(window).resize(function() {
+            logCurrentSunPosition(map, lineLayer); 
+        });        
+
+        // redo the timeline whenever we move the map
+        map.events.register('moveend', map, function() {
+            logCurrentSunPosition(map, lineLayer);
+        });
+
+        window.setInterval(function() { logCurrentSunPosition(map, lineLayer) }, 60000);
 
         $("#herebutton").click(function() {
 
@@ -317,9 +296,9 @@ require(['jquery', 'date'], function($) {
                     console.log("GEOLOCATION FAIL");
                 });
         });
+
+        $('#timeline').bind("click", sliderClick);
     });
-
-
 
     // If using Twitter Bootstrap, you need to require all the
     // components that you use, like so:
