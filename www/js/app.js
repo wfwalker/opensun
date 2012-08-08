@@ -258,6 +258,18 @@ require(['jquery', 'date'], function($) {
         var value = event.clientX - 8;
         $('#thumb').attr("transform", "translate(" + (value) + " 0)");
     }
+    function sliderMouseUp(event) {
+        sliderActive = false;
+    }
+    function sliderMouseDown(event) {
+        sliderActive = true;
+    }
+    function sliderMouseMove(event) {
+        var value = event.clientX - 8;
+        if (sliderActive) {
+            $('#thumb').attr("transform", "translate(" + (value) + " 0)");
+        }
+    }
 
     $(document).ready(function(){
         // create the map associated with the div
@@ -298,6 +310,9 @@ require(['jquery', 'date'], function($) {
         });
 
         $('#timeline').bind("click", sliderClick);
+        $('#timeline').bind("mousemove", sliderMouseMove);
+        $('#timeline').bind("mouseup", sliderMouseUp);
+        $('#timeline').bind("mousedown", sliderMouseDown);
     });
 
     // If using Twitter Bootstrap, you need to require all the
