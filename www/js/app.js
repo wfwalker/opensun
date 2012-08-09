@@ -101,6 +101,16 @@ require(['jquery', 'date'], function($) {
         return (theDate.getHours() + (theDate.getMinutes() / 60.0)) / 24.0;
     }
 
+    // returns a floating point value between 0 and 1 based on hours and minutes
+    function getDateFromFraction(theFraction) {
+        var hours = (24 * theFraction).toFixed(0);
+        var minutes = (24 * 60 * theFraction) - (hours * 60)
+        theDate = new Date();
+        theDate.setHours(hours);
+        theDate.setMinutes(minutes);
+        return theDate;
+    }
+
     // for a given date and location, show when we think the golden light is
     // note: time expressed in local time for the user
     function drawGoldenHours(theDate, longitude, latitude) {
@@ -128,8 +138,8 @@ require(['jquery', 'date'], function($) {
 
     // draws a line on the map for the current sun angle
     // insert the current azimuth and altitude into the HTML
-    function logCurrentSunPosition(map, lineLayer) {
-        var currently = new Date();
+    function logCurrentSunPosition(map, lineLayer, currently) {
+        currently = currently || new Date();
 
         var mapCenterPosition = map.getCenter().transform(
                 map.getProjectionObject(), // to Spherical Mercator Projection
@@ -254,23 +264,6 @@ require(['jquery', 'date'], function($) {
         }
     }
 
-    function sliderClick(event) {
-        var value = event.clientX - 8;
-        $('#thumb').attr("transform", "translate(" + (value) + " 0)");
-    }
-    function sliderMouseUp(event) {
-        sliderActive = false;
-    }
-    function sliderMouseDown(event) {
-        sliderActive = true;
-    }
-    function sliderMouseMove(event) {
-        var value = event.clientX - 8;
-        if (sliderActive) {
-            $('#thumb').attr("transform", "translate(" + (value) + " 0)");
-        }
-    }
-
     $(document).ready(function(){
         // create the map associated with the div
         var map = new OpenLayers.Map("mapdiv");
@@ -309,10 +302,28 @@ require(['jquery', 'date'], function($) {
                 });
         });
 
-        $('#timeline').bind("click", sliderClick);
-        $('#timeline').bind("mousemove", sliderMouseMove);
-        $('#timeline').bind("mouseup", sliderMouseUp);
-        $('#timeline').bind("mousedown", sliderMouseDown);
+        $('#timeline').bind("click", function (event) {
+            var value = event.clientX - 8;
+            var timelineWidth = window.innerWidth;
+            $('#thumb').attr("transform", "translate(" + (value) + " 0)");
+            var thumbDate = getDateFromFraction(value / timelineWidth);
+            logCurrentSunPosition(map, lineLayer, thumbDate);
+        });
+        $('#timeline').bind("mousemove", function (event) {
+            var value = event.clientX - 8;
+            if (sliderActive) {
+                var timelineWidth = window.innerWidth;
+                $('#thumb').attr("transform", "translate(" + (value) + " 0)");
+                var thumbDate = getDateFromFraction(value / timelineWidth);
+                logCurrentSunPosition(map, lineLayer, thumbDate);
+            }
+        });
+        $('#timeline').bind("mouseup", function (event) {
+            sliderActive = false;
+        });
+        $('#timeline').bind("mousedown", function (event) {
+            sliderActive = true;
+        });
     });
 
     // If using Twitter Bootstrap, you need to require all the
