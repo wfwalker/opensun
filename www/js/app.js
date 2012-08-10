@@ -16,82 +16,6 @@ var global = this;
 // dependencies along with jquery
 require(['jquery', 'jquery.tools', 'date'], function($) {
 
-
-    // draw a line at the given angle centered on the given point
-    function drawLine(map, lineLayer, longitude, latitude, angleInDegrees, altitudeInDegrees) {
-        // remove all features from the layer
-        lineLayer.removeAllFeatures();
-
-        // compute line endpoints based around given lat and long
-        var angleInRadians = 2 * Math.PI * angleInDegrees / 360;
-
-        var lon1 = longitude - 0.00 * Math.sin(angleInRadians);
-        var lat1 = latitude - 0.00 * Math.cos(angleInRadians);
-        var lon2 = longitude + 0.01 * Math.sin(angleInRadians);
-        var lat2 = latitude + 0.01 * Math.cos(angleInRadians);
-
-        // transform the lats and longs into the proper coordinate system
-        var points = new Array(
-           new OpenLayers.Geometry.Point(lon1, lat1).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
-              ),
-           new OpenLayers.Geometry.Point(lon2, lat2).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
-              )
-        );
-
-        // make a line from the transformed points
-        var line = new OpenLayers.Geometry.LineString(points);
-
-        var markerStyle = {
-            graphicName: 'circle',
-            strokeColor: '#000',
-            strokeWidth: 2,
-            fillOpacity: 0,
-            pointRadius: 15,
-            label: "angle " + angleInDegrees.toFixed(1) + " altitude " + altitudeInDegrees.toFixed(1),
-            labelYOffset: -30,
-        };
-
-        var theColor = '#333333';
-
-        if (altitudeInDegrees < 5) {
-            theColor = '#000000';
-        }
-        if (altitudeInDegrees > 5 && altitudeInDegrees < 30) {
-            theColor = '#118811';
-        }
-        if (altitudeInDegrees > 30) {
-            theColor = '#881111';
-        }
-
-        var lineStyle = { 
-            strokeColor: theColor, 
-            strokeOpacity: 0.8,
-            fillOpacity: 0.8,
-            strokeWidth: 3, 
-            fillColor: theColor
-        };
-
-        // turn the line into a feature with the given style
-        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
-
-        // make an origin point
-        var markerOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
-            );
-
-        // place a circle graphic at the origin point
-        var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
-
-        // add the line and the circle to the vector layer
-        lineLayer.addFeatures([markerFeature]);
-        lineLayer.addFeatures([lineFeature]);
-    }
-
     // center the map on the given location
     function centerMapAt(map, longitude, latitude, zoom) {
         //Set center and zoom
@@ -123,31 +47,6 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         return theDate;
     }
 
-    // for a given date and location, show when we think the golden light is
-    // note: time expressed in local time for the user
-    function drawGoldenHours(theDate, longitude, latitude) {
-        var morningStart = getFirstLight(longitude, latitude, theDate, 5);
-        var morningStop = getFirstLight(longitude, latitude, theDate, 35);
-        var eveningStart = getLastLight(longitude, latitude, theDate, 35);
-        var eveningStop = getLastLight(longitude, latitude, theDate, 5);
-
-        var timelineWidth = window.innerWidth;
-
-        $('#morning').attr("x", 5 + getFractionOfDay(morningStart) * timelineWidth);
-        $('#morning').attr("width", 5 + (getFractionOfDay(morningStop) - getFractionOfDay(morningStart)) * timelineWidth);
-
-        $('#evening').attr("x", 5 + getFractionOfDay(eveningStart) * timelineWidth);
-        $('#evening').attr("width", 5 + (getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart)) * timelineWidth);
-
-        $('#now').attr("x", 5 + getFractionOfDay(theDate) * timelineWidth);
-        $('#nowLabel').attr("x", 8 + getFractionOfDay(theDate) * timelineWidth);
-        $('#nowLabel').text(getShortTimeString(theDate));
-
-        $('#timeline').attr('width', timelineWidth);
-        $('#axis1').attr('x2', timelineWidth - 5);
-        $('#axis2').attr('x2', timelineWidth - 5);
-    }
-
     // draws a line on the map for the current sun angle
     // insert the current azimuth and altitude into the HTML
     function logCurrentSunPosition(map, lineLayer, currently) {
@@ -158,15 +57,93 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
                 new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
               );
 
-        drawGoldenHours(currently, mapCenterPosition.lon, mapCenterPosition.lat);
+        var morningStart = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
+        var morningStop = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
+        var eveningStart = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
+        var eveningStop = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
+
+        var timelineWidth = 200;
+
+        $('#morning').css("left", 1 + getFractionOfDay(morningStart) * timelineWidth);
+        $('#morning').css("width", (getFractionOfDay(morningStop) - getFractionOfDay(morningStart)) * timelineWidth);
+
+        $('#evening').css("left", 1 + getFractionOfDay(eveningStart) * timelineWidth);
+        $('#evening').css("width", (getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart)) * timelineWidth);
 
         var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
         var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
-        drawLine(map, lineLayer, mapCenterPosition.lon, mapCenterPosition.lat, currentAzimuth, currentAltitude);            
+        // remove all features from the layer
+        lineLayer.removeAllFeatures();
 
-        $("#azimuth").text(currentAzimuth.toFixed(0));
-        $("#altitude").text(currentAltitude.toFixed(0));
+        // compute line endpoints based around given lat and long
+        var angleInRadians = 2 * Math.PI * currentAzimuth / 360;
+
+        var lon1 = mapCenterPosition.lon - 0.00 * Math.sin(angleInRadians);
+        var lat1 = mapCenterPosition.lat - 0.00 * Math.cos(angleInRadians);
+        var lon2 = mapCenterPosition.lon + 0.01 * Math.sin(angleInRadians);
+        var lat2 = mapCenterPosition.lat + 0.01 * Math.cos(angleInRadians);
+
+        // transform the lats and longs into the proper coordinate system
+        var points = new Array(
+           new OpenLayers.Geometry.Point(lon1, lat1).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+              ),
+           new OpenLayers.Geometry.Point(lon2, lat2).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+              )
+        );
+
+        // make a line from the transformed points
+        var line = new OpenLayers.Geometry.LineString(points);
+
+        var markerStyle = {
+            graphicName: 'circle',
+            strokeColor: '#000',
+            strokeWidth: 2,
+            fillOpacity: 0,
+            pointRadius: 15,
+            label: getShortTimeString(currently) + "hrs, angle " + currentAzimuth.toFixed(0) + ", altitude " + currentAltitude.toFixed(),
+            labelYOffset: -30,
+        };
+
+        var theColor = '#333333';
+
+        if (currentAltitude < 5) {
+            theColor = '#000000';
+        }
+        if (currentAltitude > 5 && currentAltitude < 30) {
+            theColor = '#118811';
+        }
+        if (currentAltitude > 30) {
+            theColor = '#881111';
+        }
+
+        var lineStyle = { 
+            strokeColor: theColor, 
+            strokeOpacity: 0.8,
+            fillOpacity: 0.8,
+            strokeWidth: 3, 
+            fillColor: theColor
+        };
+
+        // turn the line into a feature with the given style
+        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+
+        // make an origin point
+        var markerOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+            );
+
+        // place a circle graphic at the origin point
+        var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
+
+        // add the line and the circle to the vector layer
+        lineLayer.addFeatures([markerFeature]);
+        lineLayer.addFeatures([lineFeature]);
     }
 
     // get the universal time in fractional hours
@@ -319,7 +296,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         });        
 
         // redo the timeline whenever we move the map
-        map.events.register('moveend', map, function() {
+        map.events.register('move', map, function() {
             logCurrentSunPosition(map, lineLayer);
         });
 
