@@ -5,6 +5,8 @@
 
     <link rel="icon" type="image/png" href="img/opensun-logo-clear.png" />
 
+    <link rel="stylesheet" type="text/css" href="http://jquerytools.org/media/css/rangeinput/skin1.css" />
+
     <title>Open Sun: sun angle calculator for wildlife photographers</title>
     <meta name="description" content="">
 
@@ -36,7 +38,6 @@
          Modernizr enables HTML5 elements & feature detects for optimal performance.
          Create your own custom Modernizr build: www.modernizr.com/download/ -->
     <script src="js/lib/modernizr-2.5.3.min.js"></script>
-
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 
   </head>
@@ -44,27 +45,10 @@
 
     <!-- Add your site or application content here -->
 
-    <div id="timelineContainer" style="position: absolute; z-index: 100000; bottom: 0px; left: 0px; background: #c0c0c0; padding: 0px;">
-      <svg xml:space="preserve" width="250" height="20" id="timeline" style="padding: 0px">
-       <g id="slider" transform="scale(1, 1)">
-        <rect id="morning" x="30" y="0" width="20" height="20" style="fill:#00ff00" />
-        <rect id="evening" x="180" y="0" width="20" height="20" style="fill:#00ff00" />
-        <rect id="now" x="180" y="0" width="2" height="20" style="fill:#000000" />
-        <text id="nowLabel" x="180" y="18" font-family="Verdana" font-size="12" fill="#232323" >NN:NN</text>
-
-        <line id="axis1" style="stroke:#333333;stroke-width:1;" x1="5" y1="7" x2="245" y2="7" />
-        <line id="axis2" style="stroke:#eeeeee;stroke-width:1;" x1="5" y1="8" x2="245" y2="8" />
-
-<!--         <path style="stroke:black;fill:none;" d="M5,16 5,20 M25,16 25,20 M45,16 45,20 M65,16 65,20 M85,16 85,20 M105,16 105,20 M125,16 125,20 M145,16 145,20 M165,16 165,20 M185,16 185,20 M205,16 205,20 M225,16 225,20 M245,16 245,20" />
- -->
- 
-        <g id="thumb" transform="translate(0 0)">
-           <path style="stroke:none;fill:#c0c0c0;" d="M1,2 1,12 5,15 9,12 9,2 Z" />
-           <path style="stroke:white;fill:none;" d="M9,1 1,1 1,11" />
-           <path style="stroke:black;fill:none;" d="M5,16 10,12 10,2" />
-        </g>
-       </g>
-      </svg>
+    <div id="timelineContainer" style="position: absolute; z-index: 100000; bottom: 0px; left: 0px; background: #c0c0c0; padding: 0px; height: 40px">
+      <form>
+        <input type="range" id="range1" min="0" max="24" step="0.1" value="12" />    
+      </form>
     </div>
 
     <div style="position: absolute; z-index: 100000; top: 5px; left: 5px; padding: 10px; background: white; opacity: 0.8">

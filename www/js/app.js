@@ -7,15 +7,15 @@
 require.config({
      baseUrl: "js/lib",
 
-     paths: {'jquery':
-             ['jquery']}
+     paths: {'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min']}
 });
 
 var global = this;
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery', 'date'], function($) {
+require(['jquery', 'jquery.tools', 'date'], function($) {
+
 
     // draw a line at the given angle centered on the given point
     function drawLine(map, lineLayer, longitude, latitude, angleInDegrees, altitudeInDegrees) {
@@ -55,12 +55,24 @@ require(['jquery', 'date'], function($) {
             labelYOffset: -30,
         };
 
+        var theColor = '#333333';
+
+        if (altitudeInDegrees < 5) {
+            theColor = '#000000';
+        }
+        if (altitudeInDegrees > 5 && altitudeInDegrees < 30) {
+            theColor = '#118811';
+        }
+        if (altitudeInDegrees > 30) {
+            theColor = '#881111';
+        }
+
         var lineStyle = { 
-            strokeColor: '#333333', 
-            strokeOpacity: 0.7,
-            fillOpacity: 0.5,
+            strokeColor: theColor, 
+            strokeOpacity: 0.8,
+            fillOpacity: 0.8,
             strokeWidth: 3, 
-            fillColor: "#999999"
+            fillColor: theColor
         };
 
         // turn the line into a feature with the given style
@@ -215,21 +227,32 @@ require(['jquery', 'date'], function($) {
             var T=jj/36525;
             var k=PI/180.0;
             var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
+
             M=M % 360
+            
             var Lo=280.46645+36000.76983*T+0.0003032*T*T
+
             Lo=Lo % 360
+
             var DL=(1.9146-0.004817*T-0.000014*T*T)*sin(k*M)+(0.019993-0.000101*T)*sin(k*2*M)+0.00029*sin(k*3*M)
+
             L=Lo+DL
+
             var eps=23.43999-0.013*T
             var delta=(1/k)*asin(sin(L*k)*sin(eps*k))
             var RA=(1/k)*atan2(cos(eps*k)*sin(L*k),cos(L*k))
+
             RA=(RA+360) % 360
+
             var GMST=280.46061837+360.98564736629*jj+0.000387933*T*T-T*T*T/38710000
+
             GMST=(GMST+360) % 360
+
             var LMST=GMST+lg
             var H=LMST-RA
             var eqt=(Lo-RA)*4
             var alt=(1/k)*asin(sin(la*k)*sin(delta*k)+cos(la*k)*cos(delta*k)*cos(H*k))
+
             return alt;
         }
     }
@@ -265,6 +288,17 @@ require(['jquery', 'date'], function($) {
     }
 
     $(document).ready(function(){
+        $("#range1").rangeinput({
+            onSlide: function(event, value) {
+                var thumbDate = getDateFromFraction(value / 24.0);
+                logCurrentSunPosition(map, lineLayer, thumbDate);
+            },
+            change: function(event, value) {
+                var thumbDate = getDateFromFraction(value / 24.0);
+                logCurrentSunPosition(map, lineLayer, thumbDate);
+            }
+        });
+
         // create the map associated with the div
         var map = new OpenLayers.Map("mapdiv");
         map.addLayer(new OpenLayers.Layer.OSM());
@@ -300,29 +334,6 @@ require(['jquery', 'date'], function($) {
                 function(err) {
                     console.log("GEOLOCATION FAIL");
                 });
-        });
-
-        $('#timeline').bind("click", function (event) {
-            var value = event.clientX - 8;
-            var timelineWidth = window.innerWidth;
-            $('#thumb').attr("transform", "translate(" + (value) + " 0)");
-            var thumbDate = getDateFromFraction(value / timelineWidth);
-            logCurrentSunPosition(map, lineLayer, thumbDate);
-        });
-        $('#timeline').bind("mousemove", function (event) {
-            var value = event.clientX - 8;
-            if (sliderActive) {
-                var timelineWidth = window.innerWidth;
-                $('#thumb').attr("transform", "translate(" + (value) + " 0)");
-                var thumbDate = getDateFromFraction(value / timelineWidth);
-                logCurrentSunPosition(map, lineLayer, thumbDate);
-            }
-        });
-        $('#timeline').bind("mouseup", function (event) {
-            sliderActive = false;
-        });
-        $('#timeline').bind("mousedown", function (event) {
-            sliderActive = true;
         });
     });
 
