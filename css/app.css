@@ -51,6 +51,9 @@ td { vertical-align: top; }
 #mapdiv {
   height: 100%;
 }
+.slider {
+  width: 220px;
+}
 div.olControlZoom {
   position: relative !important;
   float: right !important;
