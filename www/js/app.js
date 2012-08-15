@@ -62,7 +62,9 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         var eveningStart = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
         var eveningStop = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
 
-        var timelineWidth = 200;
+        var timelineWidth = window.innerWidth - 100;
+
+        $('.slider').css("width", timelineWidth);
 
         $('#morning').css("left", 1 + getFractionOfDay(morningStart) * timelineWidth);
         $('#morning').css("width", (getFractionOfDay(morningStop) - getFractionOfDay(morningStart)) * timelineWidth);
