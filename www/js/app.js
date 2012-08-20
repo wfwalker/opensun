@@ -52,44 +52,42 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
         var stopAzimuthInDegrees = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, theStopDate);
+
+        if (stopAzimuthInDegrees < startAzimuthInDegrees) {
+            stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
+        }
+
         var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
-        var lon1 = mapCenterPosition.lon + 0.01 * Math.sin(startAzimuthInRadians);
-        var lat1 = mapCenterPosition.lat + 0.01 * Math.cos(startAzimuthInRadians);
-        var lon2 = mapCenterPosition.lon + 0.01 * Math.sin(stopAzimuthInRadians);
-        var lat2 = mapCenterPosition.lat + 0.01 * Math.cos(stopAzimuthInRadians);
+        console.log(startAzimuthInDegrees + " to " + stopAzimuthInDegrees);
 
         // transform the lats and longs into the proper coordinate system
         var points = new Array(
            new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 global.map.getProjectionObject() // to Spherical Mercator Projection
-              ),
-           new OpenLayers.Geometry.Point(lon1, lat1).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                global.map.getProjectionObject() // to Spherical Mercator Projection
-              ),
-           new OpenLayers.Geometry.Point(lon2, lat2).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                global.map.getProjectionObject() // to Spherical Mercator Projection
-              ),
-           new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                global.map.getProjectionObject() // to Spherical Mercator Projection
-              )
-        );
+              ));
+
+        for (var angle = startAzimuthInRadians; angle < stopAzimuthInRadians; angle += 0.01) {
+            var lon1 = mapCenterPosition.lon + 0.01 * Math.sin(angle);
+            var lat1 = mapCenterPosition.lat + 0.01 * Math.cos(angle);
+            points.push(new OpenLayers.Geometry.Point(lon1, lat1).transform(
+                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                    global.map.getProjectionObject() // to Spherical Mercator Projection
+                ));
+        }
 
         // make a line from the transformed points
         var line = new OpenLayers.Geometry.LineString(points);
 
         var lineStyle = { 
             strokeColor: theColor, 
-            strokeOpacity: 0.8,
+            strokeOpacity: 0.9,
             fillOpacity: 0.5,
-            strokeWidth: 3, 
-            fillColor: theColor
+            strokeWidth: 1, 
+            fillColor: theColor,
+            label: getShortTimeString(theStartDate) + "-" + getShortTimeString(theStopDate)
         };
-
 
         var linear_ring = new OpenLayers.Geometry.LinearRing(points);
         var polygonFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([linear_ring]), null, lineStyle);
@@ -144,7 +142,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         var mapCenterPosition = global.map.getCenter().transform(
                 global.map.getProjectionObject(), // to Spherical Mercator Projection
                 new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
-              );
+            );
 
         var morningStart = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
         var morningStop = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
@@ -164,14 +162,13 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        drawRadialLine(mapCenterPosition, currently, lineLayer, '#000000');
-        // drawRadialLine(mapCenterPosition, morningStart, lineLayer, '#009900');
-        // drawRadialLine(mapCenterPosition, morningStop, lineLayer, '#009900');
-        // drawRadialLine(mapCenterPosition, eveningStart, lineLayer, '#009900');
-        // drawRadialLine(mapCenterPosition, eveningStop, lineLayer, '#009900');
 
+        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#990000');
+        drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#333333');
         drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
         drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
+
+        drawRadialLine(mapCenterPosition, currently, lineLayer, '#000000');
 
         var markerStyle = {
             graphicName: 'circle',
