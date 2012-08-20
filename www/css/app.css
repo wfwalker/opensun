@@ -210,7 +210,9 @@ td { vertical-align: top; }
 div.olControlZoom {
   position: relative !important;
   float: right !important;
-  left: -15px !important;
+  left: -6px !important;
+  top: 2px !important;
+  padding: 3px !important;
   width: 24px;
 }
 
@@ -231,7 +233,7 @@ div.olControlZoom {
   font-family:arial;
   font-size:12px;
   font-weight:bold;
-  padding:6px 20px;
+  padding: 4px 5px;
   text-decoration:none;
   text-shadow:1px 1px 0px #ffffff;
 }.myButton:hover {

@@ -45,17 +45,15 @@
 
     <!-- Add your site or application content here -->
 
-    <div id="timelineContainer" style="position: absolute; z-index: 100000; bottom: 0px; left: 0px; background: #c0c0c0; padding: 0px; height: 40px">
-      <form>
-        <input type="range" id="range1" min="0" max="24" step="0.1" value="12" />    
-      </form>
+    <div id="timelineContainer" style="position: absolute; z-index: 100000; bottom: 5px; left: 5px; background: white; padding: 7px">
+      <a class="myButton" id="night1button" href="#"><span id="night1time">NN:NN - NN:NN</span></a>
+      <a class="myButton" id="morningbutton" href="#"><span id="morningtime">NN:NN - NN:NN</span></a>
+      <a class="myButton" id="eveningbutton" href="#"><span id="eveningtime">NN:NN - NN:NN</span></a>
+      <a class="myButton" id="night2button" href="#"><span id="night2time">NN:NN - NN:NN</span></a>
     </div>
 
-    <div id='morning' style='position: absolute; z-index: 100000; background: green; left: 0px; width: 50px; height: 10px; bottom: 40px'>&nbsp;</div>
-    <div id='evening' style='position: absolute; z-index: 100000; background: green; left: 0px; width: 50px; height: 10px; bottom: 40px'>&nbsp;</div>
-
-    <div style="position: absolute; z-index: 100000; top: 5px; left: 5px; padding: 10px; background: white; opacity: 0.8">
-      <a class="myButton" id="herebutton" href="#">HERE</a>
+    <div style="position: absolute; z-index: 100000; top: 5px; left: 5px; padding: 7px; background: white; opacity: 0.9">
+      <a class="myButton" id="herebutton" href="#">Here</a>
     </div>
 
     <div id="mapdiv">

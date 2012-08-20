@@ -21,10 +21,10 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         //Set center and zoom
         var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
+                global.map.getProjectionObject() // to Spherical Mercator Projection
               );
 
-        map.setCenter(newMapCenter, zoom);  
+        global.map.setCenter(newMapCenter, zoom);  
     };
 
     // returns a short time string for the given object, using hours:minutes
@@ -47,81 +47,81 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         return theDate;
     }
 
-    // draws a line on the map for the current sun angle
-    // insert the current azimuth and altitude into the HTML
-    function logCurrentSunPosition(map, lineLayer, currently) {
-        currently = currently || new Date();
+    function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, theColor) {
+        var startAzimuthInDegrees = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, theStartDate);
+        var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
-        var mapCenterPosition = map.getCenter().transform(
-                map.getProjectionObject(), // to Spherical Mercator Projection
-                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
-              );
+        var stopAzimuthInDegrees = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, theStopDate);
+        var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
-        var morningStart = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
-        var morningStop = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
-        var eveningStart = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
-        var eveningStop = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
-
-        var timelineWidth = window.innerWidth - 100;
-
-        $('.slider').css("width", timelineWidth);
-
-        $('#morning').css("left", 1 + getFractionOfDay(morningStart) * timelineWidth);
-        $('#morning').css("width", (getFractionOfDay(morningStop) - getFractionOfDay(morningStart)) * timelineWidth);
-
-        $('#evening').css("left", 1 + getFractionOfDay(eveningStart) * timelineWidth);
-        $('#evening').css("width", (getFractionOfDay(eveningStop) - getFractionOfDay(eveningStart)) * timelineWidth);
-
-        var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
-        var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
-
-        // remove all features from the layer
-        lineLayer.removeAllFeatures();
-
-        // compute line endpoints based around given lat and long
-        var angleInRadians = 2 * Math.PI * currentAzimuth / 360;
-
-        var lon1 = mapCenterPosition.lon - 0.00 * Math.sin(angleInRadians);
-        var lat1 = mapCenterPosition.lat - 0.00 * Math.cos(angleInRadians);
-        var lon2 = mapCenterPosition.lon + 0.01 * Math.sin(angleInRadians);
-        var lat2 = mapCenterPosition.lat + 0.01 * Math.cos(angleInRadians);
+        var lon1 = mapCenterPosition.lon + 0.01 * Math.sin(startAzimuthInRadians);
+        var lat1 = mapCenterPosition.lat + 0.01 * Math.cos(startAzimuthInRadians);
+        var lon2 = mapCenterPosition.lon + 0.01 * Math.sin(stopAzimuthInRadians);
+        var lat2 = mapCenterPosition.lat + 0.01 * Math.cos(stopAzimuthInRadians);
 
         // transform the lats and longs into the proper coordinate system
         var points = new Array(
+           new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                global.map.getProjectionObject() // to Spherical Mercator Projection
+              ),
            new OpenLayers.Geometry.Point(lon1, lat1).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
+                global.map.getProjectionObject() // to Spherical Mercator Projection
               ),
            new OpenLayers.Geometry.Point(lon2, lat2).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
+                global.map.getProjectionObject() // to Spherical Mercator Projection
+              ),
+           new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                global.map.getProjectionObject() // to Spherical Mercator Projection
               )
         );
 
         // make a line from the transformed points
         var line = new OpenLayers.Geometry.LineString(points);
 
-        var markerStyle = {
-            graphicName: 'circle',
-            strokeColor: '#000',
-            strokeWidth: 2,
-            fillOpacity: 0,
-            pointRadius: 15,
-            label: getShortTimeString(currently) + "hrs, angle " + currentAzimuth.toFixed(0) + ", altitude " + currentAltitude.toFixed(),
-            labelYOffset: -30,
+        var lineStyle = { 
+            strokeColor: theColor, 
+            strokeOpacity: 0.8,
+            fillOpacity: 0.5,
+            strokeWidth: 3, 
+            fillColor: theColor
         };
 
-        var theColor = '#333333';
 
-        if (currentAltitude < 5) {
-            theColor = '#000000';
-        }
-        if (currentAltitude > 5 && currentAltitude < 30) {
-            theColor = '#118811';
-        }
-        if (currentAltitude > 30) {
-            theColor = '#881111';
-        }
+        var linear_ring = new OpenLayers.Geometry.LinearRing(points);
+        var polygonFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([linear_ring]), null, lineStyle);
+
+        lineLayer.addFeatures([polygonFeature]);
+    }
+
+
+
+    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor) {
+        var azimuthInDegrees = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
+        var azimuthInRadians = 2 * Math.PI * azimuthInDegrees / 360;
+
+        var lon1 = mapCenterPosition.lon - 0.00 * Math.sin(azimuthInRadians);
+        var lat1 = mapCenterPosition.lat - 0.00 * Math.cos(azimuthInRadians);
+        var lon2 = mapCenterPosition.lon + 0.01 * Math.sin(azimuthInRadians);
+        var lat2 = mapCenterPosition.lat + 0.01 * Math.cos(azimuthInRadians);
+
+        // transform the lats and longs into the proper coordinate system
+        var points = new Array(
+           new OpenLayers.Geometry.Point(lon1, lat1).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                global.map.getProjectionObject() // to Spherical Mercator Projection
+              ),
+           new OpenLayers.Geometry.Point(lon2, lat2).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                global.map.getProjectionObject() // to Spherical Mercator Projection
+              )
+        );
+
+        // make a line from the transformed points
+        var line = new OpenLayers.Geometry.LineString(points);
 
         var lineStyle = { 
             strokeColor: theColor, 
@@ -133,19 +133,67 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
 
         // turn the line into a feature with the given style
         var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+        lineLayer.addFeatures([lineFeature]);
+    }
+
+    // draws a line on the map for the current sun angle
+    // insert the current azimuth and altitude into the HTML
+    function logCurrentSunPosition(map, lineLayer, currently) {
+        currently = currently || new Date();
+
+        var mapCenterPosition = global.map.getCenter().transform(
+                global.map.getProjectionObject(), // to Spherical Mercator Projection
+                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
+              );
+
+        var morningStart = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
+        var morningStop = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
+        var eveningStart = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
+        var eveningStop = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
+
+        var timelineWidth = window.innerWidth - 100;
+
+        $('#night1time').text(getShortTimeString(morningStart) + " <");
+        $('#night2time').text("> " + getShortTimeString(eveningStop));
+        $('#morningtime').text(getShortTimeString(morningStart) + " - " + getShortTimeString(morningStop));
+        $('#eveningtime').text(getShortTimeString(eveningStart) + " - " + getShortTimeString(eveningStop));
+
+        var currentAzimuth = azimuth(mapCenterPosition.lon, mapCenterPosition.lat, currently);
+        var currentAltitude = altitude(mapCenterPosition.lon, mapCenterPosition.lat, currently);
+
+        // remove all features from the layer
+        lineLayer.removeAllFeatures();
+
+        drawRadialLine(mapCenterPosition, currently, lineLayer, '#000000');
+        // drawRadialLine(mapCenterPosition, morningStart, lineLayer, '#009900');
+        // drawRadialLine(mapCenterPosition, morningStop, lineLayer, '#009900');
+        // drawRadialLine(mapCenterPosition, eveningStart, lineLayer, '#009900');
+        // drawRadialLine(mapCenterPosition, eveningStop, lineLayer, '#009900');
+
+        drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
+        drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
+
+        var markerStyle = {
+            graphicName: 'circle',
+            strokeColor: '#000',
+            strokeWidth: 2,
+            fillOpacity: 0,
+            pointRadius: 15,
+            label: getShortTimeString(currently) + "hrs, angle " + currentAzimuth.toFixed(0) + ", altitude " + currentAltitude.toFixed(),
+            labelYOffset: -30,
+        };
 
         // make an origin point
-        var markerOrigin = new OpenLayers.Geometry.Point(lon1, lat1).transform(
+        var markerOrigin = new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
+                global.map.getProjectionObject() // to Spherical Mercator Projection
             );
 
         // place a circle graphic at the origin point
         var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
 
-        // add the line and the circle to the vector layer
+        // add the circle to the vector layer
         lineLayer.addFeatures([markerFeature]);
-        lineLayer.addFeatures([lineFeature]);
     }
 
     // get the universal time in fractional hours
@@ -267,48 +315,37 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
     }
 
     $(document).ready(function(){
-        $("#range1").rangeinput({
-            onSlide: function(event, value) {
-                var thumbDate = getDateFromFraction(value / 24.0);
-                logCurrentSunPosition(map, lineLayer, thumbDate);
-            },
-            change: function(event, value) {
-                var thumbDate = getDateFromFraction(value / 24.0);
-                logCurrentSunPosition(map, lineLayer, thumbDate);
-            }
-        });
-
         // create the map associated with the div
-        var map = new OpenLayers.Map("mapdiv");
-        map.addLayer(new OpenLayers.Layer.OSM());
+        global.map = new OpenLayers.Map("mapdiv");
+        global.map.addLayer(new OpenLayers.Layer.OSM());
 
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
-        map.addLayer(lineLayer);           
+        global.map.addLayer(lineLayer);           
 
         // initialize map to center of USA
-        centerMapAt(map, -98, 38, 4);
+        centerMapAt(global.map, -98, 38, 4);
 
         // set up the day's timeline
-        logCurrentSunPosition(map, lineLayer); 
+        logCurrentSunPosition(global.map, lineLayer); 
 
         // redo the timeline whenever we resize
         $(window).resize(function() {
-            logCurrentSunPosition(map, lineLayer); 
+            logCurrentSunPosition(global.map, lineLayer); 
         });        
 
         // redo the timeline whenever we move the map
-        map.events.register('move', map, function() {
-            logCurrentSunPosition(map, lineLayer);
+        global.map.events.register('move', global.map, function() {
+            logCurrentSunPosition(global.map, lineLayer);
         });
 
-        window.setInterval(function() { logCurrentSunPosition(map, lineLayer) }, 60000);
+        window.setInterval(function() { logCurrentSunPosition(global.map, lineLayer) }, 60000);
 
         $("#herebutton").click(function() {
 
             navigator.geolocation.getCurrentPosition(
                 function(position) {
-                    centerMapAt(map, position.coords.longitude, position.coords.latitude, 15);
+                    centerMapAt(global.map, position.coords.longitude, position.coords.latitude, 15);
                 },
                 function(err) {
                     console.log("GEOLOCATION FAIL");
