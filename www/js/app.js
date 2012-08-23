@@ -36,6 +36,11 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         return theDate.toString("HH:mm");
     }
 
+    // returns a short time string for the given object, using hours:minutes
+    function getShortDateString(theDate) {
+        return theDate.toString("yyyy-MM-dd");
+    }
+
     // returns a floating point value between 0 and 1 based on hours and minutes
     function getFractionOfDay(theDate) {
         return (theDate.getHours() + (theDate.getMinutes() / 60.0)) / 24.0;
@@ -110,7 +115,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             strokeColor: theColor, 
             strokeOpacity: 0.5,
             fillOpacity: 0.5,
-            strokeWidth: 1, 
+            stroke: false, 
             fillColor: theColor,
         };
 
@@ -120,7 +125,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         lineLayer.addFeatures([polygonFeature]);
 
         // draw a radial line at the start of the radial section to label the start time
-        drawRadialLine(mapCenterPosition, theStartDate, lineLayer, theColor, getShortTimeString(theStartDate));
+        drawRadialLine(mapCenterPosition, theStartDate, lineLayer, '#444444', getShortTimeString(theStartDate));
     }
 
     // draw a radial line from the map center position at the azimuth determined by the sun's angle
@@ -131,21 +136,17 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
 
         var points = new Array(
             createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
-            createPointFromBearingAndDistance(mapCenterPosition, 0.0, 0.0)
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.0 * global.radiusOfCircleInMeters)
         );
 
         // make a line from the transformed points
         var line = new OpenLayers.Geometry.LineString(points);
 
-        if (map.getZoom() < 12) {
-            theLabel = "";
-        }
-
         var lineStyle = { 
             strokeColor: theColor, 
             strokeOpacity: 0.8,
             fillOpacity: 0.8,
-            strokeWidth: 2, 
+            strokeWidth: 3, 
             label: theLabel,
             labelYOffset: 10,
             fillColor: theColor
@@ -159,6 +160,11 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
     // draws the sun rose at the current map center for the given date and time
     function logCurrentSunPosition(map, lineLayer, currently) {
         currently = currently || new Date();
+
+        console.log(global.map.getScale());
+        global.radiusOfCircleInMeters = global.map.getScale() / 30;
+
+        $('#datebutton').text(getShortDateString(currently));
 
         var mapCenterPosition = global.map.getCenter().transform(
                 global.map.getProjectionObject(), // to Spherical Mercator Projection
@@ -176,7 +182,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#990000');
+        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#CC0000');
         drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#333333');
         drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
         drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
@@ -191,19 +197,36 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             pointRadius: 15,
         };
 
-        if (map.getZoom() < 12) {
-            // make an origin point
-            var markerOrigin = new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
-                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                    global.map.getProjectionObject() // to Spherical Mercator Projection
-                );
 
-            // place a circle graphic at the origin point
-            var markerFeature = new OpenLayers.Feature.Vector(markerOrigin, {}, markerStyle);
+        for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
+            var hourMarksDate = new Date(currently);
+            hourMarksDate.setHours(hourIndex);
+            hourMarksDate.setMinutes(0);
+            console.log(hourMarksDate + " DATE");
 
-            // add the circle to the vector layer
-            lineLayer.addFeatures([markerFeature]);
+            var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
+            var bearing = 2 * Math.PI * azimuthInDegrees / 360.0;
+            var points = new Array(
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.95 * global.radiusOfCircleInMeters)
+            );
+
+            // make a line from the transformed points
+            var line = new OpenLayers.Geometry.LineString(points);
+
+            var lineStyle = { 
+                strokeColor: '#222222', 
+                strokeOpacity: 0.9,
+                fillOpacity: 0.9,
+                strokeWidth: 2, 
+                fillColor: '#222222'
+            };
+
+            // turn the line into a feature with the given style
+            var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+            lineLayer.addFeatures([lineFeature]);
         }
+
     }
 
     // get the universal time in fractional hours
