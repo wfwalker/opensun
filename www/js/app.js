@@ -134,8 +134,6 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         lineLayer.addFeatures([lineFeature]);
     }
 
-
-
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, theColor) {
@@ -189,8 +187,8 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
     function logCurrentSunPosition(map, lineLayer, currently) {
         currently = currently || new Date();
 
-        console.log(global.map.getScale());
-        global.radiusOfCircleInMeters = global.map.getScale() / 20;
+        var windowBounds = global.map.calculateBounds();
+        global.radiusOfCircleInMeters = Math.min(windowBounds.top - windowBounds.bottom, windowBounds.right - windowBounds.left) / 3.5;
 
         $('#datebutton').text(getShortDateString(currently));
 
@@ -225,7 +223,6 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             pointRadius: 15,
         };
 
-
         for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
             var hourMarksDate = new Date(currently);
             hourMarksDate.setHours(hourIndex);
@@ -233,15 +230,15 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
 
             var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
             var bearing = 2 * Math.PI * azimuthInDegrees / 360.0;
-            var points = new Array(
+            var tickMarkPoints = new Array(
                 createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
                 createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.95 * global.radiusOfCircleInMeters)
             );
 
             // make a line from the transformed points
-            var line = new OpenLayers.Geometry.LineString(points);
+            var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
 
-            var lineStyle = { 
+            var tickMarkStyle = { 
                 strokeColor: '#222222', 
                 strokeOpacity: 0.9,
                 fillOpacity: 0.9,
@@ -250,26 +247,18 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             };
 
             // turn the line into a feature with the given style
-            var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
-            lineLayer.addFeatures([lineFeature]);
-        }
+            var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
+            lineLayer.addFeatures([tickMarkFeature]);
 
-        for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
-            var hourMarksDate = new Date(currently);
-            hourMarksDate.setHours(hourIndex);
-            hourMarksDate.setMinutes(0);
-
-            var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
-            var bearing = 2 * Math.PI * azimuthInDegrees / 360.0;
-            var points = new Array(
+            var hourLabelPoints = new Array(
                 createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.1 * global.radiusOfCircleInMeters),
                 createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.2 * global.radiusOfCircleInMeters)
             );
 
             // make a line from the transformed points
-            var line = new OpenLayers.Geometry.LineString(points);
+            var hourLabel = new OpenLayers.Geometry.LineString(hourLabelPoints);
 
-            var lineStyle = { 
+            var hourLabelStyle = { 
                 strokeColor: '#222222', 
                 strokeOpacity: 0.9,
                 fillOpacity: 0.9,
@@ -279,11 +268,9 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             };
 
             // turn the line into a feature with the given style
-            var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
-            lineLayer.addFeatures([lineFeature]);
+            var hourLabelFeature = new OpenLayers.Feature.Vector(hourLabel, null, hourLabelStyle);
+            lineLayer.addFeatures([hourLabelFeature]);
         }
-
-
     }
 
     // get the universal time in fractional hours
