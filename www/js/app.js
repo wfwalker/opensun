@@ -80,6 +80,62 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             );
     }
 
+    // draw a radial line from the map center position at the azimuth determined by the sun's angle
+    // at the given time of day
+    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor, theLabel) {
+        var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
+        var bearing = 2 * Math.PI * azimuthInDegrees / 360;
+
+        var points = new Array(
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.0 * global.radiusOfCircleInMeters)
+        );
+
+        // make a line from the transformed points
+        var line = new OpenLayers.Geometry.LineString(points);
+
+        var lineStyle = { 
+            strokeColor: theColor, 
+            strokeOpacity: 0.8,
+            fillOpacity: 0.8,
+            strokeWidth: 3, 
+            fillColor: theColor
+        };
+
+        // turn the line into a feature with the given style
+        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+        lineLayer.addFeatures([lineFeature]);
+    }
+
+    // draw a radial line from the map center position at the azimuth determined by the sun's angle
+    // at the given time of day
+    function drawRadialLabel(mapCenterPosition, theDate, lineLayer, theColor, theLabel) {
+        var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
+        var bearing = 2 * Math.PI * azimuthInDegrees / 360;
+
+        var points = new Array(
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.0 * global.radiusOfCircleInMeters)
+        );
+
+        // make a line from the transformed points
+        var line = new OpenLayers.Geometry.LineString(points);
+
+        var lineStyle = { 
+            strokeColor: theColor, 
+            strokeOpacity: 0.8,
+            fillOpacity: 0.8,
+            stroke: false, 
+            fillColor: theColor
+        };
+
+        // turn the line into a feature with the given style
+        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+        lineLayer.addFeatures([lineFeature]);
+    }
+
+
+
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, theColor) {
@@ -125,44 +181,16 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         lineLayer.addFeatures([polygonFeature]);
 
         // draw a radial line at the start of the radial section to label the start time
-        drawRadialLine(mapCenterPosition, theStartDate, lineLayer, '#444444', getShortTimeString(theStartDate));
+        drawRadialLabel(mapCenterPosition, theStartDate, lineLayer, '#444444', getShortTimeString(theStartDate));
     }
 
-    // draw a radial line from the map center position at the azimuth determined by the sun's angle
-    // at the given time of day
-    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor, theLabel) {
-        var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
-        var bearing = 2 * Math.PI * azimuthInDegrees / 360;
-
-        var points = new Array(
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, global.radiusOfCircleInMeters),
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.0 * global.radiusOfCircleInMeters)
-        );
-
-        // make a line from the transformed points
-        var line = new OpenLayers.Geometry.LineString(points);
-
-        var lineStyle = { 
-            strokeColor: theColor, 
-            strokeOpacity: 0.8,
-            fillOpacity: 0.8,
-            strokeWidth: 3, 
-            label: theLabel,
-            labelYOffset: 10,
-            fillColor: theColor
-        };
-
-        // turn the line into a feature with the given style
-        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
-        lineLayer.addFeatures([lineFeature]);
-    }
 
     // draws the sun rose at the current map center for the given date and time
     function logCurrentSunPosition(map, lineLayer, currently) {
         currently = currently || new Date();
 
         console.log(global.map.getScale());
-        global.radiusOfCircleInMeters = global.map.getScale() / 30;
+        global.radiusOfCircleInMeters = global.map.getScale() / 20;
 
         $('#datebutton').text(getShortDateString(currently));
 
@@ -182,8 +210,8 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#CC0000');
-        drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#333333');
+        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#DD0000');
+        drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#999999');
         drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
         drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
 
@@ -202,7 +230,6 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             var hourMarksDate = new Date(currently);
             hourMarksDate.setHours(hourIndex);
             hourMarksDate.setMinutes(0);
-            console.log(hourMarksDate + " DATE");
 
             var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
             var bearing = 2 * Math.PI * azimuthInDegrees / 360.0;
@@ -226,6 +253,36 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
             var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
             lineLayer.addFeatures([lineFeature]);
         }
+
+        for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
+            var hourMarksDate = new Date(currently);
+            hourMarksDate.setHours(hourIndex);
+            hourMarksDate.setMinutes(0);
+
+            var azimuthInDegrees = getAzimuthInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
+            var bearing = 2 * Math.PI * azimuthInDegrees / 360.0;
+            var points = new Array(
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.1 * global.radiusOfCircleInMeters),
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.2 * global.radiusOfCircleInMeters)
+            );
+
+            // make a line from the transformed points
+            var line = new OpenLayers.Geometry.LineString(points);
+
+            var lineStyle = { 
+                strokeColor: '#222222', 
+                strokeOpacity: 0.9,
+                fillOpacity: 0.9,
+                stroke: false, 
+                label: hourIndex + "",
+                fillColor: '#222222'
+            };
+
+            // turn the line into a feature with the given style
+            var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
+            lineLayer.addFeatures([lineFeature]);
+        }
+
 
     }
 
