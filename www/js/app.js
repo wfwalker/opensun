@@ -209,7 +209,7 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
         lineLayer.removeAllFeatures();
 
         drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#DD0000');
-        drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#999999');
+        // drawRadialSection(mapCenterPosition, eveningStop, morningStart, lineLayer, '#999999');
         drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
         drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
 
@@ -398,7 +398,14 @@ require(['jquery', 'jquery.tools', 'date'], function($) {
 
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
-        global.map.addLayer(lineLayer);           
+        global.map.addLayer(lineLayer);       
+
+        var pois = new OpenLayers.Layer.Text( "My Points",
+            { location:"./birding.txt",
+                projection: global.map.displayProjection
+            });
+
+        global.map.addLayer(pois);            
 
         // initialize map to center of USA
         centerMapAt(global.map, -98, 38, 4);
