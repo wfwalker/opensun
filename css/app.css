@@ -91,6 +91,17 @@ div.olControlZoom {
   position:relative;
   top:1px;
 }
+#timelineContainer {
+  position: absolute;
+  z-index: 100000;
+  bottom: 5px;
+  left: 0px;
+  height: 19px;
+  padding: 0px;
+  background: white;
+  border-top: solid 1px black;
+  border-bottom: solid 1px black;
+}
 @media only screen and (min-width: 35em) {
   
 }
