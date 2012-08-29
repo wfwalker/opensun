@@ -196,7 +196,7 @@ td { vertical-align: top; }
 
 
 /* ==|== primary styles =====================================================
-   Author:
+   Author: Bill Walker
    ========================================================================== */
 
 #mapdiv {
@@ -246,6 +246,17 @@ div.olControlZoom {
   top:1px;
 }
 
+#timelineContainer {
+  position: absolute;
+  z-index: 100000;
+  bottom: 5px;
+  left: 0px;
+  height: 19px;
+  padding: 0px;
+  background: white;
+  border-top: solid 1px black;
+  border-bottom: solid 1px black;
+}
 
 /* ==|== media queries ======================================================
    EXAMPLE Media Query for Responsive Design.
