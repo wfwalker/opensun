@@ -177,7 +177,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
-    function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, theColor) {
+    function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, startFraction, theColor) {
         var startAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theStartDate).azimuth;
         var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
@@ -190,11 +190,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
         // transform the lats and longs into the proper coordinate system
-        var points = new Array(
-           new OpenLayers.Geometry.Point(mapCenterPosition.lon, mapCenterPosition.lat).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                global.map.getProjectionObject() // to Spherical Mercator Projection
-              ));
+        // start at the origin
+        var points = new Array();
 
         // draw the points around the edge of the circle
         for (var bearing = startAzimuthInRadians; bearing < stopAzimuthInRadians; bearing += 0.2) {
@@ -202,6 +199,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         }
         // add one last point around the circle for the final bearing
         points.push(createPointFromBearingAndDistance(mapCenterPosition, stopAzimuthInRadians, global.radiusOfCircleInMeters));
+
+        // draw the points around the edge of the circle
+        for (var bearing = stopAzimuthInRadians; bearing >= startAzimuthInRadians; bearing -= 0.2) {
+            points.push(createPointFromBearingAndDistance(mapCenterPosition, bearing, startFraction * global.radiusOfCircleInMeters))
+        }
+
+        // add one last point around the circle for the final bearing
+        points.push(createPointFromBearingAndDistance(mapCenterPosition, startAzimuthInRadians, startFraction * global.radiusOfCircleInMeters));
 
         // make a line from the transformed points
         var line = new OpenLayers.Geometry.LineString(points);
@@ -280,17 +285,19 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        drawRadialSection(mapCenterPosition, todayFirstLights['predawn'], todayFirstLights['morningStart'], lineLayer, '#111111');
+        var radialSectionFraction = 0.2;
+
+        drawRadialSection(mapCenterPosition, todayFirstLights['predawn'], todayFirstLights['morningStart'], lineLayer, radialSectionFraction, '#111111');
 
         if ((todayFirstLights['morningStop']) & (todayFirstLights['highStart']) & (todayLastLights['highStop']) & (todayLastLights['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayFirstLights['highStart'], lineLayer, '#111111');
-            drawRadialSection(mapCenterPosition, todayLastLights['highStop'], todayLastLights['eveningStart'], lineLayer, '#111111');
+            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayFirstLights['highStart'], lineLayer, radialSectionFraction, '#111111');
+            drawRadialSection(mapCenterPosition, todayLastLights['highStop'], todayLastLights['eveningStart'], lineLayer, radialSectionFraction, '#111111');
         } 
         else if ((todayFirstLights['morningStop']) & (todayLastLights['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayLastLights['eveningStart'], lineLayer, '#111111');
+            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayLastLights['eveningStart'], lineLayer, radialSectionFraction, '#111111');
         }
 
-        drawRadialSection(mapCenterPosition, todayLastLights['eveningStop'], todayLastLights['sunset'], lineLayer, '#111111');
+        drawRadialSection(mapCenterPosition, todayLastLights['eveningStop'], todayLastLights['sunset'], lineLayer, radialSectionFraction, '#111111');
 
         if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
             drawRadialLine(mapCenterPosition, currently, lineLayer, '#000000', getShortTimeString(currently));
