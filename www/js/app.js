@@ -19,6 +19,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     // radius of Earth = 6,378,100 meters
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
+
+    global.firstSunAngles = { 'predawn': -10 , 'morningStart': 5, 'morningStop': 30, 'highStart': 45}
+    global.lastSunAngles = { 'sunset': -10, 'eveningStop': 5, 'eveningStart': 30, 'highStop': 45 }
  
     // center the map on the given location
     function centerMapAt(map, longitude, latitude, zoom) {
@@ -208,7 +211,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             strokeOpacity: 0.5,
             fillOpacity: 0.5,
             stroke: false, 
-            label: (24*(getFractionOfDay(theStopDate) - getFractionOfDay(theStartDate))).toFixed(1) + "hrs",
             fillColor: theColor,
         };
 
@@ -221,13 +223,35 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         drawRadialLabel(mapCenterPosition, theStartDate, lineLayer, '#444444', getShortTimeString(theStartDate));
     }
 
+    function setTextSummary(sunPositionInDegrees, todayFirstLights, todayLastLights) {
+        var summary = "Unknown";
+
+        if ((sunPositionInDegrees.altitude > 5) & (sunPositionInDegrees.altitude <= 30)) {
+            summary = "Good, go shoot";
+        } else if ((sunPositionInDegrees.altitude > 30) & (sunPositionInDegrees.altitude <= 45)) {
+            summary = "Probably harsh, unless overcast";
+        } else if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude <= 5)) {
+            summary = "Sun very low";   
+        } else if (sunPositionInDegrees.altitude > 45) {
+            summary = "Hash (unless overcast)";
+        } else if (sunPositionInDegrees.altitude <= 0) {
+            summary = "Night";
+        }
+
+        $('#textSummary').text(summary);
+    }
+
 
     // draws the sun rose at the current map center for the given date and time
     function logCurrentSunPosition(map, lineLayer, currently) {
         currently = currently || new Date();
 
         var windowBounds = global.map.calculateBounds();
+
+        // scale up the radius of the circle according to the bounds of the map
         global.radiusOfCircleInMeters = Math.min(windowBounds.top - windowBounds.bottom, windowBounds.right - windowBounds.left) / 3.5;
+        // but don't go above a certain size no matter what.
+        global.radiusOfCircleInMeters = Math.min(global.radiusOfCircleInMeters, 1000000);
 
         $('#datebutton').text(getShortDateString(currently));
 
@@ -242,24 +266,33 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         localStorage.setItem("longitude", mapCenterPosition.lon);
         localStorage.setItem("zoom", global.map.getZoom());
 
-        var morningStart = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
-        var morningStop = getFirstLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
-        var eveningStart = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 30);
-        var eveningStop = getLastLight(mapCenterPosition.lon, mapCenterPosition.lat, currently, 5);
+        var todayFirstLights = getFirstLights(mapCenterPosition.lon, mapCenterPosition.lat, currently);
+        var todayLastLights = getLastLights(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
         var sunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, currently);
 
+        // text summary
+        setTextSummary(sunPositionInDegrees, todayFirstLights, todayLastLights);
+
         // draw timeline at bottom
-        drawCanvasTimeline(morningStart, morningStop, eveningStart, eveningStop, currently);
+        // drawCanvasTimeline(morningStart, morningStop, eveningStart, eveningStop, currently);
 
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        drawRadialSection(mapCenterPosition, morningStop, eveningStart, lineLayer, '#DD0000');
-        drawRadialSection(mapCenterPosition, morningStart, morningStop, lineLayer, '#009900');
-        drawRadialSection(mapCenterPosition, eveningStart, eveningStop, lineLayer, '#009900');
+        drawRadialSection(mapCenterPosition, todayFirstLights['predawn'], todayFirstLights['morningStart'], lineLayer, '#111111');
 
-        if (sunPositionInDegrees.altitude > 0) {
+        if ((todayFirstLights['morningStop']) & (todayFirstLights['highStart']) & (todayLastLights['highStop']) & (todayLastLights['eveningStart'])) {
+            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayFirstLights['highStart'], lineLayer, '#111111');
+            drawRadialSection(mapCenterPosition, todayLastLights['highStop'], todayLastLights['eveningStart'], lineLayer, '#111111');
+        } 
+        else if ((todayFirstLights['morningStop']) & (todayLastLights['eveningStart'])) {
+            drawRadialSection(mapCenterPosition, todayFirstLights['morningStop'], todayLastLights['eveningStart'], lineLayer, '#111111');
+        }
+
+        drawRadialSection(mapCenterPosition, todayLastLights['eveningStop'], todayLastLights['sunset'], lineLayer, '#111111');
+
+        if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
             drawRadialLine(mapCenterPosition, currently, lineLayer, '#000000', getShortTimeString(currently));
         }
 
@@ -270,7 +303,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
             var hourMarkSunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
 
-            if (hourMarkSunPositionInDegrees.altitude > -10) {
+            if ((hourMarkSunPositionInDegrees.altitude > -10) & (hourMarkSunPositionInDegrees.altitude < 45)) {
 
                 var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
@@ -362,33 +395,76 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     }
 
     // returns the first time when the sun goes above the given angle
-    function getFirstLight(longitude, latitude, theDate, angleInDegrees) {
+    function getFirstLights(longitude, latitude, theDate) {
+        var listOfTimes = {};
+        var angles = new Array();
+        var names = new Array();
+
+        for (key in global.firstSunAngles) {
+            angles.push(global.firstSunAngles[key]);
+            names.push(key);
+        }   
+
         for (var hours = 0; hours < 24; hours++) {
             for (var minutes = 0; minutes < 60; minutes++) {
                 var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= angleInDegrees) {
-                    return tempDate;
+                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= angles[0]) {
+                    listOfTimes[names[0]] = tempDate;
+                    angles.shift();
+                    names.shift();
+                }
+
+                if (angles.length == 0) {
+                    break;
                 }
             }
         }
+
+        for (key in listOfTimes) {
+            console.log(key + " -> " + listOfTimes[key]);
+        }
+
+        return listOfTimes;
     }
 
+
     // returns the last time when the sun goes below the given angle
-    function getLastLight(longitude, latitude, theDate, angleInDegrees) {
+    function getLastLights(longitude, latitude, theDate, angleInDegrees) {
+        var listOfTimes = {};
+        var angles = new Array();
+        var names = new Array();
+
+        for (key in global.lastSunAngles) {
+            angles.push(global.lastSunAngles[key]);
+            names.push(key);
+        }   
+
         for (var hours = 23; hours >= 0; hours--) {
             for (var minutes = 59; minutes >= 0; minutes--) {
                 var tempDate = new Date(theDate);
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= angleInDegrees) {
-                    return tempDate;
+                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= angles[0]) {
+                    listOfTimes[names[0]] = tempDate;
+                    angles.shift();
+                    names.shift();
+                }
+
+                if (angles.length == 0) {
+                    break;
                 }
             }
         }
+
+        for (key in listOfTimes) {
+            console.log(key + " -> " + listOfTimes[key]);
+        }
+
+        return listOfTimes;
     }
 
     $(document).ready(function(){

@@ -250,12 +250,9 @@ div.olControlZoom {
   position: absolute;
   z-index: 100000;
   bottom: 5px;
-  left: 0px;
-  height: 19px;
-  padding: 0px;
+  left: 5px;
+  padding: 10px;
   background: white;
-  border-top: solid 1px black;
-  border-bottom: solid 1px black;
 }
 
 /* ==|== media queries ======================================================
