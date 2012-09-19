@@ -5,7 +5,7 @@ audio:not([controls]) { display: none; }
 [hidden] { display: none; }
 html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; height: 100%;}
 html, button, input, select, textarea { font-family: sans-serif; color: #222; }
-body { margin: 0; font-size: 1em; line-height: 1.4; height: 100%;}
+body { margin: 0; font-size: 10pt; line-height: 1.4; height: 100%;}
 a { color: #00e; }
 a:visited { color: #551a8b; }
 a:hover { color: #06e; }
@@ -95,12 +95,9 @@ div.olControlZoom {
   position: absolute;
   z-index: 100000;
   bottom: 5px;
-  left: 0px;
-  height: 19px;
-  padding: 0px;
+  left: 5px;
+  padding: 10px;
   background: white;
-  border-top: solid 1px black;
-  border-bottom: solid 1px black;
 }
 @media only screen and (min-width: 35em) {
   

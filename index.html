@@ -46,16 +46,17 @@
     <!-- Add your site or application content here -->
 
     <div style="position: absolute; z-index: 100000; top: 5px; left: 5px; padding: 7px; background: white; opacity: 0.9">
-      OpenSun
-      <a class="myButton" id="herebutton" href="#">Here</a>
+      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" /></a>
+      <a class="myButton" id="nowbutton" href="#">NOW</a>
       <a class="myButton" id="datebutton" href="#">Date</a>
+      <a class="myButton" id="timebutton" href="#">Time</a>
     </div>
 
     <div id="mapdiv">
     </div>
 
     <div id="timelineContainer">
-      <canvas id="timeline" />
+      <div><span id="textSummary"></span></div>
     </div>    
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
