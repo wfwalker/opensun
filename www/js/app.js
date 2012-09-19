@@ -20,6 +20,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
 
+    // sun angles for rising and setting sun
+    global.firstSunAngles = { 'predawn': -10 , 'morningStart': 5, 'morningStop': 30, 'highStart': 45}
+    global.lastSunAngles = { 'sunset': -10, 'eveningStop': 5, 'eveningStart': 30, 'highStop': 45 }
+
+    // named time ranges between the sun angles defined above
     global.ranges = {
         'Predawn' : ['predawn', 'morning'],
         'Morning': ['morningStart', 'morningStop'],
@@ -31,9 +36,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         'All day good': ['morningStart', 'eveningStop']
     }
 
-    global.firstSunAngles = { 'predawn': -10 , 'morningStart': 5, 'morningStop': 30, 'highStart': 45}
-    global.lastSunAngles = { 'sunset': -10, 'eveningStop': 5, 'eveningStart': 30, 'highStop': 45 }
-
+    // initialize so that we show current time and date
     global.showCurrentDateTime = true;
     global.currently = new Date();
 
@@ -56,11 +59,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     // returns a short time string for the given object, using hours:minutes
     function getShortDateString(theDate) {
         return theDate.toString("MMM d, yyyy");
-    }
-
-    // returns a floating point value between 0 and 1 based on hours and minutes
-    function getFractionOfDay(theDate) {
-        return (theDate.getHours() + (theDate.getMinutes() / 60.0)) / 24.0;
     }
 
     // returns a floating point value between 0 and 1 based on hours and minutes
@@ -166,19 +164,20 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
-    function drawRadialSection(mapCenterPosition, theStartDate, theStopDate, lineLayer, startFraction, theColor) {
-        var startAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theStartDate).azimuth;
-        var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
+    function drawRadialSection(mapCenterPosition, startName, stopName, lineLayer, startFraction, theColor) {
+        if (global.lightTimes[startName] & global.lightTimes[stopName]) {
+            var startAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
+            var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
-        var stopAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theStopDate).azimuth;
+            var stopAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, global.lightTimes[stopName]).azimuth;
+            if (stopAzimuthInDegrees < startAzimuthInDegrees) {
+                stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
+            }
 
-        if (stopAzimuthInDegrees < startAzimuthInDegrees) {
-            stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
+            var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
+
+            fillPolygon(computeRadialSectionPoints(mapCenterPosition, startAzimuthInRadians, stopAzimuthInRadians, startFraction, 1.0), theColor, lineLayer);
         }
-
-        var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
-
-        fillPolygon(computeRadialSectionPoints(mapCenterPosition, startAzimuthInRadians, stopAzimuthInRadians, startFraction, 1.0), theColor, lineLayer);
     }
 
     function setTextSummary(sunPositionInDegrees) {
@@ -207,28 +206,27 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
             var hourMarkSunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
 
+            var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
-                var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
+            var tickMarkPoints = new Array(
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.0 * global.radiusOfCircleInMeters),
+                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.02 * global.radiusOfCircleInMeters)
+            );
 
-                var tickMarkPoints = new Array(
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.0 * global.radiusOfCircleInMeters),
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.02 * global.radiusOfCircleInMeters)
-                );
+            // make a line from the transformed points
+            var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
 
-                // make a line from the transformed points
-                var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
+            var tickMarkStyle = { 
+                strokeColor: '#222222', 
+                strokeOpacity: 0.9,
+                fillOpacity: 0.9,
+                strokeWidth: 2, 
+                fillColor: '#222222'
+            };
 
-                var tickMarkStyle = { 
-                    strokeColor: '#222222', 
-                    strokeOpacity: 0.9,
-                    fillOpacity: 0.9,
-                    strokeWidth: 2, 
-                    fillColor: '#222222'
-                };
-
-                // turn the line into a feature with the given style
-                var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
-                lineLayer.addFeatures([tickMarkFeature]);
+            // turn the line into a feature with the given style
+            var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
+            lineLayer.addFeatures([tickMarkFeature]);
 
             if ((hourMarkSunPositionInDegrees.altitude > -10) & (hourMarkSunPositionInDegrees.altitude < 45)) {
 
@@ -281,9 +279,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // text summary
         setTextSummary(sunPositionInDegrees);
 
-        // draw timeline at bottom
-        // drawCanvasTimeline(morningStart, morningStop, eveningStart, eveningStop, global.currently);
-
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
@@ -294,17 +289,17 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 0.10, 0.11), '#444444', lineLayer);
 
         // TODO: are these always valid?
-        drawRadialSection(mapCenterPosition, global.lightTimes['eveningStop'], global.lightTimes['sunset'], lineLayer, radialSectionFraction, '#555555');
-        drawRadialSection(mapCenterPosition, global.lightTimes['sunset'], global.lightTimes['predawn'], lineLayer, radialSectionFraction, '#000000');
-        drawRadialSection(mapCenterPosition, global.lightTimes['predawn'], global.lightTimes['morningStart'], lineLayer, radialSectionFraction, '#555555');
+        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#555555');
+        drawRadialSection(mapCenterPosition, 'sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
+        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#555555');
 
         if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, global.lightTimes['morningStop'], global.lightTimes['highStart'], lineLayer, radialSectionFraction, '#555555');
-            drawRadialSection(mapCenterPosition, global.lightTimes['highStart'], global.lightTimes['highStop'], lineLayer, radialSectionFraction, '#000000');
-            drawRadialSection(mapCenterPosition, global.lightTimes['highStop'], global.lightTimes['eveningStart'], lineLayer, radialSectionFraction, '#555555');
+            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#555555');
+            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#000000');
+            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
         } 
         else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, global.lightTimes['morningStop'], global.lightTimes['eveningStart'], lineLayer, radialSectionFraction, '#555555');
+            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
         }
 
         if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
@@ -315,23 +310,18 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         privateLabelHours(mapCenterPosition, lineLayer)
     }
 
-    // get the universal time in fractional hours
-    function getUniversalTime(h,m,z)
-    {
-        return (h-z+m/60);
-    }
-
     // get the julian date (I think) for the given year, month, date, and universal time
-    function getJulianDate(y,m,d,u)
+    function getJulianDate(y, m, d, u)
     {
-        return (367*y)-Math.floor((7/4)*(Math.floor((m+9)/12)+y))+Math.floor(275*m/9)+d-730531.5+(u/24)
+        return (367 * y) - Math.floor((7/4) * (Math.floor((m + 9) / 12) + y)) + Math.floor(275 * m / 9) + d - 730531.5 + (u / 24)
     }
 
     function getSunPositionInDegrees(lg, la, theDate)
     {
         with (Math) {
-            var uu=getUniversalTime(theDate.getUTCHours(), theDate.getUTCMinutes(), 0);
+            var uu = theDate.getUTCHours() + theDate.getUTCMinutes() / 60.0;
             var jj=getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
+
             var T=jj/36525;
             var k=PI/180.0;
             var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
@@ -443,6 +433,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
         global.map.addLayer(pois);      
 
+        // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {
             var savedLatitude = localStorage.getItem("latitude");
             var savedLongitude = localStorage.getItem("longitude");
@@ -453,7 +444,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             centerMapAt(global.map, -98, 38, 4);
         }      
 
-        // set up the day's timeline
+        // show sundial for current date/time
         logCurrentSunPosition(global.map, lineLayer); 
 
         // redo the timeline whenever we move the map
@@ -461,6 +452,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             logCurrentSunPosition(global.map, lineLayer);
         });
 
+        // check once a minute to track date/time
         window.setInterval(function() {
             if (global.showCurrentDateTime) {
                 global.currently = new Date();
@@ -468,6 +460,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             }
         }, 60000);
 
+        // clicking the HERE button tries to geolocate
         $("#herebutton").click(function() {
             navigator.geolocation.getCurrentPosition(
                 function(position) {
@@ -478,18 +471,39 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 });
         });
 
+        // clicking the DATE button tries to set the date and stop tracking current date/time
         $("#datebutton").click(function() {
             var currentDate = new Date();
             var chosenDateString = prompt("Set Date", getShortDateString(currentDate));
             global.currently = Date.parse(chosenDateString);
             global.showCurrentDateTime = false;
+            $('#nowbutton').text('>');
             logCurrentSunPosition(global.map, lineLayer);
         });
 
-        $("#nowbutton").click(function() {
-            global.currently = new Date();
-            global.showCurrentDateTime = true;
+        // clicking the TIME button tries to set the date and stop tracking current date/time
+        $("#timebutton").click(function() {
+            var currentTime = new Date();
+            var chosenTimeString = prompt("Set Date", getShortTimeString(currentTime));
+            var chosenTime = Date.parse(chosenTimeString);
+            global.currently.setMinutes(chosenTime.getMinutes());
+            global.currently.setHours(chosenTime.getHours());
+            global.showCurrentDateTime = false;
+            $('#nowbutton').text('>');
             logCurrentSunPosition(global.map, lineLayer);
+       });
+
+        // clicking the NOW button toggles whether we're tracking the current date/time
+        $("#nowbutton").click(function() {
+            if (global.showCurrentDateTime) {
+                global.showCurrentDateTime = false;
+                $('#nowbutton').text('>');
+            } else {
+                global.showCurrentDateTime = true;
+                global.currently = new Date();
+                logCurrentSunPosition(global.map, lineLayer);
+                $('#nowbutton').text('||');
+            }
         });
 
     });
