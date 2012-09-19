@@ -97,13 +97,13 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial line from the map center position at the azimuth determined by the sun's angle
     // at the given time of day
-    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor, theLabel, radiusScale) {
+    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor, theLabel, fractionStart, fractionStop) {
         var sunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
         var bearing = 2 * Math.PI * sunPositionInDegrees.azimuth / 360;
 
         var points = new Array(
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, radiusScale * global.radiusOfCircleInMeters),
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, 0.0 * global.radiusOfCircleInMeters)
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, fractionStop * global.radiusOfCircleInMeters),
+            createPointFromBearingAndDistance(mapCenterPosition, bearing, fractionStart * global.radiusOfCircleInMeters)
         );
 
         // make a line from the transformed points
@@ -188,7 +188,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
                 if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently < global.lightTimes[rangeBounds[1]])) {
                     console.log("RANGE " + key);
-                    summary = key + " until " + getShortTimeString(global.lightTimes[rangeBounds[1]]);
+                    summary =
+                        key + " " +
+                        ((global.lightTimes[rangeBounds[1]] - global.currently) / 60000).toFixed(0) + " of " + 
+                        ((global.lightTimes[rangeBounds[1]] - global.lightTimes[rangeBounds[0]]) / 60000) + " mins left"
                     break;
                 }
             }
@@ -206,46 +209,78 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
             var hourMarkSunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
 
-            var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
+            if (hourMarkSunPositionInDegrees.altitude > -10) {
+                var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
-            var tickMarkPoints = new Array(
-                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.0 * global.radiusOfCircleInMeters),
-                createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.02 * global.radiusOfCircleInMeters)
-            );
-
-            // make a line from the transformed points
-            var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
-
-            var tickMarkStyle = { 
-                strokeColor: '#222222', 
-                strokeOpacity: 0.9,
-                fillOpacity: 0.9,
-                strokeWidth: 2, 
-                fillColor: '#222222'
-            };
-
-            // turn the line into a feature with the given style
-            var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
-            lineLayer.addFeatures([tickMarkFeature]);
-
-            if ((hourMarkSunPositionInDegrees.altitude > -10) & (hourMarkSunPositionInDegrees.altitude < 45)) {
-
-                var hourLabelPoints = new Array(
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.1 * global.radiusOfCircleInMeters),
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.2 * global.radiusOfCircleInMeters)
+                var tickMarkPoints = new Array(
+                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.0 * global.radiusOfCircleInMeters),
+                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.02 * global.radiusOfCircleInMeters)
                 );
 
                 // make a line from the transformed points
-                var hourLabel = new OpenLayers.Geometry.LineString(hourLabelPoints);
+                var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
+
+                var tickMarkStyle = { 
+                    strokeColor: '#222222', 
+                    strokeOpacity: 0.9,
+                    fillOpacity: 0.9,
+                    strokeWidth: 2, 
+                    fillColor: '#222222',
+                };
 
                 // turn the line into a feature with the given style
-                var hoursLabel = hourIndex + "";
-                if (hourIndex < 10) {
-                    hoursLabel = "0" + hourIndex;
+                var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
+                lineLayer.addFeatures([tickMarkFeature]);
+
+                if (hourMarkSunPositionInDegrees.altitude < 45) {
+
+                    var hourLabelPoints = new Array(
+                        createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.1 * global.radiusOfCircleInMeters),
+                        createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.2 * global.radiusOfCircleInMeters)
+                    );
+
+                    // make a line from the transformed points
+                    var hourLabel = new OpenLayers.Geometry.LineString(hourLabelPoints);
+
+                    // turn the line into a feature with the given style
+                    var hoursLabel = hourIndex + "";
+                    if (hourIndex < 10) {
+                        hoursLabel = "0" + hourIndex;
+                    }
+                    var hourLabelFeature = new OpenLayers.Feature.Vector(hourLabel, null, { stroke: false, label: hoursLabel, fontSize: '10pt' });
+                    lineLayer.addFeatures([hourLabelFeature]);
                 }
-                var hourLabelFeature = new OpenLayers.Feature.Vector(hourLabel, null, { stroke: false, label: hoursLabel, fontSize: '10pt' });
-                lineLayer.addFeatures([hourLabelFeature]);
             }
+        }
+    }
+
+    function privateDrawCircles(mapCenterPosition, sunPositionInDegrees, lineLayer) {
+        var radialSectionFraction = 0.9;
+
+        // draw some constant circles
+        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF', lineLayer);
+        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 0.10, 0.11), '#444444', lineLayer);
+
+        // TODO: are these always valid?
+        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#555555');
+        drawRadialSection(mapCenterPosition, 'sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
+        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#555555');
+
+        if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
+            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#555555');
+            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#000000');
+            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
+        } 
+        else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
+            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
+        }
+
+        if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
+            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.0, 1.2);
+            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
+        } else {
+            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.9, 1.2);
+            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
         }
     }
 
@@ -282,30 +317,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        var radialSectionFraction = 0.9;
-
-        // draw some constant circles
-        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF', lineLayer);
-        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 0.10, 0.11), '#444444', lineLayer);
-
-        // TODO: are these always valid?
-        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#555555');
-        drawRadialSection(mapCenterPosition, 'sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
-        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#555555');
-
-        if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#555555');
-            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#000000');
-            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
-        } 
-        else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
-        }
-
-        if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 1.2);
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), -0.8);
-        }
+        privateDrawCircles(mapCenterPosition, sunPositionInDegrees, lineLayer)
 
         privateLabelHours(mapCenterPosition, lineLayer)
     }
