@@ -246,12 +246,22 @@ div.olControlZoom {
   top:1px;
 }
 
-#timelineContainer {
+#buttonContainer {
+  position: absolute;
+  z-index: 100000;
+  top: 3px;
+  left: 3px;
+  padding: 5px;
+  background: white;
+  opacity: 0.9
+}
+
+#textSummaryContainer {
   position: absolute;
   z-index: 100000;
   bottom: 5px;
-  left: 5px;
-  padding: 10px;
+  left: 3px;
+  padding: 3px;
   background: white;
 }
 
