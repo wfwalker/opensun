@@ -275,12 +275,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
         }
 
-        if ((sunPositionInDegrees.altitude > 0) & (sunPositionInDegrees.altitude < 45)) {
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.0, 1.2);
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
-        } else {
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.9, 1.2);
-            drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
+        if (sunPositionInDegrees.altitude > 0) {
+            if (sunPositionInDegrees.altitude < 45) {
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.0, 1.2);
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
+            } else {
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.9, 1.2);
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
+            }
         }
     }
 
