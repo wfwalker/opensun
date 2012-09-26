@@ -21,8 +21,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     global.radiusOfCircleInMeters = 1000.0;
 
     // sun angles for rising and setting sun
-    global.firstSunAngles = { 'predawn': -10 , 'morningStart': 5, 'morningStop': 30, 'highStart': 45}
-    global.lastSunAngles = { 'sunset': -10, 'eveningStop': 5, 'eveningStart': 30, 'highStop': 45 }
+    global.firstSunAngles = { 'predawn': -1 , 'morningStart': 5, 'morningStop': 25, 'highStart': 40}
+    global.lastSunAngles = { 'sunset': -1, 'eveningStop': 5, 'eveningStart': 25, 'highStop': 40 }
 
     // named time ranges between the sun angles defined above
     global.ranges = {
@@ -181,7 +181,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     }
 
     function setTextSummary(sunPositionInDegrees) {
-        var summary = "Unknown";
+        var summary = "Night";
 
         for (key in global.ranges) {
             rangeBounds = global.ranges[key];
@@ -262,25 +262,33 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 0.10, 0.11), '#444444', lineLayer);
 
         // TODO: are these always valid?
-        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#555555');
+        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#C4B11B');
         drawRadialSection(mapCenterPosition, 'sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
-        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#555555');
+        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#C4B11B');
+
+        drawRadialSection(mapCenterPosition, 'morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
+        drawRadialSection(mapCenterPosition, 'eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
+
 
         if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#555555');
-            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#000000');
-            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
-        } 
-        else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#555555');
+            drawRadialSection(mapCenterPosition, 'morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
+            drawRadialSection(mapCenterPosition, 'eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
+
+            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#C4B11B');
+            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#9C1E0B');
+            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
+        } else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
+            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
+        } else {
+            drawRadialSection(mapCenterPosition, 'morningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');            
         }
 
         if (sunPositionInDegrees.altitude > 0) {
             if (sunPositionInDegrees.altitude < 45) {
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.0, 1.2);
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#0F960F', getShortTimeString(currently), 0.0, 1.2);
                 drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
             } else {
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#E3C819', getShortTimeString(currently), 0.9, 1.2);
+                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.9, 1.2);
                 drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
             }
         }
@@ -304,7 +312,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             );
 
         // save the map center in local storage
-        console.log("SAVE " + mapCenterPosition);
         localStorage.setItem("latitude", mapCenterPosition.lat);
         localStorage.setItem("longitude", mapCenterPosition.lon);
         localStorage.setItem("zoom", global.map.getZoom());
@@ -324,7 +331,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         privateLabelHours(mapCenterPosition, lineLayer)
     }
 
-    // get the julian date (I think) for the given year, month, date, and universal time
+    // get the day number based on Julian calendar
     function getJulianDate(y, m, d, u)
     {
         return (367 * y) - Math.floor((7/4) * (Math.floor((m + 9) / 12) + y)) + Math.floor(275 * m / 9) + d - 730531.5 + (u / 24)
@@ -354,6 +361,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             
             RA=(RA+360) % 360
             
+            // compute sidearal time
             var GMST=280.46061837+360.98564736629*jj+0.000387933*T*T-T*T*T/38710000
             
             GMST=(GMST+360) % 360
@@ -491,7 +499,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             var chosenDateString = prompt("Set Date", getShortDateString(currentDate));
             global.currently = Date.parse(chosenDateString);
             global.showCurrentDateTime = false;
-            $('#nowbutton').text('>');
+            $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
             logCurrentSunPosition(global.map, lineLayer);
         });
 
@@ -503,7 +511,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             global.currently.setMinutes(chosenTime.getMinutes());
             global.currently.setHours(chosenTime.getHours());
             global.showCurrentDateTime = false;
-            $('#nowbutton').text('>');
+            $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
             logCurrentSunPosition(global.map, lineLayer);
        });
 
@@ -511,12 +519,12 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         $("#nowbutton").click(function() {
             if (global.showCurrentDateTime) {
                 global.showCurrentDateTime = false;
-                $('#nowbutton').text('>');
+                $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
             } else {
                 global.showCurrentDateTime = true;
                 global.currently = new Date();
                 logCurrentSunPosition(global.map, lineLayer);
-                $('#nowbutton').text('||');
+                $('#nowbuttonimage').attr('src', 'img/icons/media_pause.png');
             }
         });
 
