@@ -26,14 +26,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // named time ranges between the sun angles defined above
     global.ranges = {
-        'Predawn' : ['predawn', 'morning'],
-        'Morning': ['morningStart', 'morningStop'],
-        'Morning harsh': ['morningStop', 'highStart'],
-        'Mid-day high': ['highStart', 'highStop'],
-        'Afternoon harsh': ['highStop', 'eveningStart'],
-        'Evening': ['eveningStart', 'eveningStop'],
-        'Twilight': ['eveningStop', 'sunset'],
-        'All day good': ['morningStart', 'eveningStop']
+        'Predawn' : ['predawn', 'morning', '#C4B11B'],
+        'Morning': ['morningStart', 'morningStop', '#0F960F'],
+        'Morning harsh': ['morningStop', 'highStart', '#C4B11B'],
+        'Mid-day high': ['highStart', 'highStop', '#9C1E0B'],
+        'Afternoon harsh': ['highStop', 'eveningStart', '#C4B11B'],
+        'Evening': ['eveningStart', 'eveningStop', '#0F960F'],
+        'Twilight': ['eveningStop', 'sunset', '#C4B11B'],
+        'All day good': ['morningStart', 'eveningStop', '#0F960F']
     }
 
     // initialize so that we show current time and date
@@ -182,21 +182,23 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     function setTextSummary(sunPositionInDegrees) {
         var summary = "Night";
+        var color = "#000000";
 
         for (key in global.ranges) {
             rangeBounds = global.ranges[key];
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
                 if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently < global.lightTimes[rangeBounds[1]])) {
-                    console.log("RANGE " + key);
                     summary =
                         key + " " +
                         ((global.lightTimes[rangeBounds[1]] - global.currently) / 60000).toFixed(0) + " of " + 
                         ((global.lightTimes[rangeBounds[1]] - global.lightTimes[rangeBounds[0]]) / 60000) + " mins left"
+                    color = rangeBounds[2];
                     break;
                 }
             }
         }
 
+        $('#trafficlight').attr('style', 'background-color: ' + color);
         $('#textSummary').text(summary);
     }
 
