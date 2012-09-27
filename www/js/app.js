@@ -261,7 +261,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
         // draw some constant circles
         fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF', lineLayer);
-        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 0.10, 0.11), '#444444', lineLayer);
 
         // TODO: are these always valid?
         drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#C4B11B');
@@ -294,6 +293,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
             }
         }
+
+        var markerPoint = createPointFromBearingAndDistance(mapCenterPosition, 0.0, 0.0);
+        var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2 });
+        lineLayer.addFeatures([markerFeature]);
     }
 
     // draws the sun rose at the current map center for the given date and time
