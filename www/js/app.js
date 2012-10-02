@@ -437,6 +437,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // Open Street Maps layer
         global.map.addLayer(new OpenLayers.Layer.OSM());
 
+        // http://blog.slashpoundbang.com/post/1479986159/using-cloudmade-tiles-on-openlayers-maps-with
+        // my API key: 65b34ce81f654104966762b19832ab13
+
+        // global.map.addLayer(new OpenLayers.Layer.CloudMade('CloudMade', {
+        //   key: '65b34ce81f654104966762b19832ab13',
+        //   styleId: '5870'
+        // }));
+
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
         global.map.addLayer(lineLayer);       
@@ -519,6 +527,18 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 logCurrentSunPosition(global.map, lineLayer);
                 $('#nowbuttonimage').attr('src', 'img/icons/media_pause.png');
             }
+        });
+
+        // clicking the help button opens the help screen
+        $("#helpbutton").click(function() {
+            console.log("SHOW");
+            $("#helpContainer").show();            
+        });
+
+        // clicking the close button closes the help screen
+        $("#closebutton").click(function() {
+            console.log("HIDE");
+            $("#helpContainer").hide();            
         });
 
     });
