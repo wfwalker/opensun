@@ -141,7 +141,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         var lineStyle = { 
             strokeColor: theColor, 
             strokeOpacity: 0.5,
-            fillOpacity: 0.8,
+            fillOpacity: 1.0,
             stroke: false, 
             fillColor: theColor,
         };
@@ -435,7 +435,25 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         global.map = new OpenLayers.Map("mapdiv");
 
         // Open Street Maps layer
-        global.map.addLayer(new OpenLayers.Layer.OSM());
+
+        // terse example:
+        // global.map.addLayer(new OpenLayers.Layer.OSM());
+
+        // fully specified example:
+        var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
+          ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+           "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+           "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"]);
+
+        var openCycleTiles = new OpenLayers.Layer.OSM("OpenCycleMap",
+          ["http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+           "http://b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+           "http://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"]);
+
+        var aerialTiles = new OpenLayers.Layer.OSM("MapQuest Open Aerial Tile",
+          ["http://oatile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+           "http://oatile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+           "http://oatile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"]);
 
         // http://blog.slashpoundbang.com/post/1479986159/using-cloudmade-tiles-on-openlayers-maps-with
         // my API key: 65b34ce81f654104966762b19832ab13
@@ -444,6 +462,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         //   key: '65b34ce81f654104966762b19832ab13',
         //   styleId: '5870'
         // }));
+
+        global.map.addLayer(mapquestOSM);
+        // global.map.addLayer(openCycleTiles);
+        // global.map.addLayer(aerialTiles);
 
         // create a line layer, for drawing lines to show sun direction
         var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
@@ -490,7 +512,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                     centerMapAt(global.map, position.coords.longitude, position.coords.latitude, 15);
                 },
                 function(err) {
-                    console.log("GEOLOCATION FAIL");
+                    console.log("GEOLOCATION FAIL " + err.message);
                 });
         });
 
