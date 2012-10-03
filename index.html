@@ -9,8 +9,6 @@
 
     <link rel="icon" type="image/png" href="img/opensun-logo-clear.png" />
 
-    <link rel="stylesheet" type="text/css" href="http://jquerytools.org/media/css/rangeinput/skin1.css" />
-
     <title>Open Sun: sun angle calculator for wildlife photographers</title>
     <meta name="description" content="">
 
@@ -47,10 +45,21 @@
     <!-- Add your site or application content here -->
 
     <div id="buttonContainer">
-      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" /></a>
+      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="16px" /></a>
       <a class="myButton" id="nowbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/media_pause.png" /></a>
       <a class="myButton" id="datebutton" href="#">Date</a>
       <a class="myButton" id="timebutton" href="#">Time</a>
+      <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
+    </div>
+
+    <div id="helpContainer">
+      <div style="text-align: right"><a class="myButton" href="#" id="closebutton">CLOSE</a></div>
+      <div><img src="img/icons/geolocate.png" height="16px" /> - Find yourself</div>
+      <div>Oct 1, 2012 - Set the date to show</div>
+      <div>13:56 - Set the time to show</div>
+      <div><img src="img/icons/media_pause.png" height="16px" /> - Stop tracking current time</div>
+      <div><img src="img/icons/media_play.png" height="16px" /> - Start tracking current time</div>
+      <div><img src="img/icons/help.png" height="16px" /> - This help</div>
     </div>
 
     <div id="mapdiv">
