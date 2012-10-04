@@ -63,12 +63,12 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // returns an OpenLayers.Geometry.Point that is a given distance from the map center
     // and distance in kilometers
-    function createPointFromBearingAndDistance(mapCenterPosition, bearing, distance) {
+    function createPointFromBearingAndDistance(bearing, distance) {
         // see http://www.movable-type.co.uk/scripts/latlong.html
 
         // convert lat and long from degrees to radians
-        var lat1 = 2 * Math.PI  * mapCenterPosition.lat / 360.0;
-        var lon1 = 2 * Math.PI  * mapCenterPosition.lon / 360.0;
+        var lat1 = 2 * Math.PI  * global.mapCenterPosition.lat / 360.0;
+        var lon1 = 2 * Math.PI  * global.mapCenterPosition.lon / 360.0;
 
         // compute destination in radians
 
@@ -87,13 +87,13 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial line from the map center position at the azimuth determined by the sun's angle
     // at the given time of day
-    function drawRadialLine(mapCenterPosition, theDate, lineLayer, theColor, theLabel, fractionStart, fractionStop) {
-        var sunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, theDate);
+    function drawRadialLine(lineLayer, theColor, theLabel, fractionStart, fractionStop) {
+        var sunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
         var bearing = 2 * Math.PI * sunPositionInDegrees.azimuth / 360;
 
         var points = new Array(
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, fractionStop * global.radiusOfCircleInMeters),
-            createPointFromBearingAndDistance(mapCenterPosition, bearing, fractionStart * global.radiusOfCircleInMeters)
+            createPointFromBearingAndDistance(bearing, fractionStop * global.radiusOfCircleInMeters),
+            createPointFromBearingAndDistance(bearing, fractionStart * global.radiusOfCircleInMeters)
         );
 
         // make a line from the transformed points
@@ -112,24 +112,24 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         lineLayer.addFeatures([lineFeature]);
     }
 
-    function computeRadialSectionPoints(mapCenterPosition, startAzimuthInRadians, stopAzimuthInRadians, startFraction, stopFraction) {
+    function computeRadialSectionPoints(startAzimuthInRadians, stopAzimuthInRadians, startFraction, stopFraction) {
         var points = new Array();
 
         // draw the points around the edge of the circle
         for (var bearing = startAzimuthInRadians; bearing <= stopAzimuthInRadians; bearing += 0.2) {
-            points.push(createPointFromBearingAndDistance(mapCenterPosition, bearing, stopFraction * global.radiusOfCircleInMeters))
+            points.push(createPointFromBearingAndDistance(bearing, stopFraction * global.radiusOfCircleInMeters))
         }
 
         // add one last point around the circle for the final bearing
-        points.push(createPointFromBearingAndDistance(mapCenterPosition, stopAzimuthInRadians, stopFraction * global.radiusOfCircleInMeters));
+        points.push(createPointFromBearingAndDistance(stopAzimuthInRadians, stopFraction * global.radiusOfCircleInMeters));
 
         // draw the points around the edge of the circle
         for (var bearing = stopAzimuthInRadians; bearing >= startAzimuthInRadians; bearing -= 0.2) {
-            points.push(createPointFromBearingAndDistance(mapCenterPosition, bearing, startFraction * global.radiusOfCircleInMeters))
+            points.push(createPointFromBearingAndDistance(bearing, startFraction * global.radiusOfCircleInMeters))
         }
 
         // add one last point around the circle for the final bearing
-        points.push(createPointFromBearingAndDistance(mapCenterPosition, startAzimuthInRadians, startFraction * global.radiusOfCircleInMeters));
+        points.push(createPointFromBearingAndDistance(startAzimuthInRadians, startFraction * global.radiusOfCircleInMeters));
 
         return points;
     }
@@ -154,23 +154,23 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
-    function drawRadialSection(mapCenterPosition, startName, stopName, lineLayer, startFraction, theColor) {
+    function drawRadialSection(startName, stopName, lineLayer, startFraction, theColor) {
         if (global.lightTimes[startName] & global.lightTimes[stopName]) {
-            var startAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
+            var startAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
-            var stopAzimuthInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, global.lightTimes[stopName]).azimuth;
+            var stopAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[stopName]).azimuth;
             if (stopAzimuthInDegrees < startAzimuthInDegrees) {
                 stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
             }
 
             var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
-            fillPolygon(computeRadialSectionPoints(mapCenterPosition, startAzimuthInRadians, stopAzimuthInRadians, startFraction, 1.0), theColor, lineLayer);
+            fillPolygon(computeRadialSectionPoints(startAzimuthInRadians, stopAzimuthInRadians, startFraction, 1.0), theColor, lineLayer);
         }
     }
 
-    function privateDrawCurrentTime(mapCenterPosition, lineLayer, sunPositionInDegrees) {
+    function privateDrawCurrentTime(lineLayer, sunPositionInDegrees) {
         var summary = "Night";
         var color = "#000000";
 
@@ -179,9 +179,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
                 if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently < global.lightTimes[rangeBounds[1]])) {
                     summary =
-                        sunPositionInDegrees.altitude.toFixed(0) + "°, " + key + " " + 
+                        sunPositionInDegrees.altitude.toFixed(0) + "°, " + 
                         ((global.lightTimes[rangeBounds[1]] - global.currently) / 60000).toFixed(0) + " of " + 
-                        ((global.lightTimes[rangeBounds[1]] - global.lightTimes[rangeBounds[0]]) / 60000) + " mins left"
+                        ((global.lightTimes[rangeBounds[1]] - global.lightTimes[rangeBounds[0]]) / 60000) + " " + key.toLowerCase() + " mins left" 
                     color = rangeBounds[2];
                     break;
                 }
@@ -192,35 +192,36 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         $('#textSummary').text(summary);
 
         if (sunPositionInDegrees.altitude > 0) {
+            drawRadialLine(lineLayer, '#FFFFFF', getShortTimeString(currently), -0.9, 0.9);
             if (sunPositionInDegrees.altitude < 40) {
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, color, getShortTimeString(currently), 0.0, 1.2);
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
+                drawRadialLine(lineLayer, color, getShortTimeString(currently), 0.0, 1.2);
+                drawRadialLine(lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.8);
             } else {
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.9, 1.2);
-                drawRadialLine(mapCenterPosition, global.currently, lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
+                drawRadialLine(lineLayer, '#000000', getShortTimeString(currently), 0.9, 1.2);
+                drawRadialLine(lineLayer, '#000000', getShortTimeString(currently), 0.0, -0.2);
             }
         }
 
-        var markerPoint = createPointFromBearingAndDistance(mapCenterPosition, 0.0, 0.0);
+        var markerPoint = createPointFromBearingAndDistance(0.0, 0.0);
         var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2, label: sunPositionInDegrees.altitude.toFixed(0) + "°", fontSize: '14pt', labelYOffset: -30 });
         lineLayer.addFeatures([markerFeature]);
     }
 
-    function privateLabelHours(mapCenterPosition, lineLayer) {
+    function privateLabelHours(lineLayer) {
         for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
             var hourMarksDate = new Date(global.currently);
             hourMarksDate.setHours(hourIndex);
             hourMarksDate.setMinutes(0);
             hourMarksDate.setSeconds(0);
 
-            var hourMarkSunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, hourMarksDate);
+            var hourMarkSunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, hourMarksDate);
 
             if (hourMarkSunPositionInDegrees.altitude > -10) {
                 var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
                 var tickMarkPoints = new Array(
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.0 * global.radiusOfCircleInMeters),
-                    createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.02 * global.radiusOfCircleInMeters)
+                    createPointFromBearingAndDistance(bearing, 1.0 * global.radiusOfCircleInMeters),
+                    createPointFromBearingAndDistance(bearing, 1.02 * global.radiusOfCircleInMeters)
                 );
 
                 // make a line from the transformed points
@@ -241,8 +242,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 if (hourMarkSunPositionInDegrees.altitude < 45) {
 
                     var hourLabelPoints = new Array(
-                        createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.1 * global.radiusOfCircleInMeters),
-                        createPointFromBearingAndDistance(mapCenterPosition, bearing, 1.2 * global.radiusOfCircleInMeters)
+                        createPointFromBearingAndDistance(bearing, 1.1 * global.radiusOfCircleInMeters),
+                        createPointFromBearingAndDistance(bearing, 1.2 * global.radiusOfCircleInMeters)
                     );
 
                     // make a line from the transformed points
@@ -260,31 +261,31 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         }
     }
 
-    function privateDrawCircles(mapCenterPosition, lineLayer) {
+    function privateDrawCircles(lineLayer) {
         var radialSectionFraction = 0.9;
 
         // draw some constant circles
-        fillPolygon(computeRadialSectionPoints(mapCenterPosition, 0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF', lineLayer);
+        fillPolygon(computeRadialSectionPoints(0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF', lineLayer);
 
         // TODO: are these always valid?
-        drawRadialSection(mapCenterPosition, 'eveningStop', 'sunset', lineLayer, radialSectionFraction, '#C4B11B');
-        drawRadialSection(mapCenterPosition, 'sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
-        drawRadialSection(mapCenterPosition, 'predawn', 'morningStart', lineLayer, radialSectionFraction, '#C4B11B');
+        drawRadialSection('eveningStop', 'sunset', lineLayer, radialSectionFraction, '#C4B11B');
+        drawRadialSection('sunset', 'predawn', lineLayer, radialSectionFraction, '#000000');
+        drawRadialSection('predawn', 'morningStart', lineLayer, radialSectionFraction, '#C4B11B');
 
-        drawRadialSection(mapCenterPosition, 'morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
-        drawRadialSection(mapCenterPosition, 'eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
+        drawRadialSection('morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
+        drawRadialSection('eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
 
         if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
-            drawRadialSection(mapCenterPosition, 'eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
+            drawRadialSection('morningStart', 'morningStop', lineLayer, radialSectionFraction, '#0F960F');
+            drawRadialSection('eveningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');
 
-            drawRadialSection(mapCenterPosition, 'morningStop', 'highStart', lineLayer, radialSectionFraction, '#C4B11B');
-            drawRadialSection(mapCenterPosition, 'highStart', 'highStop', lineLayer, radialSectionFraction, '#9C1E0B');
-            drawRadialSection(mapCenterPosition, 'highStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
+            drawRadialSection('morningStop', 'highStart', lineLayer, radialSectionFraction, '#C4B11B');
+            drawRadialSection('highStart', 'highStop', lineLayer, radialSectionFraction, '#9C1E0B');
+            drawRadialSection('highStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
         } else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection(mapCenterPosition, 'morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
+            drawRadialSection('morningStop', 'eveningStart', lineLayer, radialSectionFraction, '#C4B11B');
         } else {
-            drawRadialSection(mapCenterPosition, 'morningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');            
+            drawRadialSection('morningStart', 'eveningStop', lineLayer, radialSectionFraction, '#0F960F');            
         }
     }
 
@@ -300,28 +301,28 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         $('#datebutton').text(getShortDateString(global.currently));
         $('#timebutton').text(getShortTimeString(global.currently));
 
-        var mapCenterPosition = global.map.getCenter().transform(
+        global.mapCenterPosition = global.map.getCenter().transform(
                 global.map.getProjectionObject(), // to Spherical Mercator Projection
                 new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
             );
 
         // save the map center in local storage
-        localStorage.setItem("latitude", mapCenterPosition.lat);
-        localStorage.setItem("longitude", mapCenterPosition.lon);
+        localStorage.setItem("latitude", global.mapCenterPosition.lat);
+        localStorage.setItem("longitude", global.mapCenterPosition.lon);
         localStorage.setItem("zoom", global.map.getZoom());
 
-        global.lightTimes = getLightTimes(mapCenterPosition.lon, mapCenterPosition.lat, global.currently);
+        global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
 
-        var sunPositionInDegrees = getSunPositionInDegrees(mapCenterPosition.lon, mapCenterPosition.lat, global.currently);
+        var sunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
 
         // remove all features from the layer
         lineLayer.removeAllFeatures();
 
-        privateDrawCircles(mapCenterPosition, lineLayer)
+        privateDrawCircles(lineLayer)
 
-        privateLabelHours(mapCenterPosition, lineLayer)
+        privateLabelHours(lineLayer)
 
-        privateDrawCurrentTime(mapCenterPosition, lineLayer, sunPositionInDegrees);
+        privateDrawCurrentTime(lineLayer, sunPositionInDegrees);
     }
 
     // get the day number based on Julian calendar
@@ -455,6 +456,12 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
            "http://oatile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
            "http://oatile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"]);
 
+        // http://openweathermap.org/wiki/Layer/clouds
+        var cloudCoverTiles = new OpenLayers.Layer.OSM("OpenWeatherMap Cloud Tile",
+          ["http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png",
+           "http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png",
+           "http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png"]);
+
         // http://blog.slashpoundbang.com/post/1479986159/using-cloudmade-tiles-on-openlayers-maps-with
         // my API key: 65b34ce81f654104966762b19832ab13
 
@@ -464,6 +471,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // }));
 
         global.map.addLayer(mapquestOSM);
+        global.map.addLayer(cloudCoverTiles);
         // global.map.addLayer(openCycleTiles);
         // global.map.addLayer(aerialTiles);
 
