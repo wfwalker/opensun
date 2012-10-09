@@ -33,22 +33,58 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         'Afternoon harsh': ['highStop', 'eveningStart', '#C4B11B'],
         'Evening': ['eveningStart', 'eveningStop', '#0F960F'],
         'Twilight': ['eveningStop', 'sunset', '#C4B11B'],
-        'All day good': ['morningStart', 'eveningStop', '#0F960F']
     }
 
-    // initialize so that we show current time and date
-    global.showCurrentDateTime = true;
-    global.currently = new Date();
+    function mapCenterChanged() {
+        // pull it back out again and save it
+        global.mapCenterPosition = global.map.getCenter().transform(
+                global.map.getProjectionObject(), // to Spherical Mercator Projection
+                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
+            );
+
+        if (global.currently) {
+            var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+            global.currentSunPosition = temp;
+        } else {
+            console.log("warning: global.currently undefined");
+        }
+
+        global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+
+        // save the map center in local storage
+        localStorage.setItem("latitude", global.mapCenterPosition.lat);
+        localStorage.setItem("longitude", global.mapCenterPosition.lon);
+        localStorage.setItem("zoom", global.map.getZoom());
+    }
+
+    function currentTimeChanged(newTime) {
+        global.currently = newTime;
+
+        if (global.mapCenterPosition) {
+            var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, newTime);
+            global.currentSunPosition = temp;
+        } else {
+            console.log("warning, global.mapCenterPosition undefined");
+        }
+
+        $('#datebutton').text(getShortDateString(global.currently));
+        $('#timebutton').text(getShortTimeString(global.currently));
+    }
 
     // center the map on the given location
+    // NOTE: caller needs to call mapCenterChanged() after calling this
     function centerMapAt(map, longitude, latitude, zoom) {
-        //Set center and zoom
+        // compute the new center
         var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 global.map.getProjectionObject() // to Spherical Mercator Projection
               );
 
+        // send the map there
         global.map.setCenter(newMapCenter, zoom);  
+
+        // notify event handler
+        mapCenterChanged();
     };
 
     // returns a short time string for the given object, using hours:minutes
@@ -87,9 +123,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
     // draw a radial line from the map center position at the azimuth determined by the sun's angle
     // at the given time of day
-    function drawRadialLine(theColor, theLabel, fractionStart, fractionStop) {
-        var sunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
-        var bearing = 2 * Math.PI * sunPositionInDegrees.azimuth / 360;
+    function drawRadialLine(theColor, fractionStart, fractionStop) {
+        var bearing = 2 * Math.PI * global.currentSunPosition.azimuth / 360;
 
         var points = new Array(
             createPointFromBearingAndDistance(bearing, fractionStop * global.radiusOfCircleInMeters),
@@ -170,7 +205,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         }
     }
 
-    function privateDrawCurrentTime(sunPositionInDegrees) {
+    // rerun whenever light times change or current time changes
+    function privateDrawCurrentTime() {
         var summary = "Night";
         var color = "#000000";
 
@@ -179,7 +215,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
                 if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently < global.lightTimes[rangeBounds[1]])) {
                     summary =
-                        sunPositionInDegrees.altitude.toFixed(0) + "°, " + 
+                        global.currentSunPosition.altitude.toFixed(0) + "°, " + 
                         ((global.lightTimes[rangeBounds[1]] - global.currently) / 60000).toFixed(0) + " of " + 
                         ((global.lightTimes[rangeBounds[1]] - global.lightTimes[rangeBounds[0]]) / 60000) + " " + key.toLowerCase() + " mins left" 
                     color = rangeBounds[2];
@@ -191,19 +227,20 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         $('#trafficlight').attr('style', 'background-color: ' + color);
         $('#textSummary').text(summary);
 
-        if (sunPositionInDegrees.altitude > 0) {
-            drawRadialLine('#FFFFFF', getShortTimeString(currently), -0.9, 0.9);
-            if (sunPositionInDegrees.altitude < 40) {
-                drawRadialLine(color, getShortTimeString(currently), 0.0, 1.2);
-                drawRadialLine('#000000', getShortTimeString(currently), 0.0, -0.8);
+        if (global.currentSunPosition.altitude > 0) {
+            drawRadialLine('#FFFFFF', -0.9, 0.0);
+            drawRadialLine('#FFFFFF', 0.0, 0.9);
+            if (global.currentSunPosition.altitude < 40) {
+                drawRadialLine(color, 0.0, 1.2);
+                drawRadialLine('#000000', 0.0, -0.8);
             } else {
-                drawRadialLine('#000000', getShortTimeString(currently), 0.9, 1.2);
-                drawRadialLine('#000000', getShortTimeString(currently), 0.0, -0.2);
+                drawRadialLine('#000000', 0.9, 1.2);
+                drawRadialLine('#000000', 0.0, -0.2);
             }
         }
 
         var markerPoint = createPointFromBearingAndDistance(0.0, 0.0);
-        var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2, label: sunPositionInDegrees.altitude.toFixed(0) + "°", fontSize: '14pt', labelYOffset: -30 });
+        var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2, label: global.currentSunPosition.altitude.toFixed(0) + "°", fontSize: '14pt', labelYOffset: -30 });
         global.lineLayer.addFeatures([markerFeature]);
     }
 
@@ -267,62 +304,46 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // draw some constant circles
         fillPolygon(computeRadialSectionPoints(0.001, 1.999 * Math.PI, 1.0, 1.2), '#FFFFFF');
 
-        // TODO: are these always valid?
+        // TODO: this logic doesn't match what's used in the text summary
+
+        // draw all of these whenever possible
+
         drawRadialSection('eveningStop', 'sunset', radialSectionFraction, '#C4B11B');
         drawRadialSection('sunset', 'predawn', radialSectionFraction, '#000000');
         drawRadialSection('predawn', 'morningStart', radialSectionFraction, '#C4B11B');
-
         drawRadialSection('morningStart', 'morningStop', radialSectionFraction, '#0F960F');
         drawRadialSection('eveningStart', 'eveningStop', radialSectionFraction, '#0F960F');
 
-        if ((global.lightTimes['morningStop']) & (global.lightTimes['highStart']) & (global.lightTimes['highStop']) & (global.lightTimes['eveningStart'])) {
-            drawRadialSection('morningStart', 'morningStop', radialSectionFraction, '#0F960F');
-            drawRadialSection('eveningStart', 'eveningStop', radialSectionFraction, '#0F960F');
-
+        if (global.lightTimes['highest'] >= 40.0) { // draw these if the sun goes above my harsh threshold
             drawRadialSection('morningStop', 'highStart', radialSectionFraction, '#C4B11B');
             drawRadialSection('highStart', 'highStop', radialSectionFraction, '#9C1E0B');
             drawRadialSection('highStop', 'eveningStart', radialSectionFraction, '#C4B11B');
-        } else if ((global.lightTimes['morningStop']) & (global.lightTimes['eveningStart'])) {
+        } else if (global.lightTimes['highest'] >= 25.0) { // draw these if the sun goes above my good angle
             drawRadialSection('morningStop', 'eveningStart', radialSectionFraction, '#C4B11B');
-        } else {
+        } else { // draw these if the sun is good all day
             drawRadialSection('morningStart', 'eveningStop', radialSectionFraction, '#0F960F');            
         }
     }
 
-    // draws the sun rose at the current map center for the given date and time
-    function logCurrentSunPosition(map) {
+    // draws the sun rose at the current map center using information in the global data structure
+    function logCurrentSunPosition() {
         var windowBounds = global.map.calculateBounds();
 
         // scale up the radius of the circle according to the bounds of the map
         global.radiusOfCircleInMeters = Math.min(windowBounds.top - windowBounds.bottom, windowBounds.right - windowBounds.left) / 3.5;
         // but don't go above a certain size no matter what.
-        global.radiusOfCircleInMeters = Math.min(global.radiusOfCircleInMeters, 1000000);
-
-        $('#datebutton').text(getShortDateString(global.currently));
-        $('#timebutton').text(getShortTimeString(global.currently));
-
-        global.mapCenterPosition = global.map.getCenter().transform(
-                global.map.getProjectionObject(), // to Spherical Mercator Projection
-                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
-            );
-
-        // save the map center in local storage
-        localStorage.setItem("latitude", global.mapCenterPosition.lat);
-        localStorage.setItem("longitude", global.mapCenterPosition.lon);
-        localStorage.setItem("zoom", global.map.getZoom());
-
-        global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
-
-        var sunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+        global.radiusOfCircleInMeters = Math.min(global.radiusOfCircleInMeters, 500000);
 
         // remove all features from the layer
         global.lineLayer.removeAllFeatures();
 
-        privateDrawCircles()
+        // draw radial sections in different colors using today's lightTimes
+        privateDrawCircles();
 
-        privateLabelHours()
+        // label hours of the day using current position
+        privateLabelHours();
 
-        privateDrawCurrentTime(sunPositionInDegrees);
+        privateDrawCurrentTime(global.currentSunPosition);
     }
 
     // get the day number based on Julian calendar
@@ -373,11 +394,20 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         }
     }
 
+    function privateShowTimesInConsole(lightTimes) {
+        for (key in lightTimes) {
+            console.log(key + " " + lightTimes[key]);
+        }   
+    }
+
     // returns the first time when the sun goes above the given angle
+    // NEED ONLY be called when location changes or once per day -- does not need to be called as time changes within a day
     function getLightTimes(longitude, latitude, theDate) {
         var listOfTimes = {};
         var firstAngles = new Array();
         var firstNames = new Array();
+        var lowest = 90;
+        var highest = -90;
 
         for (key in global.firstSunAngles) {
             firstAngles.push(global.firstSunAngles[key]);
@@ -390,7 +420,17 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= firstAngles[0]) {
+                var tempAltitude = getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
+
+                if (tempAltitude > highest) {
+                    highest = tempAltitude;
+                }
+
+                if (tempAltitude < lowest) {
+                    lowest = tempAltitude;
+                }
+
+                if (tempAltitude >= firstAngles[0]) {
                     listOfTimes[firstNames[0]] = tempDate;
                     firstAngles.shift();
                     firstNames.shift();
@@ -416,7 +456,17 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                if (getSunPositionInDegrees(longitude, latitude, tempDate).altitude >= lastAngles[0]) {
+                var tempAltitude = getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
+
+                if (tempAltitude > highest) {
+                    highest = tempAltitude;
+                }
+
+                if (tempAltitude < lowest) {
+                    lowest = tempAltitude;
+                }
+
+                if (tempAltitude >= lastAngles[0]) {
                     listOfTimes[lastNames[0]] = tempDate;
                     lastAngles.shift();
                     lastNames.shift();
@@ -428,6 +478,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             }
         }
 
+        listOfTimes['highest'] = highest;
+        listOfTimes['lowest'] = lowest;
+
+        // privateShowTimesInConsole(listOfTimes);
         return listOfTimes;
     }
 
@@ -471,7 +525,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // }));
 
         global.map.addLayer(mapquestOSM);
-        global.map.addLayer(cloudCoverTiles);
+        // global.map.addLayer(cloudCoverTiles);
         // global.map.addLayer(openCycleTiles);
         // global.map.addLayer(aerialTiles);
 
@@ -495,21 +549,27 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         } else {
             // initialize map to center of USA
             centerMapAt(global.map, -98, 38, 4);
-        }      
+        }  
+
+        // initialize so that we show current time and date
+        global.showCurrentDateTime = true;
+        currentTimeChanged(new Date());      
 
         // show sundial for current date/time
-        logCurrentSunPosition(global.map); 
+        mapCenterChanged();
+        logCurrentSunPosition(); 
 
         // redo the timeline whenever we move the map
         global.map.events.register('move', global.map, function() {
-            logCurrentSunPosition(global.map);
+            mapCenterChanged();
+            logCurrentSunPosition();
         });
 
         // check once a minute to track date/time
         window.setInterval(function() {
             if (global.showCurrentDateTime) {
-                global.currently = new Date();
-                logCurrentSunPosition(global.map);
+                currentTimeChanged(new Date());
+                logCurrentSunPosition();
             }
         }, 60000);
 
@@ -518,6 +578,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     centerMapAt(global.map, position.coords.longitude, position.coords.latitude, 15);
+                    mapCenterChanged();
                 },
                 function(err) {
                     console.log("GEOLOCATION FAIL " + err.message);
@@ -526,24 +587,34 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
         // clicking the DATE button tries to set the date and stop tracking current date/time
         $("#datebutton").click(function() {
-            var currentDate = new Date();
-            var chosenDateString = prompt("Set Date", getShortDateString(currentDate));
-            global.currently = Date.parse(chosenDateString);
+            // prompt user with current date
+            var chosenDateString = prompt("Set Date", getShortDateString(global.currently));
+
+            // parse date and notify event listener
+            currentTimeChanged(Date.parse(chosenDateString));
             global.showCurrentDateTime = false;
+
             $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
-            logCurrentSunPosition(global.map);
+
+            logCurrentSunPosition();
         });
 
         // clicking the TIME button tries to set the date and stop tracking current date/time
         $("#timebutton").click(function() {
-            var currentTime = new Date();
-            var chosenTimeString = prompt("Set Date", getShortTimeString(currentTime));
+            // prompt user with current time
+            var chosenTimeString = prompt("Set Date", getShortTimeString(global.currently));
+
+            // parse time and notify event listener
             var chosenTime = Date.parse(chosenTimeString);
-            global.currently.setMinutes(chosenTime.getMinutes());
-            global.currently.setHours(chosenTime.getHours());
+            var newTime = new Date(global.currently);
+            newTime.setMinutes(chosenTime.getMinutes());
+            newTime.setHours(chosenTime.getHours());
             global.showCurrentDateTime = false;
+            currentTimeChanged(newTime);
+
             $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
-            logCurrentSunPosition(global.map);
+
+            logCurrentSunPosition();
        });
 
         // clicking the NOW button toggles whether we're tracking the current date/time
@@ -553,22 +624,25 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
                 $('#nowbuttonimage').attr('src', 'img/icons/media_play.png');
             } else {
                 global.showCurrentDateTime = true;
-                global.currently = new Date();
-                logCurrentSunPosition(global.map);
+                currentTimeChanged(new Date());
+                logCurrentSunPosition();
                 $('#nowbuttonimage').attr('src', 'img/icons/media_pause.png');
             }
         });
 
         // clicking the help button opens the help screen
         $("#helpbutton").click(function() {
-            console.log("SHOW");
             $("#helpContainer").show();            
         });
 
         // clicking the close button closes the help screen
         $("#closebutton").click(function() {
-            console.log("HIDE");
             $("#helpContainer").hide();            
+        });
+
+        // clicking the about box closes it
+        $("#aboutContainer").click(function() {
+            $("#aboutContainer").hide();            
         });
 
     });
