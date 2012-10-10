@@ -573,6 +573,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             }
         }, 60000);
 
+        // automatically hide the splash / about screen after a few seconds
+        window.setTimeout(function() {
+            $("#aboutContainer").hide();            
+        }, 5000);
+
         // clicking the HERE button tries to geolocate
         $("#herebutton").click(function() {
             navigator.geolocation.getCurrentPosition(
