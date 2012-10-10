@@ -278,6 +278,7 @@ div.olControlZoom {
   background: white;
   opacity: 1.0;
   text-align: center;
+  background-image: -moz-linear-gradient(top, #9EFFB5 0%, #4CAEEF 100%);
 }
 
 
