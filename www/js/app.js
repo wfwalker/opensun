@@ -213,7 +213,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         for (key in global.ranges) {
             rangeBounds = global.ranges[key];
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
-                if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently < global.lightTimes[rangeBounds[1]])) {
+                if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently <= global.lightTimes[rangeBounds[1]])) {
                     summary =
                         global.currentSunPosition.altitude.toFixed(0) + "°, " + 
                         ((global.lightTimes[rangeBounds[1]] - global.currently) / 60000).toFixed(0) + " of " + 
