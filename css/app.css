@@ -103,23 +103,24 @@ div.olControlZoom {
 #helpContainer {
   display: none;
   position: absolute;
-  z-index: 100000;
-  top: 60px;
-  left: 30px;
-  padding: 10px;
+  z-index: 100001;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
   background: white;
-  border: solid 1px darkgray;
   opacity: 1.0
 }
 #aboutContainer {
   position: absolute;
-  z-index: 100000;
-  top: 60px;
+  z-index: 100001;
+  top: 0px;
   left: 0px;
-  padding: 10px;
+  height: 100%;
+  width: 100%;
   background: white;
-  border: solid 1px darkgray;
-  opacity: 1.0
+  opacity: 1.0;
+  text-align: center;
 }
 #textSummaryContainer {
   position: absolute;
