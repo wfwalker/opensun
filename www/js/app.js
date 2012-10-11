@@ -576,7 +576,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
             $("#aboutContainer").hide();            
-        }, 5000);
+        }, 3000);
 
         // clicking the HERE button tries to geolocate
         $("#herebutton").click(function() {
