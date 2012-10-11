@@ -641,7 +641,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         });
 
         // clicking the close button closes the help screen
-        $("#closebutton").click(function() {
+        $("#helpContainer").click(function() {
             $("#helpContainer").hide();            
         });
 
