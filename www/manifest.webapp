@@ -1,10 +1,10 @@
 {
   "version": "0.1",
-  "name": "Open Sun",
+  "name": "ShotClock",
   "description": "sun angle calculator for wildlife photographers",
   "launch_path": "/opensun",
   "icons": {
-    "256": "/opensun/img/opensun-logo.png"
+    "64": "/opensun/img/shotclock-logo-64.png"
   },
   "developer": {
     "name": "Bill Walker",

@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta names="apple-mobile-web-app-status-bar-style" content="black" />
 
-    <link rel="icon" type="image/png" href="img/opensun-logo-clear.png" />
+    <link rel="icon" type="image/png" href="img/shotclock-logo-64.png" />
 
-    <title>Open Sun: sun angle calculator for wildlife photographers</title>
+    <title>ShotClock</title>
     <meta name="description" content="">
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
@@ -45,9 +45,7 @@
     <!-- Add your site or application content here -->
 
     <div id="buttonContainer">
-      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="16px" /></a>
-      <a class="myButton" id="nowbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/media_pause.png" /></a>
-      <a class="myButton" id="datebutton" href="#">Date</a>
+      <a class="myButton" id="placebutton" href="#">Place</a>
       <a class="myButton" id="timebutton" href="#">Time</a>
       <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
     </div>
@@ -61,19 +59,37 @@
         <div>&nbsp;</div>
         <div><img src="img/doohickey-annotated.png" /> </div>
       </div>
+      <div style="position: absolute; bottom: 10px; text-align: center; width: 100%"><i>click anywhere to continue</i></div>
       </center>
     </div>
+
+    <div id="placeContainer">
+      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="20px" width="20px" /> Geolocate</a>
+      <div>Lat: <span id="latitudeLabel"></span></div>
+      <div>Long: <span id="longitudeLabel"></span></div>
+    </div>
+
+    <div id="timeContainer">
+      <a class="myButton" id="datebutton" href="#">Date</a>
+      <a class="myButton" id="hourbutton" href="#">Time</a>
+      <a class="myButton" id="playpausebutton" href="#">
+        <img id="playpausebuttonimage" height="20px" width="20px" src="img/icons/media_pause.png" />
+      </a>      
+    </div>
+
+    <div id="sunContainer">
+     </div>
 
     <div id="aboutContainer">
       <center>
         <div style="width: 260px; text-align: left; padding-top: 30px">
-          <p><img width="61px" src="img/opensun-logo-clear.png" /></p>
+          <p><img width="64px" src="img/shotclock-logo-64.png" /></p>
 
-          <p style='font-size: 24pt'>OpenSun 1.0</p>
+          <p style='font-size: 24pt'>ShotClock 1.0</p>
 
-          <p>OpenSun is made with Mortar, OpenLayers, and OpenStreetMaps</p>
+          <p>ShotClock is made with Mortar, OpenLayers, and OpenStreetMaps</p>
 
-          <p>If you like OpenSun and find it useful, please consider making a contribution to your local Audubon chapter, or mine!</p>
+          <p>If you like ShotClock and find it useful, please consider making a contribution to your local Audubon chapter, or mine!</p>
 
           <p>Bill Walker</p>
 
@@ -88,7 +104,11 @@
     </div>
 
     <div id="textSummaryContainer">
-      <div><span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span> <span id="textSummary"></span></div>
+      <div>
+        <a class="myButton" id="sunbutton" href="#">
+          <span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span> <span id="currentAzimuth"></span>
+        </a>
+      </div>
     </div>    
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->

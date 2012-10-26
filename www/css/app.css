@@ -268,6 +268,39 @@ div.olControlZoom {
   opacity: 1.0
 }
 
+#timeContainer {
+  display: none;
+  position: absolute;
+  z-index: 100001;
+  top: 50px;
+  left: 3px;
+  padding: 10px;
+  background: white;
+  opacity: 1.0
+}
+
+#placeContainer {
+  display: none;
+  position: absolute;
+  z-index: 100001;
+  top: 50px;
+  left: 3px;
+  padding: 10px;
+  background: white;
+  opacity: 1.0
+}
+
+#sunContainer {
+  display: none;
+  position: absolute;
+  z-index: 100001;
+  bottom: 40px;
+  left: 3px;
+  padding: 10px;
+  background: white;
+  opacity: 1.0
+}
+
 #aboutContainer {
   position: absolute;
   z-index: 100001;
@@ -278,7 +311,7 @@ div.olControlZoom {
   background: white;
   opacity: 1.0;
   text-align: center;
-  background-image: -moz-linear-gradient(top, #9EFFB5 0%, #4CAEEF 100%);
+  background-image: -moz-linear-gradient(top, rgba(242,245,246,1) 0%, rgba(227,234,237,1) 37%, rgba(200,215,220,1) 100%);
 }
 
 
