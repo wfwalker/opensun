@@ -7,22 +7,18 @@
 require.config({
      baseUrl: "js/lib",
 
-     paths: {'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers']}
+     paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers']}
 });
 
 var global = this;
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
+require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
     // radius of Earth = 6,378,100 meters
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
-
-    // sun angles for rising and setting sun
-    global.firstSunAngles = { 'predawn': -1 , 'morningStart': 5, 'morningStop': 25, 'highStart': 40}
-    global.lastSunAngles = { 'sunset': -1, 'eveningStop': 5, 'eveningStart': 25, 'highStop': 40 }
 
     function mapCenterChanged() {
         // cache map center position in degrees in global struct
@@ -77,7 +73,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
     }
 
     // center the map on the given location
-    function centerMapAt(map, longitude, latitude, zoom) {
+    function centerMapAt(longitude, latitude, zoom) {
         // compute the new center
         var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
@@ -91,15 +87,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         mapCenterChanged();
     };
 
-    // returns a short time string for the given object, using hours:minutes
-    function getShortTimeString(theDate) {
-        return theDate.toString("HH:mm");
-    }
-
-    // returns a short time string for the given object, using hours:minutes
-    function getShortDateString(theDate) {
-        return theDate.toString("MMM d, yyyy");
-    }
 
     // returns an OpenLayers.Geometry.Point that is a given distance from the map center
     // and distance in kilometers
@@ -320,29 +307,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         }
     }
 
-    function getLightRanges(highest) {
-        ranges = {
-            'Predawn' : ['predawn', 'morningStart', '#C4B11B'],
-            'Morning': ['morningStart', 'morningStop', '#0F960F'],
-            'Evening': ['eveningStart', 'eveningStop', '#0F960F'],
-            'Twilight': ['eveningStop', 'sunset', '#C4B11B'],
-        };
-
-        // TODO :NIGHT!!
-
-        if (highest >= 40.0) { // draw these if the sun goes above my harsh threshold
-            ranges['Morning harsh'] = ['morningStop', 'highStart', '#C4B11B'];
-            ranges['Mid-day high'] = ['highStart', 'highStop', '#9C1E0B'];
-            ranges['Afternoon Harsh'] = ['highStop', 'eveningStart', '#C4B11B'];
-        } else if (highest >= 25.0) { // draw these if the sun goes above my good angle
-            ranges['Mid-day Harsh'] = ['morningStop', 'eveningStart', '#C4B11B'];
-        } else { // draw these if the sun is good all day
-            ranges['All Day AWESOME'] = ['morningStart', 'eveningStop', '#0F960F'];
-        }
-
-        return ranges;
-    }
-
     function privateDrawCircles() {
         var radialSectionFraction = 0.9;
 
@@ -375,139 +339,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         privateLabelHours();
 
         privateDrawShadow(global.currentSunPosition);
-    }
-
-    // get the day number based on Julian calendar
-    function getJulianDate(y, m, d, u)
-    {
-        return (367 * y) - Math.floor((7/4) * (Math.floor((m + 9) / 12) + y)) + Math.floor(275 * m / 9) + d - 730531.5 + (u / 24)
-    }
-
-    function getSunPositionInDegrees(lg, la, theDate)
-    {
-        with (Math) {
-            var uu = theDate.getUTCHours() + theDate.getUTCMinutes() / 60.0;
-            var jj=getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
-
-            var T=jj/36525;
-            var k=PI/180.0;
-            var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
-
-            M=M % 360
-            
-            var Lo=280.46645+36000.76983*T+0.0003032*T*T
-            
-            Lo=Lo % 360
-            
-            var DL=(1.9146-0.004817*T-0.000014*T*T)*sin(k*M)+(0.019993-0.000101*T)*sin(k*2*M)+0.00029*sin(k*3*M)
-            var L=Lo+DL
-            var eps=23.43999-0.013*T
-            var delta=(1/k)*asin(sin(L*k)*sin(eps*k))
-            var RA=(1/k)*atan2(cos(eps*k)*sin(L*k),cos(L*k))
-            
-            RA=(RA+360) % 360
-            
-            // compute sidearal time
-            var GMST=280.46061837+360.98564736629*jj+0.000387933*T*T-T*T*T/38710000
-            
-            GMST=(GMST+360) % 360
-            
-            var LMST=GMST+lg
-            var H=LMST-RA
-            var eqt=(Lo-RA)*4
-
-            var azm=(1/k)*atan2(-sin(H*k),cos(la*k)*tan(delta*k)-sin(la*k)*cos(H*k))            
-            azm=(azm+360) % 360
-
-            var alt=(1/k)*asin(sin(la*k)*sin(delta*k)+cos(la*k)*cos(delta*k)*cos(H*k))
-
-            return {'altitude': alt, 'azimuth': azm}
-        }
-    }
-
-    // returns the first time when the sun goes above the given angle
-    // NEED ONLY be called when location changes or once per day -- does not need to be called as time changes within a day
-    function getLightTimes(longitude, latitude, theDate) {
-        var listOfTimes = {};
-        var firstAngles = new Array();
-        var firstNames = new Array();
-        var lowest = 90;
-        var highest = -90;
-
-        for (key in global.firstSunAngles) {
-            firstAngles.push(global.firstSunAngles[key]);
-            firstNames.push(key);
-        }   
-
-        for (var hours = 0; hours < 24; hours++) {
-            for (var minutes = 0; minutes < 60; minutes++) {
-                var tempDate = new Date(theDate);
-                tempDate.setHours(hours);
-                tempDate.setMinutes(minutes);
-
-                var tempAltitude = getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
-
-                if (tempAltitude > highest) {
-                    highest = tempAltitude;
-                }
-
-                if (tempAltitude < lowest) {
-                    lowest = tempAltitude;
-                }
-
-                if (tempAltitude >= firstAngles[0]) {
-                    listOfTimes[firstNames[0]] = tempDate;
-                    firstAngles.shift();
-                    firstNames.shift();
-                }
-
-                if (firstAngles.length == 0) {
-                    break;
-                }
-            }
-        }
-
-        var lastAngles = new Array();
-        var lastNames = new Array();
-
-        for (key in global.lastSunAngles) {
-            lastAngles.push(global.lastSunAngles[key]);
-            lastNames.push(key);
-        }   
-
-        for (var hours = 23; hours >= 0; hours--) {
-            for (var minutes = 59; minutes >= 0; minutes--) {
-                var tempDate = new Date(theDate);
-                tempDate.setHours(hours);
-                tempDate.setMinutes(minutes);
-
-                var tempAltitude = getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
-
-                if (tempAltitude > highest) {
-                    highest = tempAltitude;
-                }
-
-                if (tempAltitude < lowest) {
-                    lowest = tempAltitude;
-                }
-
-                if (tempAltitude >= lastAngles[0]) {
-                    listOfTimes[lastNames[0]] = tempDate;
-                    lastAngles.shift();
-                    lastNames.shift();
-                }
-
-                if (lastAngles.length == 0) {
-                    break;
-                }
-            }
-        }
-
-        listOfTimes['highest'] = highest;
-        listOfTimes['lowest'] = lowest;
-
-        // privateShowTimesInConsole(listOfTimes);
-        return listOfTimes;
     }
 
     $(document).ready(function(){
@@ -555,10 +386,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
             var savedLatitude = localStorage.getItem("latitude");
             var savedLongitude = localStorage.getItem("longitude");
             var savedZoom = localStorage.getItem("zoom");
-            centerMapAt(global.map, savedLongitude, savedLatitude, savedZoom);            
+            centerMapAt(savedLongitude, savedLatitude, savedZoom);            
         } else {
             // initialize map to center of USA
-            centerMapAt(global.map, -98, 38, 4);
+            centerMapAt(-98, 38, 4);
         }  
 
         // initialize so that we show current time and date
@@ -592,7 +423,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
         $("#herebutton").click(function() {
             navigator.geolocation.getCurrentPosition(
                 function(position) {
-                    centerMapAt(global.map, position.coords.longitude, position.coords.latitude, 15);
+                    centerMapAt(position.coords.longitude, position.coords.latitude, 15);
                     mapCenterChanged();
                 },
                 function(err) {
@@ -655,23 +486,42 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers'], function($) {
 
         // clicking the place button TOGGLES the place screen
         $("#placebutton").click(function() {
-            $("#placeContainer").slideToggle();            
+            $("#timeContainer").hide();            
+            $("#placeContainer").slideToggle(2);            
         });
 
         // clicking the place button TOGGLES the place screen
         $("#timebutton").click(function() {
-            $("#timeContainer").slideToggle();            
+            $("#placeContainer").hide();            
+            $("#timeContainer").slideToggle(2);            
         });
 
         // clicking the sun button TOGGLES the place screen
         $("#sunbutton").click(function() {
-            $("#sunContainer").slideToggle();            
+            $("#sunContainer").slideToggle(2);            
         });
-
 
         // clicking the about box closes it
         $("#aboutContainer").click(function() {
             $("#aboutContainer").hide();            
+        });
+
+        $('#findform').submit(function() {
+            $.ajax({
+                url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + $('#findtext').val(),
+
+                error: function(results) {
+                    alert("error: " + results);
+                },               
+
+                success: function(resultString) {      
+                    var results = jQuery.parseJSON(resultString);
+                    if (results.length > 0) {
+                        centerMapAt(results[0].lon, results[0].lat, 10);
+                    }
+                },
+             });
+
         });
 
     });
