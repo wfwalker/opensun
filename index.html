@@ -45,11 +45,29 @@
     <!-- Add your site or application content here -->
 
     <div id="buttonContainer">
-      <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="16px" /></a>
-      <a class="myButton" id="nowbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/media_pause.png" /></a>
-      <a class="myButton" id="datebutton" href="#">Date</a>
+      <a class="myButton" id="placebutton" href="#">Place</a>
       <a class="myButton" id="timebutton" href="#">Time</a>
       <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
+
+      <div id="placeContainer">
+        <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="20px" width="20px" /> Geolocate</a>
+        <div>Lat: <span id="latitudeLabel"></span></div>
+        <div>Long: <span id="longitudeLabel"></span></div>
+
+        <form id="findform">
+          <input id="findtext" type="text" />
+          <input type="submit" value="Find" />
+        </form>
+      </div>
+
+      <div id="timeContainer">
+        <a class="myButton" id="datebutton" href="#">Date</a>
+        <a class="myButton" id="hourbutton" href="#">Time</a>
+        <a class="myButton" id="playpausebutton" href="#">
+          <img id="playpausebuttonimage" height="20px" width="20px" src="img/icons/media_pause.png" />
+        </a>      
+      </div>
+
     </div>
 
     <div id="helpContainer">
@@ -89,7 +107,14 @@
     </div>
 
     <div id="textSummaryContainer">
-      <div><span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span> <span id="textSummary"></span></div>
+      <div id="sunContainer">
+      </div>
+
+      <div>
+        <a class="myButton" id="sunbutton" href="#">
+          <span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span> <span id="currentAzimuth"></span>
+        </a>
+      </div>
     </div>    
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->

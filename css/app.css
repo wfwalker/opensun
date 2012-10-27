@@ -111,6 +111,18 @@ div.olControlZoom {
   background: white;
   opacity: 1.0
 }
+#timeContainer {
+  display: none;
+  padding-top: 10px;
+}
+#placeContainer {
+  display: none;
+  padding-top: 10px;
+}
+#sunContainer {
+  display: none;
+  padding-bottom: 10px;
+}
 #aboutContainer {
   position: absolute;
   z-index: 100001;
