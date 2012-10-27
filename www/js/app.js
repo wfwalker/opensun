@@ -1,4 +1,6 @@
 
+var global = this;
+
 // The code below uses require.js, a module system for javscript:
 // http://requirejs.org/docs/api.html#define
 
@@ -9,8 +11,6 @@ require.config({
 
      paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers']}
 });
-
-var global = this;
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
@@ -237,16 +237,17 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         if (global.currentSunPosition.altitude > 0) {
             drawRadialLine('#FFFFFF', -0.9, 0.0);
             drawRadialLine('#FFFFFF', 0.0, 0.9);
+
             if (global.currentSunPosition.altitude < 40) {
                 drawRadialLine(color, 0.0, 1.2);
-                drawRadialLine('#000000', 0.0, -0.8);
+                drawRadialLine('#000000', 0.0, -1.0);
             } else {
                 drawRadialLine('#000000', 0.9, 1.2);
                 drawRadialLine('#000000', 0.0, -0.2);
             }
         }
 
-        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "°");
+        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
 
         var markerPoint = createPointFromBearingAndDistance(0.0, 0.0);
         var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2 });
@@ -417,7 +418,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
             $("#aboutContainer").fadeOut();            
-        }, 2000);
+        }, 1000);
 
         // clicking the HERE button tries to geolocate
         $("#herebutton").click(function() {
