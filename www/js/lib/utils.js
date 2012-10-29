@@ -1,3 +1,5 @@
+var global = this;
+
 // returns a short time string for the given object, using hours:minutes
 function getShortTimeString(theDate) {
     return theDate.toString("HH:mm");

@@ -1,6 +1,4 @@
 
-var global = this;
-
 // The code below uses require.js, a module system for javscript:
 // http://requirejs.org/docs/api.html#define
 
@@ -15,6 +13,8 @@ require.config({
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
 require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
+
+    var global = this;
 
     // radius of Earth = 6,378,100 meters
     global.radiusOfEarthInMeters = 6378100.0;
