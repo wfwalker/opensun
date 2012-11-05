@@ -68,8 +68,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
             console.log("warning, global.mapCenterPosition undefined");
         }
 
-        $('#datebutton').text(getShortDateString(global.currently));
-        $('#hourbutton').text(getShortTimeString(global.currently));
+        $('#dateLabel').text(getShortDateString(global.currently));
+        $('#hourLabel').text(getShortTimeString(global.currently));
     }
 
     // center the map on the given location
@@ -418,10 +418,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
             $("#aboutContainer").fadeOut();            
-        }, 1000);
+        }, 500);
 
-        // clicking the HERE button tries to geolocate
+        // clicking the HERE button tries to f``ate
         $("#herebutton").click(function() {
+            // SET THE SPINNER
+            $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
+            $('#longitudeLabel').html('<img src="img/small-progress.gif" />');
+
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     centerMapAt(position.coords.longitude, position.coords.latitude, 15);
@@ -434,20 +438,29 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
         // clicking the DATE button tries to set the date and stop tracking current date/time
         $("#datebutton").click(function() {
+            $('#dateLabel').html('<img src="img/small-progress.gif" />');
+
             // prompt user with current date
             var chosenDateString = prompt("Set Date", getShortDateString(global.currently));
 
+            var chosenDate = Date.parse(chosenDateString);
             // parse date and notify event listener
-            currentTimeChanged(Date.parse(chosenDateString));
+            var newDate = new Date(global.currently);
+            newDate.setDate(chosenDate.getDate());
+            newDate.setMonth(chosenDate.getMonth());
+            newDate.setFullYear(chosenDate.getFullYear());
             global.showCurrentDateTime = false;
+            currentTimeChanged(newDate);
 
-            $('#playpausebuttonimage').attr('src', 'img/icons/media_play.png');
+            $('#nowbutton').attr('disabled', 'false');
 
             logCurrentSunPosition();
         });
 
         // clicking the TIME button tries to set the date and stop tracking current date/time
         $("#hourbutton").click(function() {
+            $('#hourLabel').html('<img src="img/small-progress.gif" />');
+
             // prompt user with current time
             var chosenTimeString = prompt("Set Date", getShortTimeString(global.currently));
 
@@ -459,21 +472,18 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
             global.showCurrentDateTime = false;
             currentTimeChanged(newTime);
 
-            $('#playpausebuttonimage').attr('src', 'img/icons/media_play.png');
+            $('#nowbutton').attr('disabled', 'false');
 
             logCurrentSunPosition();
        });
 
         // clicking the NOW button toggles whether we're tracking the current date/time
-        $("#playpausebutton").click(function() {
-            if (global.showCurrentDateTime) {
-                global.showCurrentDateTime = false;
-                $('#playpausebuttonimage').attr('src', 'img/icons/media_play.png');
-            } else {
+        $("#nowbutton").click(function() {
+            if (! global.showCurrentDateTime) {
                 global.showCurrentDateTime = true;
                 currentTimeChanged(new Date());
                 logCurrentSunPosition();
-                $('#playpausebuttonimage').attr('src', 'img/icons/media_pause.png');
+                $('#nowbutton').attr('disabled', 'true');
             }
         });
 
@@ -508,6 +518,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         $('#findform').submit(function() {
+            $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
+            $('#longitudeLabel').html('<img src="img/small-progress.gif" />');
+
             $.ajax({
                 url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + $('#findtext').val(),
 
