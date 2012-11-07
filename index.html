@@ -50,22 +50,37 @@
       <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
 
       <div id="placeContainer">
-        <a class="myButton" id="herebutton" href="#"><img src="img/icons/geolocate.png" height="20px" width="20px" /> Geolocate</a>
-        <div>Lat: <span id="latitudeLabel"></span></div>
-        <div>Long: <span id="longitudeLabel"></span></div>
+        <div>Lat: <span id="latitudeLabel"></span>, Long: <span id="longitudeLabel"></span></div>
+
+        <hr />
+
+        <strong>Center map on:</strong>
+        <p><a class="myButton" id="herebutton" href="#">My location</a></p>
+
+        Other Location:
 
         <form id="findform">
           <input id="findtext" type="text" />
-          <input type="submit" value="Find" />
+          <input class="myButton" type="submit" value="Find" />
         </form>
       </div>
 
       <div id="timeContainer">
-        <a class="myButton" id="datebutton" href="#">Date</a>
-        <a class="myButton" id="hourbutton" href="#">Time</a>
-        <a class="myButton" id="playpausebutton" href="#">
-          <img id="playpausebuttonimage" height="20px" width="20px" src="img/icons/media_pause.png" />
-        </a>      
+        <div><span id="dateLabel"></span> <span id="hourLabel"></span></div>
+
+        <hr>
+
+        <p>
+          <a class="myButton" id="datebutton" href="#">Set Date</a>
+        </p>
+
+        <p>
+          <a class="myButton" id="hourbutton" href="#">Set Time</a>
+        </p>
+
+        <p>
+          <a class="myButton" id="nowbutton" href="#" disabled='true'>Track Now</a>
+        </p>
       </div>
 
     </div>
@@ -88,7 +103,7 @@
         <div style="width: 260px; text-align: left; padding-top: 30px">
           <p><img width="64px" src="img/shotclock-logo-64.png" /></p>
 
-          <p style='font-size: 24pt'>ShotClock 1.0</p>
+          <p style='font-size: 24pt'>ShotClock</p>
 
           <p>ShotClock is made with Mortar, OpenLayers, and OpenStreetMaps</p>
 
