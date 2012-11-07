@@ -198,22 +198,34 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
     function privateUpdateLightRangesSummary() {
         $('#sunContainer').empty();
-        $('#sunContainer').append('<div>highest ' + global.lightTimes['highest'].toFixed(1) + '</div>');
+        $('#sunContainer').append('<div>highest ' + global.lightTimes['highest'].toFixed(1) + '° </div><hr />');
+
+        var sortable = [];
 
         for (key in global.lightRanges) {
-            rangeBounds = global.lightRanges[key];
+            var rangeBounds = global.lightRanges[key];
 
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
-                $('#sunContainer').append(
-                    "<div>" + key + " " +
-                    getShortTimeString(global.lightTimes[rangeBounds[0]]) + " to " +
-                    getShortTimeString(global.lightTimes[rangeBounds[1]]) + "</div>"
-                    );
+                var newEntry = [key, global.lightTimes[rangeBounds[0]], global.lightTimes[rangeBounds[1]], rangeBounds[2]];
+                sortable.push(newEntry);
             }
             else
             {
                 console.log("can't find " + rangeBounds[0] + " and/or " + rangeBounds[1] + " in global.lighttimes");
             }
+        };
+
+        sortable.sort(function(a, b) {
+            return (a[1] > (b[1]));
+        });
+
+        for (var i = 0; i < sortable.length; i++) {
+            var sortedEntry = sortable[i];
+            $('#sunContainer').append(
+                "<div>" + "<span style='background-color: " + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span>" + sortedEntry[0] + " " +
+                getShortTimeString(sortedEntry[1]) + " to " +
+                getShortTimeString(sortedEntry[2]) + "</div>"
+                );
         }
     }
 
