@@ -198,7 +198,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
     function privateUpdateLightRangesSummary() {
         $('#sunContainer').empty();
-        $('#sunContainer').append('<div>highest ' + global.lightTimes['highest'].toFixed(1) + '° </div><hr />');
+        $('#sunContainer').append('<div>' + getShortDateString(global.currently) + '</div><hr />');
 
         var sortable = [];
 
@@ -227,6 +227,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
         }
+
+        $('#sunContainer').append('<hr /><div>Highest sun angle: ' + global.lightTimes['highest'].toFixed(1) + '° </div>');        
     }
 
     // rerun whenever light times change or current time changes
@@ -525,8 +527,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         // clicking the about box closes it
+        $("#aboutbutton").click(function() {
+            $("#aboutContainer").fadeIn();            
+        });
         $("#aboutContainer").click(function() {
-            $("#aboutContainer").hide();            
+            $("#aboutContainer").fadeOut();            
         });
 
         $('#findform').submit(function() {
