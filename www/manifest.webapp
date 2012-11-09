@@ -4,7 +4,8 @@
   "description": "sun angle calculator for wildlife photographers",
   "launch_path": "/index.html",
   "icons": {
-    "64": "/img/shotclock-logo-64.png"
+    "64": "/img/shotclock-logo-64.png",
+    "128": "/img/shotclock-logo-128.png"
   },
   "developer": {
     "name": "Bill Walker",
