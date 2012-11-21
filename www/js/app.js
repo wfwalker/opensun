@@ -43,8 +43,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         if (global.currently) {
             var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
             global.currentSunPosition = temp;
-            $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
-            $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+            privateSetLatLongLabels();
 
             // TODO, only update these if the position changed by some large amount
             global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
@@ -448,17 +447,19 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         // clicking the HERE button tries to f``ate
         $("#herebutton").click(function() {
             // SET THE SPINNER
-            $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
-            $('#longitudeLabel').html('<img src="img/small-progress.gif" />');
+            privateSpinLatLongLabels();
+
+            var location_timeout = window.setTimeout(privateSetLatLongLabels, 10000);
 
             navigator.geolocation.getCurrentPosition(
                 function(position) {
+                    clearTimeout(location_timeout);
                     centerMapAt(position.coords.longitude, position.coords.latitude, 15);
-                    mapCenterChanged();
+                    mapCenterChanged();     
                 },
                 function(err) {
-                    $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
-                    $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+                    clearTimeout(location_timeout);
+                    privateSetLatLongLabels();
                     alert("GEOLOCATION FAIL " + err.message);
                 },
                 {timeout: 10000});
@@ -549,8 +550,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         $('#findform').submit(function() {
-            $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
-            $('#longitudeLabel').html('<img src="img/small-progress.gif" />');
+            privateSpinLatLongLabels();
 
             var searchText = $('#findtext').val();
 
@@ -568,8 +568,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                     }
                     else
                     {
-                        $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
-                        $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+                        privateSetLatLongLabels();
                         alert("no places found for '" + searchText + "'");
                     }
                 },
