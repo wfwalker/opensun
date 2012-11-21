@@ -20,6 +20,17 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
 
+
+    function privateSetLatLongLabels() {
+        $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
+        $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+    }
+
+    function privateSpinLatLongLabels() {
+        $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
+        $('#longitudeLabel').html('<img src="img/small-progress.gif" />');        
+    }
+
     function mapCenterChanged() {
         // cache map center position in degrees in global struct
         global.mapCenterPosition = global.map.getCenter().transform(
@@ -446,8 +457,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                     mapCenterChanged();
                 },
                 function(err) {
-                    console.log("GEOLOCATION FAIL " + err.message);
-                });
+                    $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
+                    $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+                    alert("GEOLOCATION FAIL " + err.message);
+                },
+                {timeout: 10000});
         });
 
         // clicking the DATE button tries to set the date and stop tracking current date/time
@@ -538,8 +552,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
             $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
             $('#longitudeLabel').html('<img src="img/small-progress.gif" />');
 
+            var searchText = $('#findtext').val();
+
             $.ajax({
-                url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + $('#findtext').val(),
+                url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + searchText,
 
                 error: function(results) {
                     alert("error: " + results);
@@ -547,8 +563,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
                 success: function(resultString) {      
                     var results = jQuery.parseJSON(resultString);
-                    if (results.length > 0) {
+                    if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
+                    }
+                    else
+                    {
+                        $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
+                        $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
+                        alert("no places found for '" + searchText + "'");
                     }
                 },
              });
