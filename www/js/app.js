@@ -20,6 +20,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
 
+    function showErrorMessage(inErrorMessageText) {
+        $('#errorMessageLabel').text(inErrorMessageText);
+        $('#errorMessageContainer').fadeIn();
+        var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 10000);
+    }
 
     function privateSetLatLongLabels() {
         $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
@@ -460,7 +465,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                 function(err) {
                     clearTimeout(location_timeout);
                     privateSetLatLongLabels();
-                    alert("GEOLOCATION FAIL " + err.message);
+                    showErrorMessage("can't find your location, " + err.message);
                 },
                 {timeout: 10000});
         });
@@ -558,7 +563,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                 url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + searchText,
 
                 error: function(results) {
-                    alert("error: " + results);
+                    showErrorMessage("can't search for places, " + results);
                 },               
 
                 success: function(resultString) {      
@@ -569,7 +574,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                     else
                     {
                         privateSetLatLongLabels();
-                        alert("no places found for '" + searchText + "'");
+                        showErrorMessage("no places found for '" + searchText + "'");
                     }
                 },
              });
@@ -592,6 +597,6 @@ require(['https://marketplace-cdn.addons.mozilla.net/mozmarket.js'],
         function(err) {
             global.mozmarket = global.mozmarket || {};
             global.mozmarket.buy = function() {
-                alert('The in-app purchasing is currently unavailable.');
+                showErrorMessage('The in-app purchasing is currently unavailable.');
             };
         });
