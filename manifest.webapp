@@ -2,7 +2,7 @@
   "version": "0.1",
   "name": "ShotClock",
   "description": "sun angle calculator for wildlife photographers",
-  "launch_path": "/index.html",
+  "launch_path": "http://wfwalker.github.com/opensun/index.html",
   "icons": {
     "64": "http://wfwalker.github.com/opensun/img/shotclock-logo-64.png",
     "128": "http://wfwalker.github.com/opensun/img/shotclock-logo-128.png"
