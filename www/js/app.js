@@ -431,7 +431,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         logCurrentSunPosition(); 
 
         // redo the timeline whenever we move the map
-        global.map.events.register('move', global.map, function(eventThing) {
+        global.map.events.register('moveend', global.map, function(eventThing) {
             mapCenterChanged();
             logCurrentSunPosition();
         });
@@ -529,6 +529,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
             $("#helpContainer").fadeOut();            
         });
 
+        // clicking the install button offers to install the app
+        $("#installbutton").click(function() {
+            window.navigator.mozApps.install("http://" + window.location.hostname + window.location.pathname + "online.webapp", {});
+        });
+
         // clicking the place button TOGGLES the place screen
         $("#placebutton").click(function() {
             $("#timeContainer").hide();            
@@ -589,14 +594,14 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     // require('bootstrap/alert');
 });
 
-// Include the in-app payments API, and if it fails to load handle it
-// gracefully.
-// https://developer.mozilla.org/en/Apps/In-app_payments
-require(['https://marketplace-cdn.addons.mozilla.net/mozmarket.js'],
-        function() {},
-        function(err) {
-            global.mozmarket = global.mozmarket || {};
-            global.mozmarket.buy = function() {
-                showErrorMessage('The in-app purchasing is currently unavailable.');
-            };
-        });
+// // Include the in-app payments API, and if it fails to load handle it
+// // gracefully.
+// // https://developer.mozilla.org/en/Apps/In-app_payments
+// require(['https://marketplace-cdn.addons.mozilla.net/mozmarket.js'],
+//         function() {},
+//         function(err) {
+//             global.mozmarket = global.mozmarket || {};
+//             global.mozmarket.buy = function() {
+//                 showErrorMessage('The in-app purchasing is currently unavailable.');
+//             };
+//         });
