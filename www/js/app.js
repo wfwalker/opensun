@@ -23,7 +23,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     function showErrorMessage(inErrorMessageText) {
         $('#errorMessageLabel').text(inErrorMessageText);
         $('#errorMessageContainer').fadeIn();
-        var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 10000);
+        var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 30000);
     }
 
     function privateSetLatLongLabels() {
