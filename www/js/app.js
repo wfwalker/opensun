@@ -43,6 +43,10 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                 new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
             );
 
+        // decide whether we just made a big move and need to recalculate light times
+        var bigMove = (Math.abs(global.mapCenterPosition.lat - localStorage.getItem("latitude")) > 0.5) ||
+                       (Math.abs(global.mapCenterPosition.lon - localStorage.getItem("longitude")) > 0.5)
+
         // if we know the current time, get the sun position, get the light times and light ranges for today, update labels.
 
         if (global.currently) {
@@ -50,10 +54,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
             global.currentSunPosition = temp;
             privateSetLatLongLabels();
 
-            // TODO, only update these if the position changed by some large amount
-            global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
-            global.lightRanges = getLightRanges(global.lightTimes['highest']);
-            privateUpdateLightRangesSummary();
+            if (bigMove) {
+                global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+                global.lightRanges = getLightRanges(global.lightTimes['highest']);
+                privateUpdateLightRangesSummary();
+            }
         } else {
             console.log("warning: global.currently undefined");
         }
