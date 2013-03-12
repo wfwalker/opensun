@@ -23,7 +23,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     function showErrorMessage(inErrorMessageText) {
         $('#errorMessageLabel').text(inErrorMessageText);
         $('#errorMessageContainer').fadeIn();
-        var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 30000);
+        var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 5000);
     }
 
     function privateSetLatLongLabels() {
@@ -465,7 +465,11 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
                 function(err) {
                     clearTimeout(location_timeout);
                     privateSetLatLongLabels();
-                    showErrorMessage("can't find your location, " + err.message);
+                    if (err.message != "undefined") {
+                        showErrorMessage("can't find your location, " + err.message);
+                    } else {
+                        showErrorMessage("can't find your location");
+                    }
                 },
                 {timeout: 10000});
         });
