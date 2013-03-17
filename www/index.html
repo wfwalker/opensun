@@ -33,15 +33,18 @@
 
     <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
+    <!-- l10n data -->
+    <link rel="resource" type="application/l10n" href="l10n-data.ini" />
+
     <!-- All JavaScript at the bottom, except this Modernizr build.
          Modernizr enables HTML5 elements & feature detects for optimal performance.
          Create your own custom Modernizr build: www.modernizr.com/download/ -->
     <script src="js/lib/modernizr-2.5.3.min.js"></script>
+    <script src="js/lib/l10n.js"></script>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 
   </head>
   <body>
-
     <!-- Add your site or application content here -->
 
     <div id="errorMessageContainer">
@@ -49,25 +52,27 @@
     </div>
 
     <div id="buttonContainer">
-      <a class="myButton" id="placebutton" href="#">Place</a>
-      <a class="myButton" id="timebutton" href="#">Time</a>
+      <a class="myButton" data-l10n-id="placebutton" id="placebutton" href="#">Place</a>
+      <a class="myButton" data-l10n-id="timebutton" id="timebutton" href="#">Time</a>
       <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
       <a class="myButton" id="aboutbutton" href="#"><img id="aboutbuttonimage" height="16px" width="16px" src="img/shotclock-logo-64.png" /></a>
-      <a class="myButton" id="installbutton" href="#">Install</a>
+      <a class="myButton" data-l10n-id="installbutton" id="installbutton" href="#">Install</a>
 
       <div id="placeContainer">
         <div>Lat: <span id="latitudeLabel"></span>, Long: <span id="longitudeLabel"></span></div>
 
         <hr />
 
-        <strong>Center map on:</strong>
-        <p><a class="myButton" id="herebutton" href="#">My location</a></p>
+        <span data-l10n-id="centermapprompt">Center map on:</span>
+        <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a></div>
 
-        Other Location:
+        <hr />
+
+        <span data-l10n-id="centermapprompt">Center Map on:</span>
 
         <form id="findform">
           <input id="findtext" type="text" />
-          <input class="myButton" type="submit" value="Find" />
+          <input class="myButton" data-l10n-id="findbutton" type="submit" value="Find" />
         </form>
       </div>
 
@@ -77,15 +82,15 @@
         <hr>
 
         <p>
-          <a class="myButton" id="datebutton" href="#">Set Date</a>
+          <a class="myButton" data-l10n-id="datebutton" id="datebutton" href="#">Choose Date</a>
         </p>
 
         <p>
-          <a class="myButton" id="hourbutton" href="#">Set Time</a>
+          <a class="myButton" data-l10n-id="hourbutton" id="hourbutton" href="#">Choose Time</a>
         </p>
 
         <p>
-          <a class="myButton" id="nowbutton" href="#" disabled='true'>Track Now</a>
+          <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Track Now</a>
         </p>
       </div>
 
