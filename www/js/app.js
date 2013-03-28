@@ -20,6 +20,13 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
 
+
+    global.hasTouch = ('ontouchstart' in window) ||
+                   window.DocumentTouch &&
+                   document instanceof DocumentTouch;
+
+    global.actEvent = hasTouch ? "touchstart" : "click";
+
     function showErrorMessage(inErrorMessageText) {
         $('#errorMessageLabel').text(inErrorMessageText);
         $('#errorMessageContainer').fadeIn();
@@ -455,7 +462,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         }, 500);
 
         // clicking the HERE button tries to f``ate
-        $("#herebutton").click(function() {
+        $("#herebutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
+
             // SET THE SPINNER
             privateSpinLatLongLabels();
 
@@ -480,7 +489,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         // clicking the DATE button tries to set the date and stop tracking current date/time
-        $("#datebutton").click(function() {
+        $("#datebutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
+
             $('#dateLabel').html('<img src="img/small-progress.gif" />');
 
             // prompt user with current date
@@ -501,7 +512,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         // clicking the TIME button tries to set the date and stop tracking current date/time
-        $("#hourbutton").click(function() {
+        $("#hourbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
+
             $('#hourLabel').html('<img src="img/small-progress.gif" />');
 
             // prompt user with current time
@@ -521,7 +534,9 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
        });
 
         // clicking the NOW button toggles whether we're tracking the current date/time
-        $("#nowbutton").click(function() {
+        $("#nowbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
+
             if (! global.showCurrentDateTime) {
                 global.showCurrentDateTime = true;
                 currentTimeChanged(new Date());
@@ -531,40 +546,48 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         });
 
         // clicking the help button opens the help screen
-        $("#helpbutton").click(function() {
+        $("#helpbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#helpContainer").fadeIn();            
         });
-        $("#helpContainer").click(function() {
+        $("#helpContainer").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#helpContainer").fadeOut();            
         });
 
         // clicking the install button offers to install the app
-        $("#installbutton").click(function() {
+        $("#installbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             window.navigator.mozApps.install("http://" + window.location.hostname + window.location.pathname + "online.webapp", {});
         });
 
         // clicking the place button TOGGLES the place screen
-        $("#placebutton").click(function() {
+        $("#placebutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#timeContainer").hide();            
-            $("#placeContainer").slideToggle(2);            
+            $("#placeContainer").slideToggle(2); 
         });
 
         // clicking the place button TOGGLES the place screen
-        $("#timebutton").click(function() {
+        $("#timebutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#placeContainer").hide();            
             $("#timeContainer").slideToggle(2);            
         });
 
         // clicking the sun button TOGGLES the place screen
-        $("#sunbutton").click(function() {
+        $("#sunbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#sunContainer").slideToggle(2);            
         });
 
         // clicking the about box closes it
-        $("#aboutbutton").click(function() {
+        $("#aboutbutton").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#aboutContainer").fadeIn();            
         });
-        $("#aboutContainer").click(function() {
+        $("#aboutContainer").bind(global.actEvent, function(e) {
+            e.preventDefault();
             $("#aboutContainer").fadeOut();            
         });
 
