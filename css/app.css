@@ -77,7 +77,7 @@ div.olControlZoom {
   display:inline-block;
   color:#777777;
   font-family:arial;
-  font-size: 1.1em;
+  font-size: 2.5em;
   font-weight:bold;
   padding: 4px 5px;
   text-decoration:none;
@@ -90,6 +90,11 @@ div.olControlZoom {
 }.myButton:active {
   position:relative;
   top:1px;
+}
+@media screen and (max-width:640px) { 
+    .myButton { 
+        font-size:1.2em; 
+    }
 }
 #buttonContainer {
   position: absolute;
