@@ -387,6 +387,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
         // create the map associated with the div
         global.map = new OpenLayers.Map("mapdiv");
 
+        console.log("MY LOCALE IS " + (document.documentElement.lang || navigator.language));
+
         // Open Street Maps layer
 
         // terse example:
