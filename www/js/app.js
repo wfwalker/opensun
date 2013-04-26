@@ -7,12 +7,12 @@
 require.config({
      baseUrl: "js/lib",
 
-     paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers']}
+     paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers'], 'l10n': ['l10n']}
 });
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
+require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], function($) {
 
     var global = this;
 
@@ -385,7 +385,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils'], function($) {
 
     $(document).ready(function(){
         // create the map associated with the div
-        global.map = new OpenLayers.Map("mapdiv");
+        global.map = new OpenLayers.Map("mapdiv", { theme : 'css/openlayersorg-theme-default-style.css' });
 
         console.log("MY LOCALE IS " + (document.documentElement.lang || navigator.language));
 
