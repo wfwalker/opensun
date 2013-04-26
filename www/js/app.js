@@ -385,7 +385,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
 
     $(document).ready(function(){
         // create the map associated with the div
-        global.map = new OpenLayers.Map("mapdiv", { theme : 'css/openlayersorg-theme-default-style.css' });
+        global.map = new OpenLayers.Map("mapdiv", { theme : null });
 
         console.log("MY LOCALE IS " + (document.documentElement.lang || navigator.language));
 
