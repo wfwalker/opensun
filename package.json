@@ -5,7 +5,8 @@
   },
   "volo": {
     "dependencies": {
-      "jquery": "github:jquery/jquery/1.7.2"
+      "jquery": "github:jquery/jquery/1.7.2",
+      "github": "github:michael/github/v0.7.0"
     }
   }
 }
