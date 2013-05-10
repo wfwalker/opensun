@@ -252,8 +252,8 @@ module.exports = {
     ghdeploy: {
         run: function (d, v, namedArgs) {
             var q = v.require('q'),
-                github = v.require('volo/github'),
-                githubAuth = v.require('volo/github/auth');
+                github = v.require('./lib/github'),
+                githubAuth = v.require('./lib/github/auth');
 
             var spawnOptions = {
                 useConsole: !namedArgs.quiet
