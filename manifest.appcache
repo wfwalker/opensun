@@ -1,9 +1,7 @@
 CACHE MANIFEST
-# GCSEuslRDLCe5SC5Axqpa+t9jv4=
+# GOwJvFOhdz4lx7Z7U47167yuskU=
 
 CACHE:
-.DS_Store
-.htaccess
 404.html
 apple-touch-icon-114x114-precomposed.png
 apple-touch-icon-144x144-precomposed.png
@@ -16,8 +14,6 @@ crossdomain.xml
 css/app.css
 favicon.ico
 humans.txt
-img/.DS_Store
-img/.gitignore
 img/arrow.png
 img/buttons-annotated.png
 img/buttons.png
