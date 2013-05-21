@@ -487,7 +487,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
                         showErrorMessage("can't find your location");
                     }
                 },
-                {timeout: 10000});
+                {timeout: 30000});
         });
 
         // clicking the DATE button tries to set the date and stop tracking current date/time
@@ -593,7 +593,8 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
             $("#aboutContainer").fadeOut();            
         });
 
-        $('#findform').submit(function() {
+        $('#findform').submit(function(e) {
+            e.preventDefault();
             privateSpinLatLongLabels();
 
             var searchText = $('#findtext').val();
@@ -605,8 +606,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
                     showErrorMessage("can't search for places, " + results);
                 },               
 
-                success: function(resultString) {      
-                    var results = jQuery.parseJSON(resultString);
+                success: function(results) {      
                     if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
                     }
