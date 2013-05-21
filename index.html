@@ -45,6 +45,10 @@
   <body>
     <!-- Add your site or application content here -->
 
+    <div id="errorMessageContainer">
+      <div><span style="color: red" id="errorMessageLabel"></span></div>
+    </div>
+
     <div id="buttonContainer">
       <a class="myButton" data-l10n-id="placebutton" id="placebutton" href="#">Place</a>
       <a class="myButton" data-l10n-id="timebutton" id="timebutton" href="#">Time</a>
@@ -54,10 +58,6 @@
 
       <div id="placeContainer">
         <div>Lat: <span id="latitudeLabel"></span>, Long: <span id="longitudeLabel"></span></div>
-
-        <div id="errorMessageContainer">
-          <div><span style="color: red" id="errorMessageLabel"></span></div>
-        </div>
 
         <hr />
 
@@ -163,13 +163,5 @@
          
     <script type="text/javascript" data-main="js/app.js" src="js/app.js" charset="utf-8"></script>
 
-    <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
-         mathiasbynens.be/notes/async-analytics-snippet -->
-    <script>
-      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script>
   </body>
 </html>
