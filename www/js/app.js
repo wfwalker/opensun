@@ -601,6 +601,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
 
             $.ajax({
                 url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + searchText,
+                dataType: "json",
 
                 error: function(results) {
                     showErrorMessage("can't search for places, " + results);
