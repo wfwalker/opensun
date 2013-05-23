@@ -7,12 +7,12 @@
 require.config({
      baseUrl: "js/lib",
 
-     paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers'], 'l10n': ['l10n']}
+     paths: {'utils': ['utils'], 'jquery': ['jquery'], 'jquery-ui': ['jquery-ui'], 'jquery.tools': ['jquery.tools.min'], 'OpenLayers': ['OpenLayers'], 'l10n': ['l10n']}
 });
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], function($) {
+require(['jquery', 'jquery-ui', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], function($) {
 
     var global = this;
 
@@ -96,7 +96,12 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
         }
 
         $('#dateLabel').text(getShortDateString(global.currently));
+        $('#datepicker').val(getShortDateString(global.currently));
         $('#hourLabel').text(getShortTimeString(global.currently));
+
+        if (global.showCurrentDateTime) {
+            $('#timeslider').slider("value", global.currently.getHours() + (global.currently.getMinutes() / 60.0));
+        }
     }
 
     // center the map on the given location
@@ -225,7 +230,6 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
 
     function privateUpdateLightRangesSummary() {
         $('#sunContainer').empty();
-        $('#sunContainer').append('<div>' + getShortDateString(global.currently) + '</div><hr />');
 
         var sortable = [];
 
@@ -384,6 +388,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
     }
 
     $(document).ready(function(){
+
         // create the map associated with the div
         global.map = new OpenLayers.Map("mapdiv", { theme : null });
 
@@ -436,6 +441,13 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
             centerMapAt(-98, 38, 4);
         }  
 
+        // initialize basics of time slider
+        $('#timeslider').slider({
+            min: 0,
+            max: 24,
+            step: 0.1
+        });
+
         // initialize so that we show current time and date
         global.showCurrentDateTime = true;
         currentTimeChanged(new Date());      
@@ -476,7 +488,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
                 function(position) {
                     clearTimeout(location_timeout);
                     centerMapAt(position.coords.longitude, position.coords.latitude, 15);
-                    mapCenterChanged();     
+                    $("#placeContainer").hide();            
                 },
                 function(err) {
                     clearTimeout(location_timeout);
@@ -490,50 +502,40 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
                 {timeout: 30000});
         });
 
-        // clicking the DATE button tries to set the date and stop tracking current date/time
-        $("#datebutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
+        // initialize datepicker
+        $("#datepicker").datepicker({
+            autoSize: true,
+            onSelect: function (chosenDateString, o) {
+                var chosenDate = Date.parse(chosenDateString);
+                // parse date and notify event listener
+                var newDate = new Date(global.currently);
+                newDate.setDate(chosenDate.getDate());
+                newDate.setMonth(chosenDate.getMonth());
+                newDate.setFullYear(chosenDate.getFullYear());
+                global.showCurrentDateTime = false;
+                currentTimeChanged(newDate);
 
-            $('#dateLabel').html('<img src="img/small-progress.gif" />');
+                $('#nowbutton').attr('disabled', 'false');
 
-            // prompt user with current date
-            var chosenDateString = prompt("Set Date", getShortDateString(global.currently));
-
-            var chosenDate = Date.parse(chosenDateString);
-            // parse date and notify event listener
-            var newDate = new Date(global.currently);
-            newDate.setDate(chosenDate.getDate());
-            newDate.setMonth(chosenDate.getMonth());
-            newDate.setFullYear(chosenDate.getFullYear());
-            global.showCurrentDateTime = false;
-            currentTimeChanged(newDate);
-
-            $('#nowbutton').attr('disabled', 'false');
-
-            logCurrentSunPosition();
+                logCurrentSunPosition();
+            }
         });
 
-        // clicking the TIME button tries to set the date and stop tracking current date/time
-        $("#hourbutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
+        // initialize timeslider
+        $('#timeslider').on("slidechange",
+            function (event, ui) {
+                console.log("slide changed " + ui.value);
+                var newTime = new Date(global.currently);
+                newTime.setMinutes((ui.value * 60) % 60);
+                newTime.setHours(ui.value);
+                global.showCurrentDateTime = false;
+                currentTimeChanged(newTime);
 
-            $('#hourLabel').html('<img src="img/small-progress.gif" />');
+                $('#nowbutton').attr('disabled', 'false');
 
-            // prompt user with current time
-            var chosenTimeString = prompt("Set Date", getShortTimeString(global.currently));
-
-            // parse time and notify event listener
-            var chosenTime = Date.parse(chosenTimeString);
-            var newTime = new Date(global.currently);
-            newTime.setMinutes(chosenTime.getMinutes());
-            newTime.setHours(chosenTime.getHours());
-            global.showCurrentDateTime = false;
-            currentTimeChanged(newTime);
-
-            $('#nowbutton').attr('disabled', 'false');
-
-            logCurrentSunPosition();
-       });
+                logCurrentSunPosition();
+            }
+        );
 
         // clicking the NOW button toggles whether we're tracking the current date/time
         $("#nowbutton").bind(global.actEvent, function(e) {
@@ -610,6 +612,7 @@ require(['jquery', 'jquery.tools', 'date', 'OpenLayers', 'utils', 'l10n'], funct
                 success: function(results) {      
                     if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
+                        $("#placeContainer").hide();            
                     }
                     else
                     {
