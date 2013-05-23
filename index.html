@@ -84,21 +84,16 @@
       </div>
 
       <div id="timeContainer">
-        <div><span id="dateLabel"></span> <span id="hourLabel"></span></div>
+        <div>
+          <input type="text" id="datepicker" />
+          <span id="hourLabel"></span>
+          or
+          <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Now</a>
+        </div>
 
-        <hr>
-
-        <p>
-          <a class="myButton" data-l10n-id="datebutton" id="datebutton" href="#">Choose Date</a>
-        </p>
-
-        <p>
-          <a class="myButton" data-l10n-id="hourbutton" id="hourbutton" href="#">Choose Time</a>
-        </p>
-
-        <p>
-          <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a>
-        </p>
+        <div style="padding: 1em 0em 1em 0em">
+          <div id="timeslider"> </div>
+        </div>
       </div>
 
     </div>
