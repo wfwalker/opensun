@@ -160,7 +160,7 @@ function getLightRanges(highest) {
 
     if (highest >= 40.0) { // draw these if the sun goes above my harsh threshold
         ranges['Late Morning'] = ['morningStop', 'highStart', '#C4B11B'];
-        ranges['Mid-day'] = ['highStart', 'highStop', '#9C1E0B'];
+        ranges['Mid-day'] = ['highStart', 'highStop', '#999999'];
         ranges['Afternoon'] = ['highStop', 'eveningStart', '#C4B11B'];
     } else if (highest >= 25.0) { // draw these if the sun goes above my good angle
         ranges['Mid-day'] = ['morningStop', 'eveningStart', '#C4B11B'];
