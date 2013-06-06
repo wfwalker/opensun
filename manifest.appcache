@@ -1,8 +1,8 @@
 CACHE MANIFEST
-# tTaAnHvzE3p6pBDCj0iMfyS/UIY=
+# y8oXItgK7G5rSomUJ5AzpP2FSTA=
 
 CACHE:
-.htaccess
+
 404.html
 apple-touch-icon-114x114-precomposed.png
 apple-touch-icon-144x144-precomposed.png
@@ -46,7 +46,7 @@ css/openlayersorg-theme-default-style.css
 css/qunit.css
 favicon.ico
 humans.txt
-img/.gitignore
+
 img/arrow.png
 img/buttons-annotated.png
 img/buttons.png
