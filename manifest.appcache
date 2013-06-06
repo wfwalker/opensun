@@ -1,8 +1,7 @@
 CACHE MANIFEST
-# kABXFTVSopAxN+kRyBvtbZ/edgg=
+# btp7doMh0IC1K2Hgc0zgbmIIKK8=
 
 CACHE:
-.DS_Store
 .htaccess
 404.html
 apple-touch-icon-114x114-precomposed.png
@@ -14,7 +13,6 @@ apple-touch-icon.png
 birding.txt
 build.txt
 crossdomain.xml
-css/.DS_Store
 css/app.css
 css/bootstrap-responsive.css
 css/bootstrap.css
@@ -48,7 +46,6 @@ css/openlayersorg-theme-default-style.css
 css/qunit.css
 favicon.ico
 humans.txt
-img/.DS_Store
 img/.gitignore
 img/arrow.png
 img/buttons-annotated.png
@@ -83,11 +80,8 @@ img/small-progress.gif
 img/splashscreen.png
 img/time-menu.png
 index.html
-js/.DS_Store
 js/app.js
 js/app.js~
-js/lib/.DS_Store
-js/lib/bootstrap/.DS_Store
 js/lib/bootstrap/alert.js
 js/lib/bootstrap/button.js
 js/lib/bootstrap/carousel.js
