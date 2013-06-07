@@ -139,7 +139,10 @@ module.exports = {
                 appFiles = appFiles.map(function (file) {
                     var start = file.indexOf('/' + buildDir + '/');
                     start = (start !== -1) ? (start + 11) : 0;
-                    return file.substr(start, file.length);
+                    // HACKED, SEE https://github.com/mozilla/mortar/issues/30
+                    var baseName = file.substr(start, file.length);
+                    var shouldIgnore = baseName.match(/^\.|\/\./);
+                    return shouldIgnore ? undefined : baseName;                    
                 });
 
                 master = master
