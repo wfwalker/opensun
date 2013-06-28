@@ -375,8 +375,8 @@ span.olGoogleAttribution.hybrid a, span.olGoogleAttribution.satellite a {
 }
 div.olControlZoom {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    top: 12px;
+    left: 12px;
     background: rgba(255,255,255,0.4);
     border-radius: 4px;
     padding: 2px;
@@ -384,15 +384,15 @@ div.olControlZoom {
 div.olControlZoom a {
     display: block;
     margin: 1px;
-    padding: 3px;
+    padding: 10px;
     color: white;
     font-size: 18px;
     font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
     font-weight: bold;
     text-decoration: none;
     text-align: center;
-    height: 22px;
-    width:22px;
+    height: 24px;
+    width:24px;
     line-height: 19px;
     background: #130085; 
     background: rgba(0, 60, 136, 0.5);
