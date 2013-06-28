@@ -219,7 +219,7 @@ td { vertical-align: top; }
 div.olControlZoom {
   position: relative !important;
   float: right !important;
-  left: -6px !important;
+  left: -20px !important;
   top: 2px !important;
   padding: 3px !important;
   width: 24px;
