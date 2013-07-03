@@ -38,16 +38,6 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 5000);
     }
 
-    function privateSetLatLongLabels() {
-        $('#latitudeLabel').text(global.mapCenterPosition.lat.toFixed(3));
-        $('#longitudeLabel').text(global.mapCenterPosition.lon.toFixed(3));
-    }
-
-    function privateSpinLatLongLabels() {
-        $('#latitudeLabel').html('<img src="img/small-progress.gif" />');
-        $('#longitudeLabel').html('<img src="img/small-progress.gif" />');        
-    }
-
     function mapCenterChanged() {
         // cache map center position in degrees in global struct
         global.mapCenterPosition = global.map.getCenter().transform(
@@ -64,7 +54,6 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         if (global.currently) {
             var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
             global.currentSunPosition = temp;
-            privateSetLatLongLabels();
 
             if (bigMove) {
                 global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
@@ -258,7 +247,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         for (var i = 0; i < sortable.length; i++) {
             var sortedEntry = sortable[i];
             $('#sunContainer').append(
-                "<div>" + "<span style='background-color: " + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span>" + sortedEntry[0] + " " +
+                "<div>" + "<span style='background-color: " + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span> " +
                 getShortTimeString(sortedEntry[1]) + " to " +
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
@@ -299,6 +288,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
 
         $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
 
+        // TODO: make this look like a pin or something
         var markerPoint = createPointFromBearingAndDistance(0.0, 0.0);
         var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2 });
         global.lineLayer.addFeatures([markerFeature]);
@@ -443,6 +433,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
             centerMapAt(savedLongitude, savedLatitude, savedZoom);            
         } else {
             // initialize map to center of USA
+            //TODO: don't be so USA-o-centric, think l10n
             centerMapAt(-98, 38, 4);
         }  
 
@@ -480,31 +471,38 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
             $("#aboutContainer").fadeOut();            
         }, 500);
 
-        // clicking the HERE button tries to f``ate
+        // clicking the HERE button tries to geolocate
         $("#herebutton").bind(global.actEvent, function(e) {
             e.preventDefault();
 
             // SET THE SPINNER
-            privateSpinLatLongLabels();
+            // TODO: show/hide pre-existing spinner, don't put HTML in strings.
+            $('#geolocatespinner').html('<img src="img/small-progress.gif" />');
 
-            var location_timeout = window.setTimeout(privateSetLatLongLabels, 10000);
+            var location_timeout = window.setTimeout(function() {
+                console.log("location timeout");
+                $('#geolocatespinner').html('');
+            }, 32000);
 
+            console.log("about to start geolocate");
             navigator.geolocation.getCurrentPosition(
                 function(position) {
+                    console.log("geolocate success " + position);
                     clearTimeout(location_timeout);
+                    $('#geolocatespinner').html('');
                     centerMapAt(position.coords.longitude, position.coords.latitude, 15);
                     $("#placeContainer").hide();            
                 },
                 function(err) {
+                    console.log("geolocate failure " + err);
                     clearTimeout(location_timeout);
-                    privateSetLatLongLabels();
-                    if (err.message != "undefined") {
-                        showErrorMessage("can't find your location, " + err.message);
-                    } else {
-                        showErrorMessage("can't find your location");
-                    }
+                    $('#geolocatespinner').html('');
+                    // TODO: error message not localized
+                    console.log("can't find your location: " + err);
+                    showErrorMessage("can't find your location");
                 },
-                {timeout: 30000});
+                {timeout: 30000, maximumAge: 60000, enableHighAccuracy:true});
+            console.log("just started geolocate");
         });
 
         // initialize datepicker
@@ -602,7 +600,9 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
 
         $('#findform').submit(function(e) {
             e.preventDefault();
-            privateSpinLatLongLabels();
+
+            // TODO: just show/hide div already containing animated gif. avoids putting HTML in string constants :-(
+            $('#placelookupspinner').html('<img src="img/small-progress.gif" />');        
 
             var searchText = $('#findtext').val();
 
@@ -611,17 +611,22 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
                 dataType: "json",
 
                 error: function(results) {
-                    showErrorMessage("can't search for places, " + results);
+                    $('#placelookupspinner').html('');    
+                    // TODO: localize error msgs    
+                    console.log("can't search for places, " + results);
+                    showErrorMessage("can't search for places");
                 },               
 
-                success: function(results) {      
+                success: function(results) {     
+                    $('#placelookupspinner').html('');        
+                 
                     if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
                         $("#placeContainer").hide();            
                     }
                     else
                     {
-                        privateSetLatLongLabels();
+                        $('#placelookupspinner').html('');        
                         showErrorMessage("no places found for '" + searchText + "'");
                     }
                 },
