@@ -63,37 +63,40 @@
     <div id="buttonContainer">
       <a class="myButton" data-l10n-id="placebutton" id="placebutton" href="#">Place</a>
       <a class="myButton" data-l10n-id="timebutton" id="timebutton" href="#">Time</a>
-      <a class="myButton" id="helpbutton" href="#"><img id="nowbuttonimage" height="16px" width="16px" src="img/icons/help.png" /></a>
-      <a class="myButton" id="aboutbutton" href="#"><img id="aboutbuttonimage" height="16px" width="16px" src="img/shotclock-logo-64.png" /></a>
+      <a class="myButton" id="helpbutton" href="#">?</a>
+      <a class="myButton" id="aboutbutton" href="#"><img id="aboutbuttonimage" height="24px" width="24px" src="img/shotclock-logo-64.png" /></a>
 
       <div id="placeContainer">
-        <div>Lat: <span id="latitudeLabel"></span>, Long: <span id="longitudeLabel"></span></div>
+        <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
+        <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
 
         <hr />
 
-        <span data-l10n-id="centermapprompt">Center map on:</span>
-        <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a></div>
-
-        <hr />
-
-        <span data-l10n-id="centermapprompt">Center Map on:</span>
+        <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
 
         <form id="findform">
-          <input id="findtext" type="text" />
-          <input class="myButton" data-l10n-id="findbutton" type="submit" value="Go" />
+          <input id="findtext" type="text" value="location name" />
+          <div style="padding-top: 0.5em"><input class="myButton" data-l10n-id="findbutton" type="submit" value="Find" onclick="" /></div>
+          <span id="placelookupspinner"></span>
         </form>
       </div>
 
       <div id="timeContainer">
         <div>
-          <input type="text" id="datepicker" />
-          <span id="hourLabel"></span>
-          or
-          <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Now</a>
+          <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
+          <div><a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a></div>
+
+          <hr />
+
+          <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
+
+          <div><input type="text" id="datepicker" /></div>
         </div>
 
         <div style="padding: 1em 0em 1em 0em">
+          <span id="hourLabel"></span>
           <div id="timeslider"> </div>
+          <div><span style='float: left'>0</span><span style='float: right'>24</span></div>
         </div>
       </div>
 
@@ -116,7 +119,7 @@
         <br clear='all' />
         <div>
           <img src="img/shotclock.png" align='left' width='95px' />
-          The ShotClock displays the sun angle on the selected day and time with red and green indicating good and bad light.
+          The ShotClock displays the sun angle on the selected day and time with green and red indicating good and bad light.
         </div>
       </div>
       <div style="position: absolute; bottom: 10px; text-align: center; width: 100%"><i>click anywhere to continue</i></div>
