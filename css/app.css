@@ -1581,10 +1581,10 @@ td { vertical-align: top; }
 div.olControlZoom {
   position: relative !important;
   float: right !important;
-  left: -20px !important;
+  left: -3px !important;
   top: 2px !important;
   padding: 3px !important;
-  width: 24px;
+  width: 46px;
 }
 .myButton {
   -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -1646,11 +1646,13 @@ div.olControlZoom {
 }
 #timeContainer {
   display: none;
-  padding-top: 10px;
+  padding: 10px;
+  width: 12em;
 }
 #placeContainer {
   display: none;
-  padding-top: 10px;
+  padding: 10px;
+  width: 12em;
 }
 #sunContainer {
   display: none;
