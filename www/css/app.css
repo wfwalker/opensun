@@ -216,13 +216,16 @@ td { vertical-align: top; }
   width: 220px;
 }
 
+
+/* TODO: this collides with css/openlayersorg-theme-default-style.css */
+
 div.olControlZoom {
   position: relative !important;
   float: right !important;
-  left: -20px !important;
+  left: -3px !important;
   top: 2px !important;
   padding: 3px !important;
-  width: 24px;
+  width: 46px;
 }
 
 .myButton {
@@ -289,12 +292,14 @@ div.olControlZoom {
 
 #timeContainer {
   display: none;
-  padding-top: 10px;
+  padding: 10px;
+  width: 12em;
 }
 
 #placeContainer {
   display: none;
-  padding-top: 10px;
+  padding: 10px;
+  width: 12em;
 }
 
 #sunContainer {
