@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# U4ZTHgMvQDv7jv4cgFl4bJcJaY8=
+# A5xWnxXlEM6l2ZLWfHXiQ1VUVG0=
 
 CACHE:
 
@@ -16,6 +16,7 @@ crossdomain.xml
 css/app.css
 css/bootstrap-responsive.css
 css/bootstrap.css
+css/brick.css
 css/images/animated-overlay.gif
 css/images/ui-bg_flat_0_aaaaaa_40x100.png
 css/images/ui-bg_flat_75_ffffff_40x100.png
@@ -93,6 +94,7 @@ js/lib/bootstrap/tab.js
 js/lib/bootstrap/tooltip.js
 js/lib/bootstrap/transition.js
 js/lib/bootstrap/typeahead.js
+js/lib/brick.js
 js/lib/date.js
 js/lib/github.js
 js/lib/jquery-ui.js

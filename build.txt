@@ -11,6 +11,10 @@ css/bootstrap.css
 ----------------
 css/bootstrap.css
 
+css/brick.css
+----------------
+css/brick.css
+
 css/jquery-ui.css
 ----------------
 css/jquery-ui.css
@@ -69,7 +73,6 @@ css/qunit.css
 
 js/lib/../app.js
 ----------------
-js/lib/jquery-ui.js
 js/lib/date.js
 js/lib/OpenLayers.js
 js/lib/utils.js
