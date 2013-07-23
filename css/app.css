@@ -1672,7 +1672,7 @@ div.olControlZoom {
 }
 #textSummaryContainer {
   position: absolute;
-  z-index: 100000;
+  z-index: 99999;
   bottom: 5px;
   left: 3px;
   padding: 3px;
