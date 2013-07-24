@@ -67,10 +67,10 @@
       <a class="myButton" id="aboutbutton" href="#"><img id="aboutbuttonimage" height="24px" width="24px" src="img/shotclock-logo-64.png" /></a>
 
       <div id="placeContainer">
-        <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
+        <span data-l10n-id="showsunanglefor">Show sun for</span>:
         <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
 
-        <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun angle for</span>:</div>
+        <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun for</span>:</div>
 
         <form id="findform">
           <input id="findtext" type="text" value="location name" />
@@ -81,18 +81,21 @@
 
       <div id="timeContainer">
         <div>
-          <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
-          <div><a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a></div>
-
-          <hr />
+          <div style='padding: 0.5em 0em 1em 0em'>
+            <span data-l10n-id="showsunanglefor">Show sun for</span>:
+            <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a>
+          </div>
 
           <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
         </div>
 
-        <div style="padding: 1em 0em 1em 0em">
-          <span id="hourLabel"></span>
+        <div style="padding: 0.5em 0em 0em 0em">
           <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
-          <div><span style='float: left'>0</span><span style='float: right'>24</span></div>
+          <div>
+            <span style='float: left'>0</span>
+            <span style='padding-left: 35%; text-align: center' id="hourLabel"></span>
+            <span style='float: right'>24</span>
+          </div>
         </div>
       </div>
 

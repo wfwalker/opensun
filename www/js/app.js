@@ -91,10 +91,11 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         }
 
         $('#dateLabel').text(getShortDateString(global.currently));
-        $('#datepicker').val(getShortDateString(global.currently));
+        console.log("set date picker to " + global.currently);
+        $('#datepicker')[0].chosen = global.currently;
+        $('#datepicker')[0].view = global.currently;
         $('#hourLabel').text(getShortTimeString(global.currently));
 
-        // TODO: fix!
         if (global.showCurrentDateTime) {
             $('#timeslider')[0].value = global.currently.getHours() + (global.currently.getMinutes() / 60.0);
         }
