@@ -86,14 +86,12 @@
 
           <hr />
 
-          <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
-
-          <div><input type="text" id="datepicker" /></div>
+          <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
         </div>
 
         <div style="padding: 1em 0em 1em 0em">
           <span id="hourLabel"></span>
-          <div id="timeslider"> </div>
+          <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
           <div><span style='float: left'>0</span><span style='float: right'>24</span></div>
         </div>
       </div>
@@ -166,8 +164,9 @@
          js files. This loads "main.js", which in turn can load other
          files, all handled by require.js:
          http://requirejs.org/docs/api.html#jsfiles -->
+
+    <script type="text/javascript" src="js/lib/brick.js" charset="utf-8"></script>
          
     <script type="text/javascript" data-main="js/app.js" src="js/lib/require.js" charset="utf-8"></script>
-
   </body>
 </html>

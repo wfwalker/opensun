@@ -6,18 +6,11 @@
 // if google is down
 require.config({
     baseUrl: "js/lib",
-
-    shim: {
-        'jquery-ui': {
-            exports: '$',
-            deps: ['jquery']
-        }
-    }
 });
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
+require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
     var global = this;
 
@@ -45,6 +38,11 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
                 new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
             );
 
+        var delta = new OpenLayers.LonLat(global.mapCenterPosition.lon - localStorage.getItem("longitude"), global.mapCenterPosition.lat - localStorage.getItem("latitude")).transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                global.map.getProjectionObject() // to Spherical Mercator Projection
+              );
+
         // decide whether we just made a big move and need to recalculate light times
         var bigMove = (Math.abs(global.mapCenterPosition.lat - localStorage.getItem("latitude")) > 0.5) ||
                        (Math.abs(global.mapCenterPosition.lon - localStorage.getItem("longitude")) > 0.5)
@@ -68,6 +66,9 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         localStorage.setItem("latitude", global.mapCenterPosition.lat);
         localStorage.setItem("longitude", global.mapCenterPosition.lon);
         localStorage.setItem("zoom", global.map.getZoom());
+
+        console.log("DELTA " + delta);
+        return delta;
     }
 
     function currentTimeChanged(newTime) {
@@ -93,8 +94,9 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         $('#datepicker').val(getShortDateString(global.currently));
         $('#hourLabel').text(getShortTimeString(global.currently));
 
+        // TODO: fix!
         if (global.showCurrentDateTime) {
-            $('#timeslider').slider("value", global.currently.getHours() + (global.currently.getMinutes() / 60.0));
+            $('#timeslider')[0].value = global.currently.getHours() + (global.currently.getMinutes() / 60.0);
         }
     }
 
@@ -274,12 +276,9 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         $('#trafficlight').attr('style', 'background-color: ' + color);
 
         if (global.currentSunPosition.altitude > 0) {
-            drawRadialLine('#FFFFFF', -0.9, 0.0);
-            drawRadialLine('#FFFFFF', 0.0, 0.9);
-
             if (global.currentSunPosition.altitude < 40) {
                 drawRadialLine(color, 0.0, 1.2);
-                drawRadialLine('#000000', 0.0, -1.0);
+                drawRadialLine('#000000', 0.0, -0.8);
             } else {
                 drawRadialLine('#000000', 0.9, 1.2);
                 drawRadialLine('#000000', 0.0, -0.2);
@@ -362,7 +361,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
     }
 
     // draws the sun rose at the current map center using information in the global data structure
-    function logCurrentSunPosition() {
+    function logCurrentSunPosition(delta) {
         var windowBounds = global.map.calculateBounds();
 
         // scale up the radius of the circle according to the bounds of the map
@@ -380,6 +379,15 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         privateLabelHours();
 
         privateDrawShadow(global.currentSunPosition);
+
+        // TODO make this work
+        // if (delta)
+        //     var features = global.lineLayer.features;
+        //     var mapCenter = global.map.getCenter();
+        //     for (var index = 0; index < features.length; index++) {
+        //         features[index].move(mapCenter);
+        //     }
+        // }
     }
 
     $(document).ready(function(){
@@ -422,7 +430,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         // global.map.addLayer(aerialTiles);
 
         // create a line layer, for drawing lines to show sun direction
-        global.lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
+        global.lineLayer = new OpenLayers.Layer.Vector("Line Layer", {}); 
         global.map.addLayer(global.lineLayer);       
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
@@ -437,16 +445,9 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
             centerMapAt(-98, 38, 4);
         }  
 
-        // initialize basics of time slider
-        $('#timeslider').slider({
-            min: 0,
-            max: 24,
-            step: 0.1
-        });
-
         // initialize so that we show current time and date
         global.showCurrentDateTime = true;
-        currentTimeChanged(new Date());      
+        currentTimeChanged(Date.now());      
 
         // show sundial for current date/time
         mapCenterChanged();
@@ -454,14 +455,14 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
 
         // redo the timeline whenever we move the map
         global.map.events.register('moveend', global.map, function(eventThing) {
-            mapCenterChanged();
-            logCurrentSunPosition();
+            var delta = mapCenterChanged();
+            logCurrentSunPosition(delta);
         });
 
         // check once a minute to track date/time
         window.setInterval(function() {
             if (global.showCurrentDateTime) {
-                currentTimeChanged(new Date());
+                currentTimeChanged(Date.now());
                 logCurrentSunPosition();
             }
         }, 60000);
@@ -506,31 +507,27 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
         });
 
         // initialize datepicker
-        $("#datepicker").datepicker({
-            autoSize: true,
-            onSelect: function (chosenDateString, o) {
-                var chosenDate = Date.parse(chosenDateString);
-                // parse date and notify event listener
-                var newDate = new Date(global.currently);
-                newDate.setDate(chosenDate.getDate());
-                newDate.setMonth(chosenDate.getMonth());
-                newDate.setFullYear(chosenDate.getFullYear());
-                global.showCurrentDateTime = false;
-                currentTimeChanged(newDate);
+        $("#datepicker").on("datetoggleon", function (event) {
+            var chosenDate = Date.parse(event.originalEvent.detail.iso);
+            // parse date and notify event listener
+            var newDate = new Date(global.currently);
+            newDate.setDate(chosenDate.getDate());
+            newDate.setMonth(chosenDate.getMonth());
+            newDate.setFullYear(chosenDate.getFullYear());
+            global.showCurrentDateTime = false;
+            currentTimeChanged(newDate);
 
-                $('#nowbutton').attr('disabled', 'false');
+            $('#nowbutton').attr('disabled', 'false');
 
-                logCurrentSunPosition();
-            }
+            logCurrentSunPosition();
         });
 
-        // initialize timeslider
-        $('#timeslider').on("slidechange",
-            function (event, ui) {
-                console.log("slide changed " + ui.value);
+        // initialize timeslider -- now a web component!
+        $('#timeslider').on("change",
+            function (event) {
                 var newTime = new Date(global.currently);
-                newTime.setMinutes((ui.value * 60) % 60);
-                newTime.setHours(ui.value);
+                newTime.setMinutes((this.value * 60) % 60);
+                newTime.setHours(this.value);
                 global.showCurrentDateTime = false;
                 currentTimeChanged(newTime);
 
@@ -546,7 +543,7 @@ require(['jquery-ui', 'date', 'OpenLayers', 'utils', 'l10n'], function() {
 
             if (! global.showCurrentDateTime) {
                 global.showCurrentDateTime = true;
-                currentTimeChanged(new Date());
+                currentTimeChanged(Date.now());
                 logCurrentSunPosition();
                 $('#nowbutton').attr('disabled', 'true');
             }
