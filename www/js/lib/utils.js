@@ -23,44 +23,44 @@ function getJulianDate(y, m, d, u)
 // get the sun position (altitude and azimuth) in degrees for the given latitude, longitude, and date
 function getSunPositionInDegrees(lg, la, theDate)
 {
-    with (Math) {
-        var uu = theDate.getUTCHours() + theDate.getUTCMinutes() / 60.0;
-        var jj=getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
+    // TODO: don't use with (Math)
 
-        var T=jj/36525;
-        var k=PI/180.0;
-        var M=357.5291+35999.0503*T-0.0001559*T*T-0.00000045*T*T*T
+    var uu = theDate.getUTCHours() + theDate.getUTCMinutes() / 60.0;
+    var jj = getJulianDate(theDate.getFullYear(), theDate.getMonth() + 1, theDate.getDate(), uu);
 
-        M=M % 360
-        
-        var Lo=280.46645+36000.76983*T+0.0003032*T*T
-        
-        Lo=Lo % 360
-        
-        var DL=(1.9146-0.004817*T-0.000014*T*T)*sin(k*M)+(0.019993-0.000101*T)*sin(k*2*M)+0.00029*sin(k*3*M)
-        var L=Lo+DL
-        var eps=23.43999-0.013*T
-        var delta=(1/k)*asin(sin(L*k)*sin(eps*k))
-        var RA=(1/k)*atan2(cos(eps*k)*sin(L*k),cos(L*k))
-        
-        RA=(RA+360) % 360
-        
-        // compute sidearal time
-        var GMST=280.46061837+360.98564736629*jj+0.000387933*T*T-T*T*T/38710000
-        
-        GMST=(GMST+360) % 360
-        
-        var LMST=GMST+lg
-        var H=LMST-RA
-        var eqt=(Lo-RA)*4
+    var T = jj / 36525;
+    var k = Math.PI / 180.0;
+    var M=357.5291 + 35999.0503 * T - 0.0001559 * T*T - 0.00000045 * T*T*T
 
-        var azm=(1/k)*atan2(-sin(H*k),cos(la*k)*tan(delta*k)-sin(la*k)*cos(H*k))            
-        azm=(azm+360) % 360
+    M = M % 360
+    
+    var Lo = 280.46645 + 36000.76983 * T + 0.0003032 * T*T
+    
+    Lo = Lo % 360
+    
+    var DL = (1.9146 - 0.004817 * T - 0.000014 * T*T) * Math.sin(k * M) + (0.019993 - 0.000101 * T) * Math.sin(k * 2 * M) + 0.00029 * Math.sin(k * 3 * M)
+    var L = Lo + DL
+    var eps = 23.43999 - 0.013 * T
+    var delta = (1 / k) * Math.asin(Math.sin(L * k) * Math.sin(eps * k))
+    var RA = (1 / k) * Math.atan2(Math.cos(eps * k) * Math.sin(L* k ),Math.cos(L * k))
+    
+    RA = (RA + 360) % 360
+    
+    // compute sidearal time
+    var GMST=280.46061837 + 360.98564736629 * jj + 0.000387933 * T*T - T*T*T / 38710000
+    
+    GMST=(GMST+360) % 360
+    
+    var LMST=GMST+lg
+    var H=LMST-RA
+    var eqt=(Lo-RA)*4
 
-        var alt=(1/k)*asin(sin(la*k)*sin(delta*k)+cos(la*k)*cos(delta*k)*cos(H*k))
+    var azm = (1 / k) * Math.atan2(-Math.sin(H * k), Math.cos(la * k) * Math.tan(delta * k)- Math.sin(la*k)* Math.cos(H*k))            
+    azm = (azm + 360) % 360
 
-        return {'altitude': alt, 'azimuth': azm}
-    }
+    var alt = (1 / k) * Math.asin(Math.sin(la * k) * Math.sin(delta*k) + Math.cos(la*k) * Math.cos(delta*k) * Math.cos(H*k))
+
+    return {'altitude': alt, 'azimuth': azm}
 }
 
 // returns the first time when the sun goes above the given angle
