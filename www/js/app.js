@@ -18,7 +18,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
     global.radiusOfEarthInMeters = 6378100.0;
     global.radiusOfCircleInMeters = 1000.0;
 
-
     global.hasTouch = ('ontouchstart' in window) ||
                    window.DocumentTouch &&
                    document instanceof DocumentTouch;
@@ -113,97 +112,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         mapCenterChanged();
     };
 
-
-    // returns an OpenLayers.Geometry.Point that is a given distance from the map center
-    // and distance in kilometers
-    function createPointFromBearingAndDistance(bearing, distance) {
-        // see http://www.movable-type.co.uk/scripts/latlong.html
-
-        // convert lat and long from degrees to radians
-        var lat1 = 2 * Math.PI  * global.mapCenterPosition.lat / 360.0;
-        var lon1 = 2 * Math.PI  * global.mapCenterPosition.lon / 360.0;
-
-        // compute destination in radians
-
-        var lat2 = Math.asin( Math.sin(lat1)*Math.cos(distance / global.radiusOfEarthInMeters) + 
-            Math.cos(lat1) * Math.sin(distance / global.radiusOfEarthInMeters) * Math.cos(bearing) );
-
-        var lon2 = lon1 + Math.atan2(Math.sin(bearing) * Math.sin(distance / global.radiusOfEarthInMeters) * Math.cos(lat1), 
-            Math.cos(distance / global.radiusOfEarthInMeters) - Math.sin(lat1) * Math.sin(lat2));
-
-        // create new point from destination in radians
-        return new OpenLayers.Geometry.Point(360.0 * lon2 / (2 * Math.PI), 360.0 * lat2 / (2 * Math.PI)).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                global.map.getProjectionObject() // to Spherical Mercator Projection
-            );
-    }
-
-    // draw a radial line from the map center position at the azimuth determined by the sun's angle
-    // at the given time of day
-    function drawRadialLine(theColor, fractionStart, fractionStop) {
-        var bearing = 2 * Math.PI * global.currentSunPosition.azimuth / 360;
-
-        var points = new Array(
-            createPointFromBearingAndDistance(bearing, fractionStop * global.radiusOfCircleInMeters),
-            createPointFromBearingAndDistance(bearing, fractionStart * global.radiusOfCircleInMeters)
-        );
-
-        // make a line from the transformed points
-        var line = new OpenLayers.Geometry.LineString(points);
-
-        var lineStyle = { 
-            strokeColor: theColor, 
-            strokeOpacity: 1.0,
-            fillOpacity: 1.0,
-            strokeWidth: 4, 
-            fillColor: theColor
-        };
-
-        // turn the line into a feature with the given style
-        var lineFeature = new OpenLayers.Feature.Vector(line, null, lineStyle);
-        global.lineLayer.addFeatures([lineFeature]);
-    }
-
-    function computeRadialSectionPoints(startAzimuthInRadians, stopAzimuthInRadians, startFraction, stopFraction) {
-        var points = new Array();
-
-        // draw the points around the edge of the circle
-        for (var bearing = startAzimuthInRadians; bearing <= stopAzimuthInRadians; bearing += 0.2) {
-            points.push(createPointFromBearingAndDistance(bearing, stopFraction * global.radiusOfCircleInMeters))
-        }
-
-        // add one last point around the circle for the final bearing
-        points.push(createPointFromBearingAndDistance(stopAzimuthInRadians, stopFraction * global.radiusOfCircleInMeters));
-
-        // draw the points around the edge of the circle
-        for (var bearing = stopAzimuthInRadians; bearing >= startAzimuthInRadians; bearing -= 0.2) {
-            points.push(createPointFromBearingAndDistance(bearing, startFraction * global.radiusOfCircleInMeters))
-        }
-
-        // add one last point around the circle for the final bearing
-        points.push(createPointFromBearingAndDistance(startAzimuthInRadians, startFraction * global.radiusOfCircleInMeters));
-
-        return points;
-    }
-
-    function fillPolygon(points, theColor) {
-        // make a line from the transformed points
-        var line = new OpenLayers.Geometry.LineString(points);
-
-        var lineStyle = { 
-            strokeColor: theColor, 
-            strokeOpacity: 0.5,
-            fillOpacity: 1.0,
-            stroke: false, 
-            fillColor: theColor,
-        };
-
-        var linear_ring = new OpenLayers.Geometry.LinearRing(points);
-        var polygonFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([linear_ring]), null, lineStyle);
-
-        global.lineLayer.addFeatures([polygonFeature]);
-    }
-
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     function drawRadialSection(startName, stopName, startFraction, stopFraction, theColor, theID) {
@@ -238,14 +146,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             ellipticalArc.r2 = arcRadius;
             ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
             ellipticalArc.y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
-
-        // <path stroke='red' stroke-width=10 d="M120,25 A 95 95 0 0 1 215 120" style='fill: none' />
-        // <path stroke='blue' stroke-width=10 d="M215,120 A 95 95 0 0 1 120 215" style='fill: none' />
-        // <path stroke='yellow' stroke-width=10 d="M120,215 A 95 95 0 0 1 25 120" style='fill: none' />
-        // <path stroke='green' stroke-width=10 d="M25,120 A 95 95 0 0 1 120 25" style='fill: none' />       
-
-
-            fillPolygon(computeRadialSectionPoints(startAzimuthInRadians, stopAzimuthInRadians, startFraction, stopFraction), theColor);
         }
     }
 
@@ -312,16 +212,11 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                 $('#shadow').show();
                 $('#shortsunangle').hide();
                 $('#shortshadow').hide();
-
-                drawRadialLine(color, 0.0, 1.2);
-                drawRadialLine('#000000', 0.0, -0.8);
             } else {
                 $('#shortsunangle').show();
                 $('#shortshadow').show();
                 $('#sunangle').hide();
                 $('#shadow').hide();
-                drawRadialLine('#000000', 0.9, 1.2);
-                drawRadialLine('#000000', 0.0, -0.2);
             }
         } else {
             $('#sunangle').hide();
@@ -331,11 +226,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         }
 
         $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
-
-        // TODO: make this look like a pin or something
-        var markerPoint = createPointFromBearingAndDistance(0.0, 0.0);
-        var markerFeature = new OpenLayers.Feature.Vector(markerPoint, {}, { graphicName: 'circle', pointRadius: 10, strokeColor: '#000', strokeWidth: 2 });
-        global.lineLayer.addFeatures([markerFeature]);
     }
 
     function privateLabelHours() {
@@ -363,36 +253,8 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
                 var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
-                var tickMarkPoints = new Array(
-                    createPointFromBearingAndDistance(bearing, 1.0 * global.radiusOfCircleInMeters),
-                    createPointFromBearingAndDistance(bearing, 1.02 * global.radiusOfCircleInMeters)
-                );
-
-                // make a line from the transformed points
-                var tickMark = new OpenLayers.Geometry.LineString(tickMarkPoints);
-
-                // turn the line into a feature with the given style
-                var tickMarkFeature = new OpenLayers.Feature.Vector(tickMark, null, tickMarkStyle);
-                global.lineLayer.addFeatures([tickMarkFeature]);
-
                 if (hourMarkSunPositionInDegrees.altitude < 45) {
                     $('#hour'+hourIndex).show();
-
-                    var hourLabelPoints = new Array(
-                        createPointFromBearingAndDistance(bearing, 1.1 * global.radiusOfCircleInMeters),
-                        createPointFromBearingAndDistance(bearing, 1.2 * global.radiusOfCircleInMeters)
-                    );
-
-                    // make a line from the transformed points
-                    var hourLabel = new OpenLayers.Geometry.LineString(hourLabelPoints);
-
-                    // turn the line into a feature with the given style
-                    var hoursLabel = hourIndex + "";
-                    if (hourIndex < 10) {
-                        hoursLabel = "0" + hourIndex;
-                    }
-                    var hourLabelFeature = new OpenLayers.Feature.Vector(hourLabel, null, { stroke: false, label: hoursLabel, fontSize: '10pt' });
-                    global.lineLayer.addFeatures([hourLabelFeature]);
                 } else {
                     $('#hour'+hourIndex).hide();
                 }
@@ -426,9 +288,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         global.radiusOfCircleInMeters = Math.min(windowBounds.top - windowBounds.bottom, windowBounds.right - windowBounds.left) / 3.5;
         // but don't go above a certain size no matter what.
         global.radiusOfCircleInMeters = Math.min(global.radiusOfCircleInMeters, 500000);
-
-        // remove all features from the layer
-        global.lineLayer.removeAllFeatures();
 
         // draw radial sections in different colors using today's lightTimes
         privateDrawCircles();
@@ -477,11 +336,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         // global.map.addLayer(cloudCoverTiles);
         // global.map.addLayer(openCycleTiles);
         // global.map.addLayer(aerialTiles);
-
-        // create a line layer, for drawing lines to show sun direction
-        global.lineLayer = new OpenLayers.Layer.Vector("Line Layer", {}); 
-        global.map.addLayer(global.lineLayer);     
-        global.lineLayer.setVisibility(false);  
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {
