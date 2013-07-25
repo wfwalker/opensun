@@ -586,49 +586,8 @@ div.olControlZoom {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
-  margin: 0;
   height: 100%;
   width: 100%;
-  
-  
-  display: -webkit-box;
-  display: -moz-box;
-  
-  display: -ms-flexbox;
-  
-  display: -webkit-flex;
-  display: flex;
-  
-  -webkit-box-align: center;
-  -moz-box-align: center;
-  
-  -ms-flex-align: center;
-  
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-}
-.centerme {
-  
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-align: center;
-  -moz-box-align: center;
-  -ms-flex-align: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  -webkit-box-pack: center;
-  -moz-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-align-items: center;
-  align-items: center;
 }
 text.hourlabel {
   font-size: 70%;
