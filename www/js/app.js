@@ -478,6 +478,8 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             $("#aboutContainer").fadeOut();            
         });
 
+        $('#findtext').bind(global.actEvent, function (e) { this.select() });
+
         $('#findform').submit(function(e) {
             e.preventDefault();
 
