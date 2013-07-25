@@ -66,9 +66,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         localStorage.setItem("latitude", global.mapCenterPosition.lat);
         localStorage.setItem("longitude", global.mapCenterPosition.lon);
         localStorage.setItem("zoom", global.map.getZoom());
-
-        console.log("DELTA " + delta);
-        return delta;
     }
 
     function currentTimeChanged(newTime) {
@@ -209,7 +206,8 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
-    function drawRadialSection(startName, stopName, startFraction, stopFraction, theColor) {
+    function drawRadialSection(startName, stopName, startFraction, stopFraction, theColor, theID) {
+        console.log("START drawRadialSection " + theID);
         if (global.lightTimes[startName] & global.lightTimes[stopName]) {
             var startAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
@@ -220,6 +218,29 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             }
 
             var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
+
+            // show this one
+            $('#' + theID).show();
+
+            // MOVE TO
+            var arcRadius = (theID == 'sunlight') ? 105 : 95;
+            var pathSegList = $('#' + theID)[0].pathSegList
+            pathSegList[0].x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
+            pathSegList[0].y = 120 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
+            // ELLIPTICAL ARC
+            pathSegList[1].angle = 0;
+            pathSegList[1].largeArcFlag = (theID == 'sunlight');
+            pathSegList[1].sweepFlag = false;
+            pathSegList[1].r1 = arcRadius;
+            pathSegList[1].r2 = arcRadius;
+            pathSegList[1].x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
+            pathSegList[1].y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
+
+        // <path stroke='red' stroke-width=10 d="M120,25 A 95 95 0 0 1 215 120" style='fill: none' />
+        // <path stroke='blue' stroke-width=10 d="M215,120 A 95 95 0 0 1 120 215" style='fill: none' />
+        // <path stroke='yellow' stroke-width=10 d="M120,215 A 95 95 0 0 1 25 120" style='fill: none' />
+        // <path stroke='green' stroke-width=10 d="M25,120 A 95 95 0 0 1 120 25" style='fill: none' />       
+
 
             fillPolygon(computeRadialSectionPoints(startAzimuthInRadians, stopAzimuthInRadians, startFraction, stopFraction), theColor);
         }
@@ -274,16 +295,36 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             }
         }
 
+        $('#sunangle')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
+        $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
+        $('#sunangle')[0].style.setProperty('stroke', color);
+        $('#shadow')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
+        $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
+
         $('#trafficlight').attr('style', 'background-color: ' + color);
 
         if (global.currentSunPosition.altitude > 0) {
             if (global.currentSunPosition.altitude < 40) {
+                $('#sunangle').show();
+                $('#shadow').show();
+                $('#shortsunangle').hide();
+                $('#shortshadow').hide();
+
                 drawRadialLine(color, 0.0, 1.2);
                 drawRadialLine('#000000', 0.0, -0.8);
             } else {
+                $('#shortsunangle').show();
+                $('#shortshadow').show();
+                $('#sunangle').hide();
+                $('#shadow').hide();
                 drawRadialLine('#000000', 0.9, 1.2);
                 drawRadialLine('#000000', 0.0, -0.2);
             }
+        } else {
+            $('#sunangle').hide();
+            $('#shadow').hide();
+            $('#shortsunangle').hide();
+            $('#shortshadow').hide();
         }
 
         $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
@@ -311,7 +352,12 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
             var hourMarkSunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, hourMarksDate);
 
+            $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
+            $('#hour'+hourIndex)[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
+
             if (hourMarkSunPositionInDegrees.altitude >= -1) {
+                $('#hour'+hourIndex+'tick').show();
+
                 var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
 
                 var tickMarkPoints = new Array(
@@ -327,6 +373,7 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                 global.lineLayer.addFeatures([tickMarkFeature]);
 
                 if (hourMarkSunPositionInDegrees.altitude < 45) {
+                    $('#hour'+hourIndex).show();
 
                     var hourLabelPoints = new Array(
                         createPointFromBearingAndDistance(bearing, 1.1 * global.radiusOfCircleInMeters),
@@ -343,7 +390,12 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                     }
                     var hourLabelFeature = new OpenLayers.Feature.Vector(hourLabel, null, { stroke: false, label: hoursLabel, fontSize: '10pt' });
                     global.lineLayer.addFeatures([hourLabelFeature]);
+                } else {
+                    $('#hour'+hourIndex).hide();
                 }
+            } else {
+                $('#hour'+hourIndex+'tick').hide();
+                $('#hour'+hourIndex).hide();
             }
         }
     }
@@ -351,13 +403,15 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
     function privateDrawCircles() {
         var radialSectionFraction = 0.9;
 
+        $('path').hide();
+
         // draw some constant circles
-        drawRadialSection('predawn', 'sunset', 1.0, 1.2, '#FFFFFF');
+        drawRadialSection('predawn', 'sunset', 1.0, 1.2, '#FFFFFF', 'sunlight');
 
         // for each range, draw a radial section with the right color.
         for (rangeName in global.lightRanges) {
             rangeData = global.lightRanges[rangeName];
-            drawRadialSection(rangeData[0], rangeData[1], radialSectionFraction, 1.0, rangeData[2]);
+            drawRadialSection(rangeData[0], rangeData[1], radialSectionFraction, 1.0, rangeData[2], rangeName);
         }
     }
 
@@ -380,15 +434,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         privateLabelHours();
 
         privateDrawShadow(global.currentSunPosition);
-
-        // TODO make this work
-        // if (delta)
-        //     var features = global.lineLayer.features;
-        //     var mapCenter = global.map.getCenter();
-        //     for (var index = 0; index < features.length; index++) {
-        //         features[index].move(mapCenter);
-        //     }
-        // }
     }
 
     $(document).ready(function(){
@@ -432,7 +477,8 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
         // create a line layer, for drawing lines to show sun direction
         global.lineLayer = new OpenLayers.Layer.Vector("Line Layer", {}); 
-        global.map.addLayer(global.lineLayer);       
+        global.map.addLayer(global.lineLayer);     
+        global.lineLayer.setVisibility(false);  
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {

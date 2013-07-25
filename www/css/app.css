@@ -40,7 +40,7 @@ body { margin: 0; font-size: 1.8em; line-height: 1.4; height: 100%;}
 
 @media only screen and (max-width: 33em) { 
     body { 
-        font-size:1.2em; 
+        font-size:1.2em;
     }
 
   #aboutContainer { font-size: 80%;}
@@ -320,6 +320,67 @@ div.olControlZoom {
   background-image: -moz-linear-gradient(top, rgba(242,245,246,1) 0%, rgba(227,234,237,1) 37%, rgba(200,215,220,1) 100%);
 }
 
+#shotclockContainer {
+  position: absolute;
+  z-index: 10000;
+  top: 1px;
+  left: 1px;
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
+/* see http://jsfiddle.net/BenedictLewis/QDUKA/ */
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  /* width needed for Firefox */
+  /* old flexbox - Webkit and Firefox. For backwards compatibility */
+  display: -webkit-box;
+  display: -moz-box;
+  /* middle-aged flexbox. Needed for IE 10 */
+  display: -ms-flexbox;
+  /* new flexbox. Chrome (prefix), Opera, upcoming browsers without */
+  display: -webkit-flex;
+  display: flex;
+  /* old flexbox: box-* */
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  /* middle flexbox: flex-* */
+  -ms-flex-align: center;
+  /* new flexbox: various property names */
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.centerme {
+/* see http://jsfiddle.net/BenedictLewis/QDUKA/ */  
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+text.hourlabel {
+  font-size: 70%;
+}
 
 #textSummaryContainer {
   position: absolute;
