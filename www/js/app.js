@@ -224,17 +224,20 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
             // MOVE TO
             var arcRadius = (theID == 'sunlight') ? 105 : 95;
-            var pathSegList = $('#' + theID)[0].pathSegList
-            pathSegList[0].x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
-            pathSegList[0].y = 120 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
+            var pathSegList = $('#' + theID)[0].pathSegList;
+            moveTo = pathSegList.getItem(0);
+            moveTo.x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
+            moveTo.y = 120 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
+
             // ELLIPTICAL ARC
-            pathSegList[1].angle = 0;
-            pathSegList[1].largeArcFlag = (theID == 'sunlight');
-            pathSegList[1].sweepFlag = false;
-            pathSegList[1].r1 = arcRadius;
-            pathSegList[1].r2 = arcRadius;
-            pathSegList[1].x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
-            pathSegList[1].y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
+            ellipticalArc = pathSegList.getItem(1);
+            ellipticalArc.angle = 0;
+            ellipticalArc.largeArcFlag = (theID == 'sunlight');
+            ellipticalArc.sweepFlag = false;
+            ellipticalArc.r1 = arcRadius;
+            ellipticalArc.r2 = arcRadius;
+            ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
+            ellipticalArc.y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
 
         // <path stroke='red' stroke-width=10 d="M120,25 A 95 95 0 0 1 215 120" style='fill: none' />
         // <path stroke='blue' stroke-width=10 d="M215,120 A 95 95 0 0 1 120 215" style='fill: none' />
