@@ -14,10 +14,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
     var global = this;
 
-    // radius of Earth = 6,378,100 meters
-    global.radiusOfEarthInMeters = 6378100.0;
-    global.radiusOfCircleInMeters = 1000.0;
-
     global.hasTouch = ('ontouchstart' in window) ||
                    window.DocumentTouch &&
                    document instanceof DocumentTouch;
@@ -87,7 +83,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         }
 
         $('#dateLabel').text(getShortDateString(global.currently));
-        console.log("set date picker to " + global.currently);
         $('#datepicker')[0].chosen = global.currently;
         $('#datepicker')[0].view = global.currently;
         $('#hourLabel').text(getShortTimeString(global.currently));
@@ -229,14 +224,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
     }
 
     function privateLabelHours() {
-        var tickMarkStyle = { 
-            strokeColor: '#222222', 
-            strokeOpacity: 0.9,
-            fillOpacity: 0.9,
-            strokeWidth: 2, 
-            fillColor: '#222222',
-        };
-
         for (var hourIndex = 0; hourIndex < 24; hourIndex++) {
             var hourMarksDate = new Date(global.currently);
             hourMarksDate.setHours(hourIndex);
@@ -245,15 +232,12 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
             var hourMarkSunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, hourMarksDate);
 
-            $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
-            $('#hour'+hourIndex)[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
-
             if (hourMarkSunPositionInDegrees.altitude >= -1) {
+                $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
                 $('#hour'+hourIndex+'tick').show();
 
-                var bearing = 2 * Math.PI * hourMarkSunPositionInDegrees.azimuth / 360.0;
-
                 if (hourMarkSunPositionInDegrees.altitude < 45) {
+                    $('#hour'+hourIndex)[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
                     $('#hour'+hourIndex).show();
                 } else {
                     $('#hour'+hourIndex).hide();
@@ -283,11 +267,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
     // draws the sun rose at the current map center using information in the global data structure
     function logCurrentSunPosition(delta) {
         var windowBounds = global.map.calculateBounds();
-
-        // scale up the radius of the circle according to the bounds of the map
-        global.radiusOfCircleInMeters = Math.min(windowBounds.top - windowBounds.bottom, windowBounds.right - windowBounds.left) / 3.5;
-        // but don't go above a certain size no matter what.
-        global.radiusOfCircleInMeters = Math.min(global.radiusOfCircleInMeters, 500000);
 
         // draw radial sections in different colors using today's lightTimes
         privateDrawCircles();
