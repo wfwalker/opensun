@@ -2,17 +2,16 @@
 // The code below uses require.js, a module system for javscript:
 // http://requirejs.org/docs/api.html#define
 
-// // Set the path to jQuery, which will fall back to the local version
-// // if google is down
-// require.config({
-//     baseUrl: "js/lib",
-// });
+// Set the path to jQuery, which will fall back to the local version
+// if google is down
+require.config({
+    baseUrl: "js/lib",
+});
 
-// // When you write javascript in separate files, list them as
-// // dependencies along with jquery
-// require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
+// When you write javascript in separate files, list them as
+// dependencies along with jquery
+require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
-    console.log("TOP")
     var global = this;
 
     global.hasTouch = ('ontouchstart' in window) ||
@@ -470,9 +469,9 @@
 
     });
 
-//     // If using Twitter Bootstrap, you need to require all the
-//     // components that you use, like so:
-//     // require('bootstrap/dropdown');
-//     // require('bootstrap/alert');
-// });
+    // If using Twitter Bootstrap, you need to require all the
+    // components that you use, like so:
+    // require('bootstrap/dropdown');
+    // require('bootstrap/alert');
+});
 
