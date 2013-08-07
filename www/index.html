@@ -22,18 +22,8 @@
     <!-- All JavaScript at the bottom, except this Modernizr build.
          Modernizr enables HTML5 elements & feature detects for optimal performance.
          Create your own custom Modernizr build: www.modernizr.com/download/ -->
-    <script src="js/lib/modernizr-2.5.3.min.js"></script>
     <script src="js/lib/jquery.js"></script>
     <script src="js/lib/l10n.js"></script>
-
-    <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
-         mathiasbynens.be/notes/async-analytics-snippet -->
-    <script>
-      var _gaq=[['_setAccount','UA-41089708-2'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script>
 
   </head>
   <body>
@@ -231,7 +221,10 @@
          http://requirejs.org/docs/api.html#jsfiles -->
 
     <script type="text/javascript" src="js/lib/brick.js" charset="utf-8"></script>
-         
-    <script type="text/javascript" data-main="js/app.js" src="js/lib/require.js" charset="utf-8"></script>
-  </body>
+    <script type="text/javascript" src="js/lib/date.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/lib/utils.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/lib/OpenLayers.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/lib/l10n.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/app.js" charset="utf-8"></script>
+           </body>
 </html>
