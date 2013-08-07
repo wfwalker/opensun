@@ -1,11 +1,4 @@
 
-// The code below uses require.js, a module system for javscript:
-// http://requirejs.org/docs/api.html#define
-
-// When you write javascript in separate files, list them as
-// dependencies along with jquery
-require([], function() {
-
     var global = this;
 
     global.hasTouch = ('ontouchstart' in window) ||
@@ -462,10 +455,3 @@ require([], function() {
         });
 
     });
-
-    // If using Twitter Bootstrap, you need to require all the
-    // components that you use, like so:
-    // require('bootstrap/dropdown');
-    // require('bootstrap/alert');
-});
-
