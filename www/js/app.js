@@ -10,7 +10,7 @@ require.config({
 
 // When you write javascript in separate files, list them as
 // dependencies along with jquery
-require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
+require([], function() {
 
     var global = this;
 
