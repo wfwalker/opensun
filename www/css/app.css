@@ -257,69 +257,6 @@ div.olControlZoom {
   top:1px;
 }
 
-#buttonContainer {
-  position: absolute;
-  z-index: 100000;
-  top: 3px;
-  left: 3px;
-  padding: 5px;
-  background: white;
-  opacity: 0.9
-}
-
-#errorMessageContainer {
-  display: none;
-  position: absolute;
-  z-index: 100000;
-  top: 240px;
-  left: 3px;
-  padding: 5px;
-  background: white;
-  opacity: 0.9
-}
-
-#helpContainer {
-  display: none;
-  position: absolute;
-  z-index: 100001;
-  top: 0px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  background: white;
-  opacity: 1.0
-}
-
-#timeContainer {
-  display: none;
-  padding: 10px;
-  width: 12em;
-}
-
-#placeContainer {
-  display: none;
-  padding: 10px;
-  width: 12em;
-}
-
-#sunContainer {
-  display: none;
-  padding-bottom: 10px;
-}
-
-#aboutContainer {
-  position: absolute;
-  z-index: 100001;
-  top: 0px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  background: white;
-  opacity: 1.0;
-  text-align: center;
-  background-image: -moz-linear-gradient(top, rgba(242,245,246,1) 0%, rgba(227,234,237,1) 37%, rgba(200,215,220,1) 100%);
-}
-
 #shotclockContainer {
   position: absolute;
   z-index: 10000;
@@ -339,13 +276,8 @@ text.hourlabel {
   font-size: 70%;
 }
 
-#textSummaryContainer {
-  position: absolute;
-  z-index: 99999;
-  bottom: 5px;
-  left: 3px;
-  padding: 3px;
-  background: white;
+#currentAzimuth {
+  font-size: 90%;
 }
 
 /* ==|== media queries ======================================================

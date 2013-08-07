@@ -37,188 +37,191 @@
 
   </head>
   <body>
-    <!-- Add your site or application content here -->
 
-    <div id="errorMessageContainer">
-      <div><span style="color: red" id="errorMessageLabel"></span></div>
-    </div>
-
-    <div id="buttonContainer">
-      <a class="myButton" data-l10n-id="placebutton" id="placebutton" href="#">Place</a>
-      <a class="myButton" data-l10n-id="timebutton" id="timebutton" href="#">Time</a>
-      <a class="myButton" id="helpbutton" href="#">&nbsp;?&nbsp;</a>
-      <a class="myButton" id="aboutbutton" href="#"><img id="aboutbuttonimage" height="24px" width="24px" src="img/shotclock-logo-64.png" /></a>
-
-      <div id="placeContainer">
-        <span data-l10n-id="showsunanglefor">Show sun for</span>:
-        <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
-
-        <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun for</span>:</div>
-
-        <form id="findform">
-          <input id="findtext" type="text" value="location name" />
-          <div style="padding-top: 0.5em"><input class="myButton" data-l10n-id="findbutton" type="submit" value="Find" onclick="" /></div>
-          <span id="placelookupspinner"></span>
-        </form>
-      </div>
-
-      <div id="timeContainer">
+    <x-layout id="app">
+      <x-appbar>
         <div>
-          <div style='padding: 0.5em 0em 1em 0em'>
+          <span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span>
+          <span id="currentAzimuth"></span>
+        </div>
+        <header>
+        </header>
+        <x-action>
+          <span><img id="aboutbuttonimage" height="24px" width="24px" src="img/shotclock-logo-64.png" /></span>
+        </x-action>
+      </x-appbar>
+      <section>
+        <x-deck>
+          <x-card id="about">
+            <center>
+              <div style="text-align: left; padding: 30px">
+                <p>ShotClock is made with Mortar, OpenLayers, and OpenStreetMaps</p>
+
+                <p>If you like ShotClock and find it useful, please consider making a contribution to
+                  <a href='http://www.audubon.org/search-by-zip' target='_blank'>your local Audubon chapter</a>, or
+                  <a href='http://www.scvas.org/index.php?page=text&id=donate' target='_blank'>mine</a>!</p>
+
+                <p>Bill Walker</p>
+              </div>
+            </center>
+          </x-card>
+
+          <x-card id="place" style='padding: 10px'>
             <span data-l10n-id="showsunanglefor">Show sun for</span>:
-            <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a>
-          </div>
+            <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
 
-          <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
-        </div>
+            <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun for</span>:</div>
 
-        <div style="padding: 0.5em 0em 0em 0em">
-          <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
-          <div>
-            <span style='float: left'>0</span>
-            <span style='padding-left: 35%; text-align: center' id="hourLabel"></span>
-            <span style='float: right'>24</span>
-          </div>
-        </div>
-      </div>
+            <form id="findform">
+              <input id="findtext" type="text" value="location name" />
+              <input class="myButton" data-l10n-id="findbutton" type="submit" value="Find" onclick="" />
+              <span id="placelookupspinner"></span>
+            </form>
+          </x-card>
 
-    </div>
+          <x-card id="time" style='padding: 10px'>
+            <div style='padding: 0.5em 0em 1em 0em'>
+              <span data-l10n-id="showsunanglefor">Show sun for</span>:
+              <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#" disabled='true'>Current Time</a>
+            </div>
 
-    <div id="helpContainer">
-      <div>&nbsp;</div>
-      <center>
-      <div style="text-align: left; padding: 30px">
-        <div>
-          <img src="img/time-menu.png" width='95px' align='left' />
-          Use these controls to set the date and time of day displayed in the ShotClock.
-          Use the 'Track Now' button to resume displaying the current date and time of day.
-        </div>
-        <br clear='all' />
-        <div>
-          <img src="img/place-menu.png" align='right' width='156px' />
-          Use these controls to center the ShotClock and map on your current location or a location you search for.
-        </div>
-        <br clear='all' />
-        <div>
-          <img src="img/shotclock.png" align='left' width='95px' />
-          The ShotClock displays the sun angle on the selected day and time with green and red indicating good and bad light.
-        </div>
-      </div>
-      <div style="position: absolute; bottom: 10px; text-align: center; width: 100%"><i>click anywhere to continue</i></div>
-      </center>
-    </div>
+            <div style="padding: 0.5em 0em 0em 0em; width: 11.5em">
+              <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
 
-    <div id="aboutContainer">
-      <center>
-        <div style="text-align: left; padding: 30px">
-          <div style='font-size: 24pt; vertical-align: bottom'><img width="64px" style='padding-right: 5px; vertical-align: bottom' src="img/shotclock-logo-64.png" />ShotClock</div>
+              <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
+              <div>
+                <span style='float: left'>0</span>
+                <span style='padding-left: 35%; text-align: center' id="hourLabel"></span>
+                <span style='float: right'>24</span>
+              </div>
+            </div>
+          </x-card>
 
-          <p>ShotClock is made with Mortar, OpenLayers, and OpenStreetMaps</p>
+          <x-card id="help">
+            <center>
+            <div style="text-align: left; padding: 30px">
+              <div>
+                <img src="img/time-menu.png" width='95px' align='left' />
+                Use these controls to set the date and time of day displayed in the ShotClock.
+                Use the 'Track Now' button to resume displaying the current date and time of day.
+              </div>
+              <br clear='all' />
+              <div>
+                <img src="img/place-menu.png" align='right' width='156px' />
+                Use these controls to center the ShotClock and map on your current location or a location you search for.
+              </div>
+              <br clear='all' />
+              <div>
+                <img src="img/shotclock.png" align='left' width='95px' />
+                The ShotClock displays the sun angle on the selected day and time with green and red indicating good and bad light.
+              </div>
+            </div>
+            </center>
+          </x-card>
 
-          <p>If you like ShotClock and find it useful, please consider making a contribution to
-            <a href='http://www.audubon.org/search-by-zip' target='_blank'>your local Audubon chapter</a>, or
-            <a href='http://www.scvas.org/index.php?page=text&id=donate' target='_blank'>mine</a>!</p>
+          <x-card id="summary" style='padding: 10px'>
+            <div id="sunContainer">
+            </div>
 
-          <p>Bill Walker</p>
+            <div>
+               
+              <span id="currentAzimuth"></span>
+            </div>
+          </x-card>    
 
-          <p>&nbsp;</p>
+          <x-card id="map">
+            <div id="mapdiv">
+            </div>
 
-        </div>
-        <div style="position: absolute; bottom: 10px; text-align: center; width: 100%"><i>click anywhere to continue</i></div>
-      </center>
-    </div>
+            <div id="shotclockContainer">
+            <table style='vertical-align: middle; text-align: center' height='100%' width='100%'>
+            <tr style='vertical-align: middle; text-align: center' height='100%' width='100%'>
+            <td style='vertical-align: middle; text-align: center' width='240px' height='240px'>
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='240px' height='240px'>
+                <path id='sunlight' stroke='white' stroke-width=30 d="M120,25 A 100 100 0 0 1 215 120" style='fill: none' />
+                <path id='Predawn' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='Morning' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='Evening' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='Twilight' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='LateMorning' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='Midday' stroke='#999999' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='Afternoon' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
 
-    <div id="mapdiv">
-    </div>
+                <line id='sunangle' x1='120' y1='120' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
 
-    <div id="shotclockContainer">
-    <table style='vertical-align: middle; text-align: center' height='100%' width='100%'>
-    <tr style='vertical-align: middle; text-align: center' height='100%' width='100%'>
-    <td style='vertical-align: middle; text-align: center' width='240px' height='240px'>
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='240px' height='240px'>
-        <path id='sunlight' stroke='white' stroke-width=30 d="M120,25 A 100 100 0 0 1 215 120" style='fill: none' />
-        <path id='Predawn' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='Morning' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='Evening' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='Twilight' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='LateMorning' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='Midday' stroke='#999999' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='Afternoon' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-        <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                <line id='shortsunangle' x1='120' y1='40' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                <line id='shortshadow' x1='120' y1='120' x2='120' y2='150' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
 
-        <line id='sunangle' x1='120' y1='120' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
-        <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                <text text-anchor='middle' id='hour0' class='hourlabel' x='120' y='12' transform='rotate(0 120 120)'>00</text>
+                <text text-anchor='middle' id='hour1' class='hourlabel' x='120' y='12' transform='rotate(15 120 120)'>01</text>
+                <text text-anchor='middle' id='hour2' class='hourlabel' x='120' y='12' transform='rotate(30 120 120)'>02</text>
+                <text text-anchor='middle' id='hour3' class='hourlabel' x='120' y='12' transform='rotate(45 120 120)'>03</text>
+                <text text-anchor='middle' id='hour4' class='hourlabel' x='120' y='12' transform='rotate(60 120 120)'>04</text>
+                <text text-anchor='middle' id='hour5' class='hourlabel' x='120' y='12' transform='rotate(75 120 120)'>05</text>
+                <text text-anchor='middle' id='hour6' class='hourlabel' x='120' y='12' transform='rotate(90 120 120)'>06</text>
+                <text text-anchor='middle' id='hour7' class='hourlabel' x='120' y='12' transform='rotate(105 120 120)'>07</text>
+                <text text-anchor='middle' id='hour8' class='hourlabel' x='120' y='12' transform='rotate(120 120 120)'>08</text>
+                <text text-anchor='middle' id='hour9' class='hourlabel' x='120' y='12' transform='rotate(135 120 120)'>09</text>
+                <text text-anchor='middle' id='hour10' class='hourlabel' x='120' y='12' transform='rotate(150 120 120)'>10</text>
+                <text text-anchor='middle' id='hour11' class='hourlabel' x='120' y='12' transform='rotate(165 120 120)'>11</text>
+                <text text-anchor='middle' id='hour12' class='hourlabel' x='120' y='12' transform='rotate(180 120 120)'>12</text>
+                <text text-anchor='middle' id='hour13' class='hourlabel' x='120' y='12' transform='rotate(205 120 120)'>13</text>
+                <text text-anchor='middle' id='hour14' class='hourlabel' x='120' y='12' transform='rotate(210 120 120)'>14</text>
+                <text text-anchor='middle' id='hour15' class='hourlabel' x='120' y='12' transform='rotate(225 120 120)'>15</text>
+                <text text-anchor='middle' id='hour16' class='hourlabel' x='120' y='12' transform='rotate(240 120 120)'>16</text>
+                <text text-anchor='middle' id='hour17' class='hourlabel' x='120' y='12' transform='rotate(255 120 120)'>17</text>
+                <text text-anchor='middle' id='hour18' class='hourlabel' x='120' y='12' transform='rotate(270 120 120)'>18</text>
+                <text text-anchor='middle' id='hour19' class='hourlabel' x='120' y='12' transform='rotate(285 120 120)'>19</text>
+                <text text-anchor='middle' id='hour20' class='hourlabel' x='120' y='12' transform='rotate(300 120 120)'>20</text>
+                <text text-anchor='middle' id='hour21' class='hourlabel' x='120' y='12' transform='rotate(315 120 120)'>21</text>
+                <text text-anchor='middle' id='hour22' class='hourlabel' x='120' y='12' transform='rotate(330 120 120)'>22</text>
+                <text text-anchor='middle' id='hour23' class='hourlabel' x='120' y='12' transform='rotate(345 120 120)'>23</text>
 
-        <line id='shortsunangle' x1='120' y1='40' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
-        <line id='shortshadow' x1='120' y1='120' x2='120' y2='150' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                <line id='hour0tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(0 120 120)' />        
+                <line id='hour1tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(15 120 120)' />        
+                <line id='hour2tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(30 120 120)' />        
+                <line id='hour3tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(45 120 120)' />        
+                <line id='hour4tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(60 120 120)' />        
+                <line id='hour5tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(75 120 120)' />        
+                <line id='hour6tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(90 120 120)' />        
+                <line id='hour7tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(105 120 120)' />        
+                <line id='hour8tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(120 120 120)' />        
+                <line id='hour9tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(135 120 120)' />        
+                <line id='hour10tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(150 120 120)' />        
+                <line id='hour11tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(165 120 120)' />        
+                <line id='hour12tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(180 120 120)' />        
+                <line id='hour13tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(195 120 120)' />        
+                <line id='hour14tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(210 120 120)' />        
+                <line id='hour15tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(225 120 120)' />        
+                <line id='hour16tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(240 120 120)' />        
+                <line id='hour17tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(255 120 120)' />        
+                <line id='hour18tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(270 120 120)' />        
+                <line id='hour19tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(285 120 120)' />        
+                <line id='hour20tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(300 120 120)' />        
+                <line id='hour21tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(315 120 120)' />        
+                <line id='hour22tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(330 120 120)' />        
+                <line id='hour23tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(345 120 120)' />        
 
-        <text text-anchor='middle' id='hour0' class='hourlabel' x='120' y='12' transform='rotate(0 120 120)'>00</text>
-        <text text-anchor='middle' id='hour1' class='hourlabel' x='120' y='12' transform='rotate(15 120 120)'>01</text>
-        <text text-anchor='middle' id='hour2' class='hourlabel' x='120' y='12' transform='rotate(30 120 120)'>02</text>
-        <text text-anchor='middle' id='hour3' class='hourlabel' x='120' y='12' transform='rotate(45 120 120)'>03</text>
-        <text text-anchor='middle' id='hour4' class='hourlabel' x='120' y='12' transform='rotate(60 120 120)'>04</text>
-        <text text-anchor='middle' id='hour5' class='hourlabel' x='120' y='12' transform='rotate(75 120 120)'>05</text>
-        <text text-anchor='middle' id='hour6' class='hourlabel' x='120' y='12' transform='rotate(90 120 120)'>06</text>
-        <text text-anchor='middle' id='hour7' class='hourlabel' x='120' y='12' transform='rotate(105 120 120)'>07</text>
-        <text text-anchor='middle' id='hour8' class='hourlabel' x='120' y='12' transform='rotate(120 120 120)'>08</text>
-        <text text-anchor='middle' id='hour9' class='hourlabel' x='120' y='12' transform='rotate(135 120 120)'>09</text>
-        <text text-anchor='middle' id='hour10' class='hourlabel' x='120' y='12' transform='rotate(150 120 120)'>10</text>
-        <text text-anchor='middle' id='hour11' class='hourlabel' x='120' y='12' transform='rotate(165 120 120)'>11</text>
-        <text text-anchor='middle' id='hour12' class='hourlabel' x='120' y='12' transform='rotate(180 120 120)'>12</text>
-        <text text-anchor='middle' id='hour13' class='hourlabel' x='120' y='12' transform='rotate(205 120 120)'>13</text>
-        <text text-anchor='middle' id='hour14' class='hourlabel' x='120' y='12' transform='rotate(210 120 120)'>14</text>
-        <text text-anchor='middle' id='hour15' class='hourlabel' x='120' y='12' transform='rotate(225 120 120)'>15</text>
-        <text text-anchor='middle' id='hour16' class='hourlabel' x='120' y='12' transform='rotate(240 120 120)'>16</text>
-        <text text-anchor='middle' id='hour17' class='hourlabel' x='120' y='12' transform='rotate(255 120 120)'>17</text>
-        <text text-anchor='middle' id='hour18' class='hourlabel' x='120' y='12' transform='rotate(270 120 120)'>18</text>
-        <text text-anchor='middle' id='hour19' class='hourlabel' x='120' y='12' transform='rotate(285 120 120)'>19</text>
-        <text text-anchor='middle' id='hour20' class='hourlabel' x='120' y='12' transform='rotate(300 120 120)'>20</text>
-        <text text-anchor='middle' id='hour21' class='hourlabel' x='120' y='12' transform='rotate(315 120 120)'>21</text>
-        <text text-anchor='middle' id='hour22' class='hourlabel' x='120' y='12' transform='rotate(330 120 120)'>22</text>
-        <text text-anchor='middle' id='hour23' class='hourlabel' x='120' y='12' transform='rotate(345 120 120)'>23</text>
-
-        <line id='hour0tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(0 120 120)' />        
-        <line id='hour1tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(15 120 120)' />        
-        <line id='hour2tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(30 120 120)' />        
-        <line id='hour3tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(45 120 120)' />        
-        <line id='hour4tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(60 120 120)' />        
-        <line id='hour5tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(75 120 120)' />        
-        <line id='hour6tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(90 120 120)' />        
-        <line id='hour7tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(105 120 120)' />        
-        <line id='hour8tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(120 120 120)' />        
-        <line id='hour9tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(135 120 120)' />        
-        <line id='hour10tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(150 120 120)' />        
-        <line id='hour11tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(165 120 120)' />        
-        <line id='hour12tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(180 120 120)' />        
-        <line id='hour13tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(195 120 120)' />        
-        <line id='hour14tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(210 120 120)' />        
-        <line id='hour15tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(225 120 120)' />        
-        <line id='hour16tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(240 120 120)' />        
-        <line id='hour17tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(255 120 120)' />        
-        <line id='hour18tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(270 120 120)' />        
-        <line id='hour19tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(285 120 120)' />        
-        <line id='hour20tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(300 120 120)' />        
-        <line id='hour21tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(315 120 120)' />        
-        <line id='hour22tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(330 120 120)' />        
-        <line id='hour23tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(345 120 120)' />        
-
-        <circle cx='120' cy='120' r='12' style='fill: black'> </circle>
-      </svg>
-      </td>
-      </tr>
-      </table>
-    </div>
-
-    <div id="textSummaryContainer">
-      <div id="sunContainer">
-      </div>
-
-      <div>
-        <a class="myButton" id="sunbutton" href="#">
-          <span id="trafficlight" style="background-color: #0F960F">&nbsp;&nbsp;&nbsp;</span> <span id="currentAzimuth"></span>
-        </a>
-      </div>
-    </div>    
+                <circle cx='120' cy='120' r='12' style='fill: black'> </circle>
+              </svg>
+              </td>
+              </tr>
+              </table>
+            </div>
+            </x-card>
+        </x-deck>
+      </section>
+      <footer>
+        <x-tabbar>
+          <x-tabbar-tab target-selector="#place">Place</x-tabbar-tab>
+          <x-tabbar-tab target-selector="#time">Time</x-tabbar-tab>
+          <x-tabbar-tab target-selector="#summary">Table</x-tabbar-tab>
+          <x-tabbar-tab target-selector="#map">Map</x-tabbar-tab>
+        </x-tabbar>
+      </footer>
+    </x-layout>
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
 
