@@ -205,7 +205,9 @@
             $('#shortshadow').hide();
         }
 
-        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
+        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "°");
+        $('#currentTime').text(getShortTimeString(global.currently));
+        $('#currentDate').text(getShortDateString(global.currently));
     }
 
     function privateLabelHours() {
