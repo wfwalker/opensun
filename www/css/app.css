@@ -10,8 +10,6 @@
  * ==|== normalize ==========================================================
  */
 
-@import 'openlayersorg-theme-default-style.css';
-@import 'brick.css';
 
 /* =============================================================================
    HTML5 display definitions
@@ -287,6 +285,8 @@ text.hourlabel {
 #currentTime {
   font-size: 90%;
 }
+
+.x-appbar:before {content: none;}
 
 /* ==|== media queries ======================================================
    EXAMPLE Media Query for Responsive Design.
