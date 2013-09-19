@@ -1,17 +1,4 @@
 
-// The code below uses require.js, a module system for javscript:
-// http://requirejs.org/docs/api.html#define
-
-// Set the path to jQuery, which will fall back to the local version
-// if google is down
-require.config({
-    baseUrl: "js/lib",
-});
-
-// When you write javascript in separate files, list them as
-// dependencies along with jquery
-require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
-
     var global = this;
 
     global.hasTouch = ('ontouchstart' in window) ||
@@ -174,8 +161,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
         }
-
-        $('#sunContainer').append('<hr /><div>Highest sun angle: ' + global.lightTimes['highest'].toFixed(1) + '° </div>');        
     }
 
     // rerun whenever light times change or current time changes
@@ -220,7 +205,9 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             $('#shortshadow').hide();
         }
 
-        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "° at " + getShortTimeString(global.currently) + " on " + getShortDateString(global.currently));
+        $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "°");
+        $('#currentTime').text(getShortTimeString(global.currently));
+        $('#currentDate').text(getShortDateString(global.currently));
     }
 
     function privateLabelHours() {
@@ -278,7 +265,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
     }
 
     $(document).ready(function(){
-
         // create the map associated with the div
         global.map = new OpenLayers.Map("mapdiv", { theme : null });
 
@@ -352,7 +338,7 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
 
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
-            $("#aboutContainer").fadeOut();            
+            document.getElementById('map').show();            
         }, 500);
 
         // clicking the HERE button tries to geolocate
@@ -375,7 +361,7 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                     clearTimeout(location_timeout);
                     $('#geolocatespinner').html('');
                     centerMapAt(position.coords.longitude, position.coords.latitude, 15);
-                    $("#placeContainer").hide();            
+                    document.getElementById('map').show();
                 },
                 function(err) {
                     console.log("geolocate failure " + err);
@@ -432,52 +418,6 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
             }
         });
 
-        // clicking the help button opens the help screen
-        $("#helpbutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#helpContainer").fadeIn();            
-        });
-        $("#helpContainer").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#helpContainer").fadeOut();            
-        });
-
-        // clicking the install button offers to install the app
-        $("#installbutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            window.navigator.mozApps.install("http://" + window.location.hostname + window.location.pathname + "online.webapp", {});
-        });
-
-        // clicking the place button TOGGLES the place screen
-        $("#placebutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#timeContainer").hide();            
-            $("#placeContainer").slideToggle(2); 
-        });
-
-        // clicking the place button TOGGLES the place screen
-        $("#timebutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#placeContainer").hide();            
-            $("#timeContainer").slideToggle(2);            
-        });
-
-        // clicking the sun button TOGGLES the place screen
-        $("#sunbutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#sunContainer").slideToggle(2);            
-        });
-
-        // clicking the about box closes it
-        $("#aboutbutton").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#aboutContainer").fadeIn();            
-        });
-        $("#aboutContainer").bind(global.actEvent, function(e) {
-            e.preventDefault();
-            $("#aboutContainer").fadeOut();            
-        });
-
         $('#findtext').bind(global.actEvent, function (e) { this.select() });
 
         $('#findform').submit(function(e) {
@@ -504,7 +444,7 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
                  
                     if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
-                        $("#placeContainer").hide();            
+                        document.getElementById('map').show();
                     }
                     else
                     {
@@ -517,21 +457,3 @@ require(['date', 'OpenLayers', 'utils', 'l10n'], function() {
         });
 
     });
-
-    // If using Twitter Bootstrap, you need to require all the
-    // components that you use, like so:
-    // require('bootstrap/dropdown');
-    // require('bootstrap/alert');
-});
-
-// // Include the in-app payments API, and if it fails to load handle it
-// // gracefully.
-// // https://developer.mozilla.org/en/Apps/In-app_payments
-// require(['https://marketplace-cdn.addons.mozilla.net/mozmarket.js'],
-//         function() {},
-//         function(err) {
-//             global.mozmarket = global.mozmarket || {};
-//             global.mozmarket.buy = function() {
-//                 showErrorMessage('The in-app purchasing is currently unavailable.');
-//             };
-//         });

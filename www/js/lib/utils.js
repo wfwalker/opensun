@@ -7,7 +7,7 @@ function getShortTimeString(theDate) {
 
 // returns a short time string for the given object, using hours:minutes
 function getShortDateString(theDate) {
-    return theDate.toString("MMM d, yyyy");
+    return theDate.toString("MMM dd, yyyy");
 }
 
 // sun angles for rising and setting sun
