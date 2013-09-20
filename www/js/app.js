@@ -156,7 +156,7 @@
         for (var i = 0; i < sortable.length; i++) {
             var sortedEntry = sortable[i];
             $('#sunContainer').append(
-                "<div>" + "<span style='background-color: " + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span> " +
+                "<div>" + "<span class='" + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span> " +
                 getShortTimeString(sortedEntry[1]) + " to " +
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
@@ -165,14 +165,14 @@
 
     // rerun whenever light times change or current time changes
     function privateDrawShadow() {
-        var color = "#000000";
+        var cssClass = 'light-night';
 
         for (key in global.lightRanges) {
             rangeBounds = global.lightRanges[key];
 
             if (global.lightTimes[rangeBounds[0]] & global.lightTimes[rangeBounds[1]]) {
                 if ((global.lightTimes[rangeBounds[0]] < global.currently) & (global.currently <= global.lightTimes[rangeBounds[1]])) {
-                    color = rangeBounds[2];
+                    cssClass = rangeBounds[2];
                     break;
                 }
             }
@@ -180,11 +180,11 @@
 
         $('#sunangle')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
         $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
-        $('#sunangle')[0].style.setProperty('stroke', color);
+        $('#sunangle').attr('class', cssClass);
         $('#shadow')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
         $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(global.currentSunPosition.azimuth, 120, 120);
 
-        $('#trafficlight').attr('style', 'background-color: ' + color);
+        $('#trafficlight').attr('class', cssClass);
 
         if (global.currentSunPosition.altitude > 0) {
             if (global.currentSunPosition.altitude < 40) {
@@ -264,7 +264,52 @@
         privateDrawShadow(global.currentSunPosition);
     }
 
+    function notifyUser(inMessage) {
+        // If the user agreed to get notified
+        if (Notification && Notification.permission === "granted") {
+          var n = new Notification(inMessage);
+        }
+
+        // If the user hasn't told if he wants to be notified or not
+        // Note: because of Chrome, we are not sure the permission property
+        // is set, therefore it's unsafe to check for the "default" value.
+        else if (Notification && Notification.permission !== "denied") {
+          Notification.requestPermission(function (status) {
+            if (Notification.permission !== status) {
+              Notification.permission = status;
+            }
+
+            // If the user said okay
+            if (status === "granted") {
+              var n = new Notification(inMessage);
+            }
+
+            // Otherwise, we can fallback to a regular modal alert
+            else {
+              alert("Hi!");
+            }
+          });
+        }
+
+        // If the user refuses to get notified
+        else {
+          // We can fallback to a regular modal alert
+          alert(inMessage);
+        }        
+    }
+
     $(document).ready(function(){
+
+        // At first, let's check if we have permission for notification
+        // If not, let's ask for it
+        if (Notification && Notification.permission !== "granted") {
+            Notification.requestPermission(function (status) {
+                if (Notification.permission !== status) {
+                    Notification.permission = status;
+                }
+            });
+        }
+
         // create the map associated with the div
         global.map = new OpenLayers.Map("mapdiv", { theme : null });
 

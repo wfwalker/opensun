@@ -286,6 +286,26 @@ text.hourlabel {
   font-size: 90%;
 }
 
+.light-meh {
+  background-color: #C4B11B;
+  stroke: #C4B11B;
+}
+
+.light-harsh {
+  background-color: #999999;
+  stroke: #999999;
+}
+
+.light-best {
+  background-color: #0F960F;
+  stroke: #0F960F;
+}
+
+.light-night {
+  background-color: #000000;
+  stroke: #000000;
+}
+
 .x-appbar:before {content: none;}
 
 /* ==|== media queries ======================================================

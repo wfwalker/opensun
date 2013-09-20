@@ -29,7 +29,7 @@
 
     <x-layout id="app">
       <x-appbar>
-        <div id="trafficlight" style="background-color: #0F960F">
+        <div id="trafficlight" class="light-meh">
           <span id="currentAzimuth"></span> • <span id='currentTime'></span> • <span id='currentDate'></span>
         </div>
         <header>
@@ -136,7 +136,7 @@
                 <path id='Afternoon' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
                 <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
 
-                <line id='sunangle' x1='120' y1='120' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                <line id='sunangle' x1='120' y1='120' x2='120' y2='0' class='light-meh' stroke-width=4 transform='rotate(0 120 120)' />
                 <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
 
                 <line id='shortsunangle' x1='120' y1='40' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
