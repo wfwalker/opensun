@@ -97,7 +97,7 @@
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     function drawRadialSection(startName, stopName, startFraction, stopFraction, theColor, theID) {
-        console.log("START drawRadialSection " + theID);
+        // console.log("START drawRadialSection " + theID);
         if (global.lightTimes[startName] & global.lightTimes[stopName]) {
             var startAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
@@ -266,7 +266,7 @@
 
     function notifyUser(inMessage) {
         // If the user agreed to get notified
-        if (Notification && Notification.permission === "granted") {
+        if (window.Notification && Notification.permission === "granted") {
           var n = new Notification(inMessage);
         }
 
@@ -302,7 +302,7 @@
 
         // At first, let's check if we have permission for notification
         // If not, let's ask for it
-        if (Notification && Notification.permission !== "granted") {
+        if (window.Notification && Notification.permission !== "granted") {
             Notification.requestPermission(function (status) {
                 if (Notification.permission !== status) {
                     Notification.permission = status;
@@ -326,26 +326,19 @@
            "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
            "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"]);
 
-        var openCycleTiles = new OpenLayers.Layer.OSM("OpenCycleMap",
-          ["http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-           "http://b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-           "http://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"]);
+        var stamenTerrainBackground = new OpenLayers.Layer.OSM("stamenTerrainBackground",
+          ["http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
 
-        var aerialTiles = new OpenLayers.Layer.OSM("MapQuest Open Aerial Tile",
-          ["http://oatile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-           "http://oatile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-           "http://oatile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"]);
-
-        // http://openweathermap.org/wiki/Layer/clouds
-        var cloudCoverTiles = new OpenLayers.Layer.OSM("OpenWeatherMap Cloud Tile",
-          ["http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png",
-           "http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png",
-           "http://openweathermap.org/t/tile.cgi/1.0.0/CLOUDS/${z}/${x}/${y}.png"]);
+        var stamenWatercolor = new OpenLayers.Layer.OSM("stamenWatercolor",
+          ["http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
 
         global.map.addLayer(mapquestOSM);
-        // global.map.addLayer(cloudCoverTiles);
-        // global.map.addLayer(openCycleTiles);
-        // global.map.addLayer(aerialTiles);
+        // global.map.addLayer(stamenWatercolor);
+        // global.map.addLayer(stamenTerrainBackground);
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {
