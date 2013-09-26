@@ -298,8 +298,7 @@
         }        
     }
 
-    $(document).ready(function(){
-
+    document.addEventListener('DOMComponentsLoaded', function(){        
         // At first, let's check if we have permission for notification
         // If not, let's ask for it
         if (window.Notification && Notification.permission !== "granted") {
