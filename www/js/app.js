@@ -122,7 +122,7 @@
             // ELLIPTICAL ARC
             ellipticalArc = pathSegList.getItem(1);
             ellipticalArc.angle = 0;
-            ellipticalArc.largeArcFlag = (theID == 'sunlight');
+            ellipticalArc.largeArcFlag = false;
             ellipticalArc.sweepFlag = false;
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;
@@ -453,6 +453,9 @@
                 logCurrentSunPosition();
                 $('#nowbutton').attr('disabled', 'true');
             }
+
+            // immediately flip to map tab
+            document.getElementById('map').show();
         });
 
         $('#findtext').bind(global.actEvent, function (e) { this.select() });
@@ -481,6 +484,8 @@
                  
                     if (results && results.length > 0) {
                         centerMapAt(results[0].lon, results[0].lat, 10);
+
+                        // immediately flip to map tab
                         document.getElementById('map').show();
                     }
                     else
