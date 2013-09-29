@@ -56,7 +56,7 @@
 
           <x-card id="place" style='padding: 10px'>
             <span data-l10n-id="showsunanglefor">Show sun for</span>:
-            <div><a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
+            <a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span></div>
 
             <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun for</span>:</div>
 
@@ -74,6 +74,7 @@
             </div>
 
             <div style="padding: 0.5em 0em 0em 0em; width: 11.5em">
+              <span data-l10n-id="showsunanglefor">Show sun for</span>:
               <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
 
               <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
@@ -137,7 +138,7 @@
                   </filter>
                 </defs>
                 <g filter='url(#f1)' >
-                  <path id='sunlight' stroke='white' stroke-width=30 d="M120,25 A 100 100 0 0 1 215 120" style='fill: none' />
+                  <path id='sunlight' stroke='white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" style='fill: none' />
                   <path id='Predawn' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
                   <path id='Morning' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
                   <path id='Evening' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
