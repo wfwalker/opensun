@@ -122,8 +122,8 @@
             // ELLIPTICAL ARC
             ellipticalArc = pathSegList.getItem(1);
             ellipticalArc.angle = 0;
-            ellipticalArc.largeArcFlag = false;
-            ellipticalArc.sweepFlag = false;
+            ellipticalArc.largeArcFlag = false; //(theID == 'sunlight');
+            ellipticalArc.sweepFlag = false; // true for south of border
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;
             ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
@@ -160,6 +160,11 @@
                 getShortTimeString(sortedEntry[1]) + " to " +
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
+
+            if ((sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
+                var minutesLeft = Math.round((sortedEntry[2] - global.currently) / (60 * 1000));
+                console.log("NOW " + sortedEntry[3] + " " + minutesLeft + " minutes left");
+            }
         }
     }
 
