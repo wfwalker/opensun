@@ -161,7 +161,7 @@
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
 
-            if ((sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
+            if (global.showCurrentDateTime && (sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
                 var minutesLeft = Math.round((sortedEntry[2] - global.currently) / (60 * 1000));
                 console.log("NOW " + sortedEntry[3] + " " + minutesLeft + " minutes left");
             }
@@ -169,6 +169,7 @@
     }
 
     // rerun whenever light times change or current time changes
+    
     function privateDrawShadow() {
         var cssClass = 'light-night';
 
