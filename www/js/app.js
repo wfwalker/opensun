@@ -160,16 +160,27 @@
                 getShortTimeString(sortedEntry[1]) + " to " +
                 getShortTimeString(sortedEntry[2]) + "</div>"
                 );
+        }
 
-            if (global.showCurrentDateTime && (sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
+        for (var i = 0; i < sortable.length; i++) {
+            var sortedEntry = sortable[i];
+            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
                 var minutesLeft = Math.round((sortedEntry[2] - global.currently) / (60 * 1000));
-                console.log("NOW " + sortedEntry[3] + " " + minutesLeft + " minutes left");
+                console.log("GOOD NOW, " + minutesLeft + " minutes left");
+            }
+        }
+
+        for (var i = 0; i < sortable.length; i++) {
+            var sortedEntry = sortable[i];
+            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (global.currently.getTime() < sortedEntry[1])) {
+                var minutesUntil = Math.round((sortedEntry[1] - global.currently) / (60 * 1000));
+                console.log("GOOD COMING UP in " + minutesUntil + " minutes left");
             }
         }
     }
 
     // rerun whenever light times change or current time changes
-    
+
     function privateDrawShadow() {
         var cssClass = 'light-night';
 
