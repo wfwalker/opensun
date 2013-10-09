@@ -131,6 +131,31 @@
         }
     }
 
+    function privateNotificationString(inSortedLightRanges) {
+        for (var i = 0; i < inSortedLightRanges.length; i++) {
+            var sortedEntry = inSortedLightRanges[i];
+            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
+                var minutesLeft = Math.round((sortedEntry[2] - global.currently) / (60 * 1000));
+                return "GOOD NOW, " + minutesLeft + " minutes left";
+            }
+        }
+
+        for (var i = 0; i < inSortedLightRanges.length; i++) {
+            var sortedEntry = inSortedLightRanges[i];
+            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (global.currently.getTime() < sortedEntry[1])) {
+                var minutesUntil = Math.round((sortedEntry[1] - global.currently) / (60 * 1000));
+                var hoursUntil = Math.round(minutesUntil / 60.0);
+                if (hoursUntil > 1) {
+                    return "light could be good in " + hoursUntil + " hours";
+                } else {
+                    return "light could be good in " + minutesUntil + " minutes";
+                }
+            }
+        }
+
+        return "Go process photos";
+    }
+
     function privateUpdateLightRangesSummary() {
         $('#sunContainer').empty();
 
@@ -162,21 +187,7 @@
                 );
         }
 
-        for (var i = 0; i < sortable.length; i++) {
-            var sortedEntry = sortable[i];
-            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < global.currently.getTime()) && (global.currently.getTime() < sortedEntry[2])) {
-                var minutesLeft = Math.round((sortedEntry[2] - global.currently) / (60 * 1000));
-                console.log("GOOD NOW, " + minutesLeft + " minutes left");
-            }
-        }
-
-        for (var i = 0; i < sortable.length; i++) {
-            var sortedEntry = sortable[i];
-            if (global.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (global.currently.getTime() < sortedEntry[1])) {
-                var minutesUntil = Math.round((sortedEntry[1] - global.currently) / (60 * 1000));
-                console.log("GOOD COMING UP in " + minutesUntil + " minutes left");
-            }
-        }
+        console.log(privateNotificationString(sortable));
     }
 
     // rerun whenever light times change or current time changes
