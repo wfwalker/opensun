@@ -50,6 +50,10 @@
         localStorage.setItem("zoom", global.map.getZoom());
     }
 
+    // Update the shotclock, date and time pickers when the current time changes
+    // Called at app startup and once a minute when tracking current time
+    // Called when clicking on date picker or time slider
+
     function currentTimeChanged(newTime) {
         // cache the current time in the global data struct
         global.currently = newTime;
@@ -79,7 +83,8 @@
         }
     }
 
-    // center the map on the given location
+    // Center the map on the given location
+    // Called after successful geolocation, or on app startup
     function centerMapAt(longitude, latitude, zoom) {
         // compute the new center
         var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
@@ -341,7 +346,7 @@
         // Open Street Maps layer
 
         // some interesting tile servers I am experimenting with
-        
+
         var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
           ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
            "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
@@ -480,6 +485,7 @@
             document.getElementById('map').show();
         });
 
+        // clicking in the find text box selects all the text for easy replacing of the sample text
         $('#findtext').bind(global.actEvent, function (e) { this.select() });
 
         $('#findform').submit(function(e) {
