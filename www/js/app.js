@@ -264,7 +264,11 @@
         }
     }
 
-    function privateDrawCircles() {
+    // draws the sun rose at the current map center using information in the global data structure
+    function logCurrentSunPosition(delta) {
+        var windowBounds = global.map.calculateBounds();
+
+        // draw radial sections in different colors using today's lightTimes
         var radialSectionFraction = 0.9;
 
         $('path').hide();
@@ -277,14 +281,6 @@
             rangeData = global.lightRanges[rangeName];
             drawRadialSection(rangeData[0], rangeData[1], radialSectionFraction, 1.0, rangeData[2], rangeName);
         }
-    }
-
-    // draws the sun rose at the current map center using information in the global data structure
-    function logCurrentSunPosition(delta) {
-        var windowBounds = global.map.calculateBounds();
-
-        // draw radial sections in different colors using today's lightTimes
-        privateDrawCircles();
 
         // label hours of the day using current position
         privateLabelHours();
@@ -344,10 +340,8 @@
 
         // Open Street Maps layer
 
-        // terse example:
-        // global.map.addLayer(new OpenLayers.Layer.OSM());
-
-        // fully specified example:
+        // some interesting tile servers I am experimenting with
+        
         var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
           ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
            "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
