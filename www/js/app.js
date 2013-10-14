@@ -32,12 +32,12 @@
         // if we know the current time, get the sun position, get the light times and light ranges for today, update labels.
 
         if (global.currently) {
-            var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+            var temp = sunAngleUtils.getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
             global.currentSunPosition = temp;
 
             if (bigMove) {
-                global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
-                global.lightRanges = getLightRanges(global.lightTimes['highest']);
+                global.lightTimes = sunAngleUtils.getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+                global.lightRanges = sunAngleUtils.getLightRanges(global.lightTimes['highest']);
                 privateUpdateLightRangesSummary();
             }
         } else {
@@ -61,22 +61,22 @@
         // if we know the current position, get the sun position
 
         if (global.mapCenterPosition) {
-            var temp = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, newTime);
+            var temp = sunAngleUtils.getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, newTime);
             global.currentSunPosition = temp;
 
             // TODO, only update these if the day changed since last time.
 
-            global.lightTimes = getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
-            global.lightRanges = getLightRanges(global.lightTimes['highest']);
+            global.lightTimes = sunAngleUtils.getLightTimes(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.currently);
+            global.lightRanges = sunAngleUtils.getLightRanges(global.lightTimes['highest']);
             privateUpdateLightRangesSummary();
         } else {
             console.log("warning, global.mapCenterPosition undefined");
         }
 
-        $('#dateLabel').text(getShortDateString(global.currently));
+        $('#dateLabel').text(sunAngleUtils.getShortDateString(global.currently));
         $('#datepicker')[0].chosen = global.currently;
         $('#datepicker')[0].view = global.currently;
-        $('#hourLabel').text(getShortTimeString(global.currently));
+        $('#hourLabel').text(sunAngleUtils.getShortTimeString(global.currently));
 
         if (global.showCurrentDateTime) {
             $('#timeslider')[0].value = global.currently.getHours() + (global.currently.getMinutes() / 60.0);
@@ -104,10 +104,10 @@
     function drawRadialSection(startName, stopName, startFraction, stopFraction, theColor, theID) {
         // console.log("START drawRadialSection " + theID);
         if (global.lightTimes[startName] & global.lightTimes[stopName]) {
-            var startAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
+            var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[startName]).azimuth;
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
 
-            var stopAzimuthInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[stopName]).azimuth;
+            var stopAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, global.lightTimes[stopName]).azimuth;
             if (stopAzimuthInDegrees < startAzimuthInDegrees) {
                 stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
             }
@@ -187,8 +187,8 @@
             var sortedEntry = sortable[i];
             $('#sunContainer').append(
                 "<div>" + "<span class='" + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span> " +
-                getShortTimeString(sortedEntry[1]) + " to " +
-                getShortTimeString(sortedEntry[2]) + "</div>"
+                sunAngleUtils.getShortTimeString(sortedEntry[1]) + " to " +
+                sunAngleUtils.getShortTimeString(sortedEntry[2]) + "</div>"
                 );
         }
 
@@ -239,8 +239,8 @@
         }
 
         $('#currentAzimuth').text(global.currentSunPosition.altitude.toFixed(0) + "°");
-        $('#currentTime').text(getShortTimeString(global.currently));
-        $('#currentDate').text(getShortDateString(global.currently));
+        $('#currentTime').text(sunAngleUtils.getShortTimeString(global.currently));
+        $('#currentDate').text(sunAngleUtils.getShortDateString(global.currently));
     }
 
     function privateLabelHours() {
@@ -250,7 +250,7 @@
             hourMarksDate.setMinutes(0);
             hourMarksDate.setSeconds(0);
 
-            var hourMarkSunPositionInDegrees = getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, hourMarksDate);
+            var hourMarkSunPositionInDegrees = sunAngleUtils.getSunPositionInDegrees(global.mapCenterPosition.lon, global.mapCenterPosition.lat, hourMarksDate);
 
             if (hourMarkSunPositionInDegrees.altitude >= -1) {
                 $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
