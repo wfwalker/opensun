@@ -254,5 +254,68 @@ var shotclockDraw = {
         this.privateLabelHours();
 
         this.privateDrawShadow(this.currentSunPosition);
-    }
+    }, 
+
+    initialize: function(inMap) {
+        // create the map associated with the div
+        this.map = inMap;
+        // this.map = new OpenLayers.Map("mapdiv", { theme : null });
+
+        // Open Street Maps layer
+
+        // some interesting tile servers I am experimenting with
+
+        var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
+          ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+           "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+           "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"]);
+
+        var stamenTerrainBackground = new OpenLayers.Layer.OSM("stamenTerrainBackground",
+          ["http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
+
+        var stamenWatercolor = new OpenLayers.Layer.OSM("stamenWatercolor",
+          ["http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
+
+        this.map.addLayer(mapquestOSM);
+        // this.map.addLayer(stamenWatercolor);
+        // this.map.addLayer(stamenTerrainBackground);
+
+        // initialize map to saved lat/long and zoom or else zoom to center of USA
+        if ( localStorage.getItem("latitude")) {
+            var savedLatitude = localStorage.getItem("latitude");
+            var savedLongitude = localStorage.getItem("longitude");
+            var savedZoom = localStorage.getItem("zoom");
+            this.centerMapAt(savedLongitude, savedLatitude, savedZoom);            
+        } else {
+            // initialize map to center of USA
+            //TODO: don't be so USA-o-centric, think l10n
+            this.centerMapAt(-98, 38, 4);
+        }  
+
+        // initialize so that we show current time and date
+        this.showCurrentDateTime = true;
+        this.currentTimeChanged(Date.now());      
+
+        // show sundial for current date/time
+        this.mapCenterChanged();
+        this.logCurrentSunPosition(); 
+
+        // redo the timeline whenever we move the map
+        this.map.events.register('moveend', this.map, function(eventThing) {
+            var delta = shotclockDraw.mapCenterChanged();
+            shotclockDraw.logCurrentSunPosition(delta);
+        });
+
+        // check once a minute to track date/time
+        window.setInterval(function() {
+            if (shotclockDraw.showCurrentDateTime) {
+                shotclockDraw.currentTimeChanged(Date.now());
+                shotclockDraw.logCurrentSunPosition();
+            }
+        }, 60000)      
+    },
 }

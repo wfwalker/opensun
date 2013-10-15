@@ -83,67 +83,7 @@
             });
         }
 
-        // create the map associated with the div
-        shotclockDraw.map = new OpenLayers.Map("mapdiv", { theme : null });
-
-        console.log("MY LOCALE IS " + (document.documentElement.lang || navigator.language));
-
-        // Open Street Maps layer
-
-        // some interesting tile servers I am experimenting with
-
-        var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
-          ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-           "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-           "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"]);
-
-        var stamenTerrainBackground = new OpenLayers.Layer.OSM("stamenTerrainBackground",
-          ["http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
-
-        var stamenWatercolor = new OpenLayers.Layer.OSM("stamenWatercolor",
-          ["http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
-
-        shotclockDraw.map.addLayer(mapquestOSM);
-        // shotclockDraw.map.addLayer(stamenWatercolor);
-        // shotclockDraw.map.addLayer(stamenTerrainBackground);
-
-        // initialize map to saved lat/long and zoom or else zoom to center of USA
-        if ( localStorage.getItem("latitude")) {
-            var savedLatitude = localStorage.getItem("latitude");
-            var savedLongitude = localStorage.getItem("longitude");
-            var savedZoom = localStorage.getItem("zoom");
-            shotclockDraw.centerMapAt(savedLongitude, savedLatitude, savedZoom);            
-        } else {
-            // initialize map to center of USA
-            //TODO: don't be so USA-o-centric, think l10n
-            shotclockDraw.centerMapAt(-98, 38, 4);
-        }  
-
-        // initialize so that we show current time and date
-        shotclockDraw.showCurrentDateTime = true;
-        shotclockDraw.currentTimeChanged(Date.now());      
-
-        // show sundial for current date/time
-        shotclockDraw.mapCenterChanged();
-        shotclockDraw.logCurrentSunPosition(); 
-
-        // redo the timeline whenever we move the map
-        shotclockDraw.map.events.register('moveend', shotclockDraw.map, function(eventThing) {
-            var delta = shotclockDraw.mapCenterChanged();
-            shotclockDraw.logCurrentSunPosition(delta);
-        });
-
-        // check once a minute to track date/time
-        window.setInterval(function() {
-            if (shotclockDraw.showCurrentDateTime) {
-                shotclockDraw.currentTimeChanged(Date.now());
-                shotclockDraw.logCurrentSunPosition();
-            }
-        }, 60000);
+        shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
 
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
