@@ -13,32 +13,6 @@
         var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 5000);
     }
 
-    // TODO: needs localization!
-    function privateNotificationString(inSortedLightRanges) {
-        for (var i = 0; i < inSortedLightRanges.length; i++) {
-            var sortedEntry = inSortedLightRanges[i];
-            if (shotclockDraw.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < shotclockDraw.currently.getTime()) && (shotclockDraw.currently.getTime() < sortedEntry[2])) {
-                var minutesLeft = Math.round((sortedEntry[2] - shotclockDraw.currently) / (60 * 1000));
-                return { title: "GO OUT", subtitle: minutesLeft + " minutes left" };
-            }
-        }
-
-        for (var i = 0; i < inSortedLightRanges.length; i++) {
-            var sortedEntry = inSortedLightRanges[i];
-            if (shotclockDraw.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (shotclockDraw.currently.getTime() < sortedEntry[1])) {
-                var minutesUntil = Math.round((sortedEntry[1] - shotclockDraw.currently) / (60 * 1000));
-                var hoursUntil = Math.round(minutesUntil / 60.0);
-                if (hoursUntil > 1) {
-                    return { title: "WAIT", subtitle: "light could be good in " + hoursUntil + " hours" };
-                } else {
-                    return { title: "WAIT", subtitle: "light could be good in " + minutesUntil + " minutes" };
-                }
-            }
-        }
-
-        return { title: "GO HOME", subtitle: "Sleep or pocess photos" };
-    }
-
     // from https://raw.github.com/nickdesaulniers/fxos-irc/master/notification.js
     function sendNotification (title, options) {
         // Memoize based on feature detection.
@@ -61,7 +35,6 @@
 
         sendNotification(title, options);
     };
-
 
     function notifyUser(inMessage) {
         // If the user agreed to get notified
