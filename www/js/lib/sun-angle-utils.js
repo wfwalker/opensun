@@ -164,6 +164,31 @@ var sunAngleUtils = {
         }
 
         return ranges;    
+    },
+
+    // returns an list of entries like [name of range, start time, stop time, CSS style / light description]
+    // sorted by start time
+    getSortedLightRangesAndTimes: function(lightTimes, lightRanges) {
+        var sortable = [];
+
+        for (key in lightRanges) {
+            var rangeBounds = lightRanges[key];
+
+            if (lightTimes[rangeBounds[0]] & lightTimes[rangeBounds[1]]) {
+                var newEntry = [key, lightTimes[rangeBounds[0]], lightTimes[rangeBounds[1]], rangeBounds[2]];
+                sortable.push(newEntry);
+            }
+            else
+            {
+                console.log("can't find " + rangeBounds[0] + " and/or " + rangeBounds[1] + " in lighTtimes");
+            }
+        };
+
+        sortable.sort(function(a, b) {
+            return (a[1] > (b[1]));
+        });
+
+        return sortable;
     }
 }
 
