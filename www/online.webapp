@@ -19,6 +19,9 @@
   "permissions": {
     "geolocation": {
       "description": "Used to position the map to your current position"
-    }
+    },
+    "desktop-notification": {
+      "description": "Used to tell the user when the sunlight is good"
+    }    
   }  
 }
