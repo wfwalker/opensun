@@ -298,6 +298,13 @@ text.hourlabel {
   stroke: #000000;
 }
 
+.notification-title {
+  font-size: 600%;
+}
+.notification-subtitle {
+  font-size: 120%;
+}
+
 .x-appbar:before {content: none;}
 
 /* ==|== media queries ======================================================

@@ -28,8 +28,7 @@ var shotclockDraw = {
             if (bigMove) {
                 this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
-                this.privateUpdateLightRangesSummary();
-                this.privateUpdateNotification();
+                this.privateUpdateNotification(true);
             }
         } else {
             console.log("warning: this.currently undefined");
@@ -58,8 +57,7 @@ var shotclockDraw = {
 
             this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
             this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
-            this.privateUpdateLightRangesSummary();
-            this.privateUpdateNotification();
+            this.privateUpdateNotification(false);
         } else {
             console.log("warning, this.mapCenterPosition undefined");
         }
@@ -127,54 +125,64 @@ var shotclockDraw = {
         }
     },
 
-    privateUpdateLightRangesSummary: function() {
-        $('#sunContainer').empty();
-
-        var sortable = sunAngleUtils.getSortedLightRangesAndTimes(this.lightTimes, this.lightRanges);
-
-        for (var i = 0; i < sortable.length; i++) {
-            var sortedEntry = sortable[i];
-            $('#sunContainer').append(
-                "<div>" + "<span class='" + sortedEntry[3] + "'>&nbsp;&nbsp;&nbsp;</span> " +
-                sunAngleUtils.getShortTimeString(sortedEntry[1]) + " to " +
-                sunAngleUtils.getShortTimeString(sortedEntry[2]) + "</div>"
-                );
-        }
-    },
-
     // TODO: needs localization!
-    privateNotificationString: function(inSortedLightRanges) {
-        for (var i = 0; i < inSortedLightRanges.length; i++) {
-            var sortedEntry = inSortedLightRanges[i];
+    privateGetNextNotification: function() {
+        var sortedRanges = sunAngleUtils.getSortedLightRangesAndTimes(this.lightTimes, this.lightRanges);
+        var goodLightNotificationSpacing = 15;
+        var badLightNotificationSpacing = 60;
+
+        for (var i = 0; i < sortedRanges.length; i++) {
+            var sortedEntry = sortedRanges[i];
             if (shotclockDraw.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < shotclockDraw.currently.getTime()) && (shotclockDraw.currently.getTime() < sortedEntry[2])) {
                 var minutesLeft = Math.round((sortedEntry[2] - shotclockDraw.currently) / (60 * 1000));
-                return { title: "GO OUT", subtitle: minutesLeft + " minutes left" };
+                return { next: Date.now().add(goodLightNotificationSpacing).minutes(), title: "GO OUT", subtitle: minutesLeft + " minutes left" };
             }
         }
 
-        for (var i = 0; i < inSortedLightRanges.length; i++) {
-            var sortedEntry = inSortedLightRanges[i];
+        for (var i = 0; i < sortedRanges.length; i++) {
+            var sortedEntry = sortedRanges[i];
             if (shotclockDraw.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (shotclockDraw.currently.getTime() < sortedEntry[1])) {
                 var minutesUntil = Math.round((sortedEntry[1] - shotclockDraw.currently) / (60 * 1000));
                 var hoursUntil = Math.round(minutesUntil / 60.0);
                 if (hoursUntil > 1) {
-                    return { title: "WAIT", subtitle: "light could be good in " + hoursUntil + " hours" };
+                    return { next: Date.now().add(badLightNotificationSpacing).minutes(), title: "WAIT", subtitle: "light could be good in " + hoursUntil + " hours" };
                 } else {
-                    return { title: "WAIT", subtitle: "light could be good in " + minutesUntil + " minutes" };
+                    var bestMinutesUntil = Math.min(minutesUntil, goodLightNotificationSpacing);
+                    return { next: Date.now().add(bestMinutesUntil).minutes(), title: "WAIT", subtitle: "light could be good in " + minutesUntil + " minutes" };
                 }
             }
         }
 
-        return { title: "GO HOME", subtitle: "Sleep or process photos" };
+        return { next: Date.today().next().day(), title: "Night", subtitle: "Sleep or process photos" };
     },
 
-    privateUpdateNotification: function() {
-        var sortedRanges = sunAngleUtils.getSortedLightRangesAndTimes(this.lightTimes, this.lightRanges);
+    privateUpdateNotification: function(inPlaceChanged) {
+        var tempNotification = this.privateGetNextNotification();
 
-        var msg = this.privateNotificationString(sortedRanges);
-        var options = { body: msg.subtitle, icon: "data:image/png;base64,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" };
-        sendNotification(msg.title, options);
-        console.log(msg.title + ": " + msg.subtitle);
+        var existingNotificationPassed = this.notificationMessage && (Date.now() > this.notificationMessage.next);
+        var noExistingNotification = (! this.notificationMessage);
+
+        // see if we have an existing, passed notification
+        if (existingNotificationPassed) {
+            console.log(tempNotification.title + ": " + tempNotification.subtitle);
+            var options = {
+                            body: tempNotification.subtitle, 
+                            icon: "data:image/png;base64,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"
+                          };
+            // NOTIFY!
+            console.log("NOTIFY");
+            sendNotification(tempNotification.title, options);  
+        }
+
+        // if there's no existing notification, or the place changed, or if there's an existing notification and it's in the past, recent the notification
+        if (noExistingNotification || inPlaceChanged || existingNotificationPassed) {
+            // create and store new notification
+            this.notificationMessage = tempNotification;
+            console.log("SET NOTIFICATION");
+        }
+
+        $('#notificationSummary').html('<div class="notification-title">' + tempNotification.title + '</div><div class="notification-subtitle">' + tempNotification.subtitle + '</div>');
+        console.log(sunAngleUtils.getShortDateString(this.notificationMessage.next) + " @ " + sunAngleUtils.getShortTimeString(this.notificationMessage.next) + " -> " + this.notificationMessage.title + ": " + this.notificationMessage.subtitle);
     },
 
     // rerun whenever light times change or current time changes
