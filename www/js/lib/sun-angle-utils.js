@@ -152,6 +152,7 @@ var sunAngleUtils = {
         };
 
         // TODO :NIGHT!!
+        // TODO: fix Midday as both meh and harsh!
 
         if (highest >= 40.0) { // some of the day is harsh, the rest is meh
             ranges['LateMorning'] = ['morningStop', 'highStart', 'light-meh'];
