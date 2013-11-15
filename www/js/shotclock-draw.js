@@ -3,6 +3,7 @@ var shotclockDraw = {
 	mapCenterPosition: '',
 	map: '',
 
+
 	mapCenterChanged: function() {
         // compute map center position in degrees
         this.mapCenterPosition = this.map.getCenter().transform(
@@ -28,7 +29,47 @@ var shotclockDraw = {
             if (bigMove) {
                 this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
-                this.privateUpdateNotification(true);
+
+                // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
+                // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
+                $.ajax({
+                    url: "http://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
+                    dataType: "json",
+
+                    error: function(results) {
+                        console.log("can't reverse lookup, " + results);
+                        shotclockDraw.locationNameString = "Unknown";
+                        showErrorMessage("can't reverse lookup");
+                        shotclockDraw.privateUpdateNotification(true);
+                        localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
+                    },               
+
+                    success: function(results) {     
+                        if (results) {
+                            var temp = [];
+                            if (results.address.city) {
+                                temp.push(results.address.city);
+                            }
+                            if (results.address.county) {
+                                temp.push(results.address.county);
+                            }
+                            if (results.address.state) {
+                                temp.push(results.address.state);
+                            }
+                            shotclockDraw.locationNameString = temp.join(', ');
+                            console.log(shotclockDraw.locationNameString);
+                            shotclockDraw.privateUpdateNotification(true);
+                        }
+                        else
+                        {
+                            shotclockDraw.locationNameString = "Unknown";
+                            console.log("reverse lookup no results");
+                            shotclockDraw.privateUpdateNotification(true);
+                        }
+
+                        localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
+                    },
+                 });
             }
         } else {
             console.log("warning: this.currently undefined");
@@ -181,8 +222,8 @@ var shotclockDraw = {
             console.log("SET NOTIFICATION");
         }
 
-        $('#notificationSummary').html('<div class="notification-title">' + tempNotification.title + '</div><div class="notification-subtitle">' + tempNotification.subtitle + '</div>');
-        console.log(sunAngleUtils.getShortDateString(this.notificationMessage.next) + " @ " + sunAngleUtils.getShortTimeString(this.notificationMessage.next) + " -> " + this.notificationMessage.title + ": " + this.notificationMessage.subtitle);
+        $('#notificationSummary').html('<div class="notification-subtitle">' + this.locationNameString + '</div><div class="notification-title">' + tempNotification.title + '</div><div class="notification-subtitle">' + tempNotification.subtitle + '</div>');
+        console.log(this.locationNameString + ": " + sunAngleUtils.getShortDateString(this.notificationMessage.next) + " @ " + sunAngleUtils.getShortTimeString(this.notificationMessage.next) + " -> " + this.notificationMessage.title + ": " + this.notificationMessage.subtitle);
     },
 
     // rerun whenever light times change or current time changes
@@ -195,6 +236,8 @@ var shotclockDraw = {
             if (this.lightTimes[rangeBounds[0]] & this.lightTimes[rangeBounds[1]]) {
                 if ((this.lightTimes[rangeBounds[0]] < this.currently) & (this.currently <= this.lightTimes[rangeBounds[1]])) {
                     cssClass = rangeBounds[2];
+                    console.log('setting sun angle class ' + key);
+                    console.log(rangeBounds);
                     break;
                 }
             }
@@ -315,6 +358,8 @@ var shotclockDraw = {
             var savedLatitude = localStorage.getItem("latitude");
             var savedLongitude = localStorage.getItem("longitude");
             var savedZoom = localStorage.getItem("zoom");
+            this.locationNameString = localStorage.getItem("locationNameString");
+
             this.centerMapAt(savedLongitude, savedLatitude, savedZoom);            
         } else {
             // initialize map to center of USA
