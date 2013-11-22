@@ -236,8 +236,6 @@ var shotclockDraw = {
             if (this.lightTimes[rangeBounds[0]] & this.lightTimes[rangeBounds[1]]) {
                 if ((this.lightTimes[rangeBounds[0]] < this.currently) & (this.currently <= this.lightTimes[rangeBounds[1]])) {
                     cssClass = rangeBounds[2];
-                    console.log('setting sun angle class ' + key);
-                    console.log(rangeBounds);
                     break;
                 }
             }
