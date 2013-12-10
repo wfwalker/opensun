@@ -17,6 +17,7 @@ x-modal {
 	-moz-transform: translate(-50%, -50%);
 	-webkit-transform: translate(-50%, -50%);
 }
+
 x-modal[data-modal-hidden="true"]{
 	display: none;
 }

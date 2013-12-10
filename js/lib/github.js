@@ -1,1 +1,473 @@
-(function(a){var b;define([],function(){return function(){(function(){var a,b="https://api.github.com";a=window.Github=function(c){function d(a,d,e,f,g){function h(){var a=b+d;return a+(/\?/.test(a)?"&":"?")+(new Date).getTime()}var i=new XMLHttpRequest;g||(i.dataType="json"),i.open(a,h()),i.onreadystatechange=function(){this.readyState==4&&(this.status>=200&&this.status<300||this.status===304?f(null,g?this.responseText:this.responseText?JSON.parse(this.responseText):!0):f({request:this,error:this.status}))},i.setRequestHeader("Accept","application/vnd.github.raw"),i.setRequestHeader("Content-Type","application/json"),(c.auth=="oauth"&&c.token||c.auth=="basic"&&c.username&&c.password)&&i.setRequestHeader("Authorization",c.auth=="oauth"?"token "+c.token:"Basic "+Base64.encode(c.username+":"+c.password)),e?i.send(JSON.stringify(e)):i.send()}a.User=function(){this.repos=function(a){d("GET","/user/repos?type=all&per_page=1000&sort=updated",null,function(b,c){a(b,c)})},this.orgs=function(a){d("GET","/user/orgs",null,function(b,c){a(b,c)})},this.gists=function(a){d("GET","/gists",null,function(b,c){a(b,c)})},this.show=function(a,b){d("GET","/users/"+a,null,function(a,c){b(a,c)})},this.userRepos=function(a,b){d("GET","/users/"+a+"/repos?type=all&per_page=1000&sort=updated",null,function(a,c){b(a,c)})},this.userGists=function(a,b){d("GET","/users/"+a+"/gists",null,function(a,c){b(a,c)})},this.orgRepos=function(a,b){d("GET","/orgs/"+a+"/repos?type=all&per_page=1000&sort=updated&direction=desc",null,function(a,c){b(a,c)})}},a.Repository=function(a){function b(a,b){if(a===h.branch&&h.sha)return b(null,h.sha);f.getRef("heads/"+a,function(c,d){h.branch=a,h.sha=d,b(c,d)})}var c=a.name,e=a.user,f=this,g="/repos/"+e+"/"+c,h={branch:null,sha:null};this.getRef=function(a,b){d("GET",g+"/git/refs/"+a,null,function(a,c){if(a)return b(a);b(null,c.object.sha)})},this.createRef=function(a,b){d("POST",g+"/git/refs",a,b)},this.deleteRef=function(b,c){d("DELETE",g+"/git/refs/"+b,a,c)},this.listBranches=function(a){d("GET",g+"/git/refs/heads",null,function(b,c){if(b)return a(b);a(null,_.map(c,function(a){return _.last(a.ref.split("/"))}))})},this.getBlob=function(a,b){d("GET",g+"/git/blobs/"+a,null,b,"raw")},this.getSha=function(a,b,c){if(b==="")return f.getRef("heads/"+a,c);f.getTree(a+"?recursive=true",function(a,d){var e=_.select(d,function(a){return a.path===b})[0];c(null,e?e.sha:null)})},this.getTree=function(a,b){d("GET",g+"/git/trees/"+a,null,function(a,c){if(a)return b(a);b(null,c.tree)})},this.postBlob=function(a,b){typeof a=="string"&&(a={content:a,encoding:"utf-8"}),d("POST",g+"/git/blobs",a,function(a,c){if(a)return b(a);b(null,c.sha)})},this.updateTree=function(a,b,c,e){var f={base_tree:a,tree:[{path:b,mode:"100644",type:"blob",sha:c}]};d("POST",g+"/git/trees",f,function(a,b){if(a)return e(a);e(null,b.sha)})},this.postTree=function(a,b){d("POST",g+"/git/trees",{tree:a},function(a,c){if(a)return b(a);b(null,c.sha)})},this.commit=function(b,c,e,f){var i={message:e,author:{name:a.username},parents:[b],tree:c};d("POST",g+"/git/commits",i,function(a,b){h.sha=b.sha;if(a)return f(a);f(null,b.sha)})},this.updateHead=function(a,b,c){d("PATCH",g+"/git/refs/heads/"+a,{sha:b},function(a,b){c(a)})},this.show=function(a){d("GET",g,null,a)},this.contents=function(a,b){d("GET",g+"/contents",{path:a},b)},this.fork=function(a){d("POST",g+"/forks",null,a)},this.createPullRequest=function(a,b){d("POST",g+"/pulls",a,b)},this.read=function(a,b,c){f.getSha(a,b,function(a,b){if(!b)return c("not found",null);f.getBlob(b,function(a,d){c(a,d,b)})})},this.remove=function(a,c,d){b(a,function(b,e){f.getTree(e+"?recursive=true",function(b,g){var h=_.reject(g,function(a){return a.path===c});_.each(h,function(a){a.type==="tree"&&delete a.sha}),f.postTree(h,function(b,g){f.commit(e,g,"Deleted "+c,function(b,c){f.updateHead(a,c,function(a){d(a)})})})})})},this.move=function(a,c,d,e){b(a,function(b,g){f.getTree(g+"?recursive=true",function(b,h){_.each(h,function(a){a.path===c&&(a.path=d),a.type==="tree"&&delete a.sha}),f.postTree(h,function(b,d){f.commit(g,d,"Deleted "+c,function(b,c){f.updateHead(a,c,function(a){e(a)})})})})})},this.write=function(a,c,d,e,g){b(a,function(b,h){if(b)return g(b);f.postBlob(d,function(b,d){if(b)return g(b);f.updateTree(h,c,d,function(b,c){if(b)return g(b);f.commit(h,c,e,function(b,c){if(b)return g(b);f.updateHead(a,c,g)})})})})}},a.Gist=function(a){var b=a.id,c=this,e="/gists/"+b;this.read=function(a){d("GET",e,null,function(b,c){a(b,c)})},this.delete=function(a){d("DELETE",e,null,function(b,c){a(b,c)})},this.fork=function(a){d("POST",e+"/fork",null,function(b,c){a(b,c)})},this.update=function(a,b){d("PATCH",e,a,function(a,c){b(a,c)})}},this.getRepo=function(b,c){return new a.Repository({user:b,name:c})},this.getUser=function(){return new a.User},this.getGist=function(b){return new a.Gist({id:b})}}}).call(this)}.call(a),b})})(this)
+//Wrapped in an outer function to preserve global this
+(function (root) { var amdExports; define([], function () { (function () {
+
+// Github.js 0.7.0
+// (c) 2012 Michael Aufreiter, Development Seed
+// Github.js is freely distributable under the MIT license.
+// For all details and documentation:
+// http://substance.io/michael/github
+
+(function() {
+  var Github;
+  var API_URL = 'https://api.github.com';
+
+  Github = window.Github = function(options) {
+
+    // HTTP Request Abstraction
+    // =======
+    // 
+    // I'm not proud of this and neither should you be if you were responsible for the XMLHttpRequest spec.
+
+    function _request(method, path, data, cb, raw) {
+      function getURL() {
+        var url = API_URL + path;
+        return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
+      }
+
+      var xhr = new XMLHttpRequest();
+      if (!raw) {xhr.dataType = "json"}
+
+      xhr.open(method, getURL());
+      xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+          if (this.status >= 200 && this.status < 300 || this.status === 304) {
+            cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true);
+          } else {
+            cb({request: this, error: this.status});
+          }
+        }
+      }
+      xhr.setRequestHeader('Accept','application/vnd.github.raw');
+      xhr.setRequestHeader('Content-Type','application/json');
+      if (
+         (options.auth == 'oauth' && options.token) ||
+         (options.auth == 'basic' && options.username && options.password)
+         ) {
+           xhr.setRequestHeader('Authorization',options.auth == 'oauth'
+             ? 'token '+ options.token
+             : 'Basic ' + Base64.encode(options.username + ':' + options.password)
+           );
+         }
+      data ? xhr.send(JSON.stringify(data)) : xhr.send();
+    }
+
+    // User API
+    // =======
+
+    Github.User = function() {
+      this.repos = function(cb) {
+        _request("GET", "/user/repos?type=all&per_page=1000&sort=updated", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // List user organizations
+      // -------
+
+      this.orgs = function(cb) {
+        _request("GET", "/user/orgs", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // List authenticated user's gists
+      // -------
+
+      this.gists = function(cb) {
+        _request("GET", "/gists", null, function(err, res) {
+          cb(err,res);
+        });
+      };
+
+      // Show user information
+      // -------
+
+      this.show = function(username, cb) {
+        _request("GET", "/users/"+username, null, function(err, res) {
+          cb(err, res);
+        });
+      }
+
+      // List user repositories
+      // -------
+
+      this.userRepos = function(username, cb) {
+        _request("GET", "/users/"+username+"/repos?type=all&per_page=1000&sort=updated", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+
+      // List a user's gists
+      // -------
+
+      this.userGists = function(username, cb) {
+        _request("GET", "/users/"+username+"/gists", null, function(err, res) {
+          cb(err,res);
+        });
+      };
+
+      // List organization repositories
+      // -------
+
+      this.orgRepos = function(orgname, cb) {
+        _request("GET", "/orgs/"+orgname+"/repos?type=all&per_page=1000&sort=updated&direction=desc", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+    };
+
+
+    // Repository API
+    // =======
+
+    Github.Repository = function(options) {
+      var repo = options.name;
+      var user = options.user;
+      
+      var that = this;
+      var repoPath = "/repos/" + user + "/" + repo;
+
+      var currentTree = {
+        "branch": null,
+        "sha": null
+      };
+
+      // Uses the cache if branch has not been changed
+      // -------
+
+      function updateTree(branch, cb) {
+        if (branch === currentTree.branch && currentTree.sha) return cb(null, currentTree.sha);
+        that.getRef("heads/"+branch, function(err, sha) {
+          currentTree.branch = branch;
+          currentTree.sha = sha;
+          cb(err, sha);
+        });
+      }
+
+      // Get a particular reference
+      // -------
+
+      this.getRef = function(ref, cb) {
+        _request("GET", repoPath + "/git/refs/" + ref, null, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.object.sha);
+        });
+      };
+
+      // Create a new reference
+      // --------
+      //
+      // {
+      //   "ref": "refs/heads/my-new-branch-name",
+      //   "sha": "827efc6d56897b048c772eb4087f854f46256132"
+      // }
+
+      this.createRef = function(options, cb) {
+        _request("POST", repoPath + "/git/refs", options, cb);
+      };
+
+      // Delete a reference
+      // --------
+      // 
+      // repo.deleteRef('heads/gh-pages')
+      // repo.deleteRef('tags/v1.0')
+
+      this.deleteRef = function(ref, cb) {
+        _request("DELETE", repoPath + "/git/refs/"+ref, options, cb);
+      };
+
+      // List all branches of a repository
+      // -------
+
+      this.listBranches = function(cb) {
+        _request("GET", repoPath + "/git/refs/heads", null, function(err, heads) {
+          if (err) return cb(err);
+          cb(null, _.map(heads, function(head) { return _.last(head.ref.split('/')); }));
+        });
+      };
+
+      // Retrieve the contents of a blob
+      // -------
+
+      this.getBlob = function(sha, cb) {
+        _request("GET", repoPath + "/git/blobs/" + sha, null, cb, 'raw');
+      };
+
+      // For a given file path, get the corresponding sha (blob for files, tree for dirs)
+      // -------
+
+      this.getSha = function(branch, path, cb) {
+        // Just use head if path is empty
+        if (path === "") return that.getRef("heads/"+branch, cb);
+        that.getTree(branch+"?recursive=true", function(err, tree) {
+          var file = _.select(tree, function(file) {
+            return file.path === path;
+          })[0];
+          cb(null, file ? file.sha : null);
+        });
+      };
+
+      // Retrieve the tree a commit points to
+      // -------
+
+      this.getTree = function(tree, cb) {
+        _request("GET", repoPath + "/git/trees/"+tree, null, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.tree);
+        });
+      };
+
+      // Post a new blob object, getting a blob SHA back
+      // -------
+
+      this.postBlob = function(content, cb) {
+        if (typeof(content) === "string") {
+          content = {
+            "content": content,
+            "encoding": "utf-8"
+          };
+        }
+
+        _request("POST", repoPath + "/git/blobs", content, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.sha);
+        });
+      };
+
+      // Update an existing tree adding a new blob object getting a tree SHA back
+      // -------
+
+      this.updateTree = function(baseTree, path, blob, cb) {
+        var data = {
+          "base_tree": baseTree,
+          "tree": [
+            {
+              "path": path,
+              "mode": "100644",
+              "type": "blob",
+              "sha": blob
+            }
+          ]
+        };
+        _request("POST", repoPath + "/git/trees", data, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.sha);
+        });
+      };
+
+      // Post a new tree object having a file path pointer replaced
+      // with a new blob SHA getting a tree SHA back
+      // -------
+
+      this.postTree = function(tree, cb) {
+        _request("POST", repoPath + "/git/trees", { "tree": tree }, function(err, res) {
+          if (err) return cb(err);
+          cb(null, res.sha);
+        });
+      };
+
+      // Create a new commit object with the current commit SHA as the parent
+      // and the new tree SHA, getting a commit SHA back
+      // -------
+
+      this.commit = function(parent, tree, message, cb) {
+        var data = {
+          "message": message,
+          "author": {
+            "name": options.username
+          },
+          "parents": [
+            parent
+          ],
+          "tree": tree
+        };
+
+        _request("POST", repoPath + "/git/commits", data, function(err, res) {
+          currentTree.sha = res.sha; // update latest commit
+          if (err) return cb(err);
+          cb(null, res.sha);
+        });
+      };
+
+      // Update the reference of your head to point to the new commit SHA
+      // -------
+
+      this.updateHead = function(head, commit, cb) {
+        _request("PATCH", repoPath + "/git/refs/heads/" + head, { "sha": commit }, function(err, res) {
+          cb(err);
+        });
+      };
+
+      // Show repository information
+      // -------
+
+      this.show = function(cb) {
+        _request("GET", repoPath, null, cb);
+      };
+
+      // Get contents
+      // --------
+
+      this.contents = function(path, cb) {
+        _request("GET", repoPath + "/contents", { path: path }, cb);
+      };
+
+      // Fork repository
+      // -------
+
+      this.fork = function(cb) {
+        _request("POST", repoPath + "/forks", null, cb);
+      };
+
+      // Create pull request
+      // --------
+
+      this.createPullRequest = function(options, cb) {
+        _request("POST", repoPath + "/pulls", options, cb);
+      };
+
+      // Read file at given path
+      // -------
+
+      this.read = function(branch, path, cb) {
+        that.getSha(branch, path, function(err, sha) {
+          if (!sha) return cb("not found", null);
+          that.getBlob(sha, function(err, content) {
+            cb(err, content, sha);
+          });
+        });
+      };
+
+      // Remove a file from the tree
+      // -------
+
+      this.remove = function(branch, path, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          that.getTree(latestCommit+"?recursive=true", function(err, tree) {
+            // Update Tree
+            var newTree = _.reject(tree, function(ref) { return ref.path === path });
+            _.each(newTree, function(ref) {
+              if (ref.type === "tree") delete ref.sha;
+            });
+
+            that.postTree(newTree, function(err, rootTree) {
+              that.commit(latestCommit, rootTree, 'Deleted '+path , function(err, commit) {
+                that.updateHead(branch, commit, function(err) {
+                  cb(err);
+                });
+              });
+            });
+          });
+        });
+      };
+
+      // Move a file to a new location
+      // -------
+
+      this.move = function(branch, path, newPath, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          that.getTree(latestCommit+"?recursive=true", function(err, tree) {
+            // Update Tree
+            _.each(tree, function(ref) {
+              if (ref.path === path) ref.path = newPath;
+              if (ref.type === "tree") delete ref.sha;
+            });
+
+            that.postTree(tree, function(err, rootTree) {
+              that.commit(latestCommit, rootTree, 'Deleted '+path , function(err, commit) {
+                that.updateHead(branch, commit, function(err) {
+                  cb(err);
+                });
+              });
+            });
+          });
+        });
+      };
+
+      // Write file contents to a given branch and path
+      // -------
+
+      this.write = function(branch, path, content, message, cb) {
+        updateTree(branch, function(err, latestCommit) {
+          if (err) return cb(err);
+          that.postBlob(content, function(err, blob) {
+            if (err) return cb(err);
+            that.updateTree(latestCommit, path, blob, function(err, tree) {
+              if (err) return cb(err);
+              that.commit(latestCommit, tree, message, function(err, commit) {
+                if (err) return cb(err);
+                that.updateHead(branch, commit, cb);
+              });
+            });
+          });
+        });
+      };
+    };
+
+    // Gists API
+    // =======
+
+    Github.Gist = function(options) {
+      var id = options.id;
+      var that = this;
+      var gistPath = "/gists/"+id;
+
+      // Read the gist
+      // --------
+
+      this.read = function(cb) {
+        _request("GET", gistPath, null, function(err, gist) {
+          cb(err, gist);
+        });
+      };
+
+
+      // Delete the gist
+      // --------
+
+      this.delete = function(cb) {
+        _request("DELETE", gistPath, null, function(err,res) {
+          cb(err,res);
+        });
+      };
+
+      // Fork a gist
+      // --------
+
+      this.fork = function(cb) {
+        _request("POST", gistPath+"/fork", null, function(err,res) {
+          cb(err,res);
+        });
+      };
+
+      // Update a gist with the new stuff
+      // --------
+
+      this.update = function(options, cb) {
+        _request("PATCH", gistPath, options, function(err,res) {
+          cb(err,res);
+        });
+      };
+    };
+
+    // Top Level API
+    // -------
+
+    this.getRepo = function(user, repo) {
+      return new Github.Repository({user: user, name: repo});
+    };
+
+    this.getUser = function() {
+      return new Github.User();
+    };
+
+    this.getGist = function(id) {
+      return new Github.Gist({id: id});
+    };
+  };
+}).call(this);
+
+
+}.call(root));
+    return amdExports;
+}); }(this));

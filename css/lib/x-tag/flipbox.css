@@ -29,6 +29,8 @@ x-card > * {
 	-o-backface-visibility: hidden;
 	backface-visibility: hidden;
 }
+
+
 x-flipbox.x-flip-direction-right x-card > *:last-child, 
 x-flipbox.x-flip-direction-left x-card > *:last-child, 
 x-card > *:last-child {  
@@ -53,6 +55,8 @@ x-flipbox.x-card-flipped.x-flip-direction-left > x-card {
 	-o-transform: rotateY(-180deg);
 	transform: rotateY(-180deg);
 }
+
+
 x-flipbox.x-flip-direction-up x-card > *:last-child, 
 x-flipbox.x-flip-direction-down x-card > *:last-child {  
 	-webkit-transform: rotateX(180deg);

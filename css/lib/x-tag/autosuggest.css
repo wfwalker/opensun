@@ -4,6 +4,7 @@ x-autosuggest {
 	position: relative;
 	width: 100%;
 }
+
 x-autosuggest > input[type="text"] {
 	display: block;
 	width: 100%;
@@ -12,6 +13,7 @@ x-autosuggest > input[type="text"] {
 	-ms-box-sizing: border-box;
 	-o-box-sizing: border-box;
 }
+
 x-autosuggest > ul {
 	display: none;
 	position: absolute;
@@ -20,12 +22,15 @@ x-autosuggest > ul {
 	width: 100%;
 	background: #fff;
 }
+
 x-autosuggest ul[data-show-suggestions="true"] {
 	display: block;
 }
+
 x-autosuggest > ul > li:hover {
 	text-decoration: underline;
 }
+
 x-autosuggest > ul > li[selected="true"] {
 	text-decoration: underline;
 }
