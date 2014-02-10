@@ -131,21 +131,18 @@ var shotclockDraw = {
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
-    drawRadialSection: function(startName, stopName, startFraction, stopFraction, theColor, theID) {
+    drawRadialSection: function(startName, stopName, theColor, theID) {
         // console.log("START drawRadialSection " + theID);
         if (this.lightTimes[startName] & this.lightTimes[stopName]) {
             var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[startName]).azimuth;
-            var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
-
             var stopAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[stopName]).azimuth;
-            if (stopAzimuthInDegrees < startAzimuthInDegrees) {
-                stopAzimuthInDegrees = stopAzimuthInDegrees + 360;
-            }
 
+            var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
             var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
-            // show this one
+            // show this one and set its colors
             $('#' + theID).show();
+            $('#' + theID)[0].setAttribute('class', theColor);
 
             // MOVE TO
             var arcRadius = (theID == 'sunlight') ? 105 : 95;
@@ -157,8 +154,18 @@ var shotclockDraw = {
             // ELLIPTICAL ARC
             ellipticalArc = pathSegList.getItem(1);
             ellipticalArc.angle = 0;
-            ellipticalArc.largeArcFlag = false; //(theID == 'sunlight');
-            ellipticalArc.sweepFlag = false; // true for south of border
+
+            // TODO: make this be true when the sun tracks south instead of north
+            var highestAzimuthInDegrees = this.lightTimes['highestAzimuth'];
+            var south = (highestAzimuthInDegrees < 270) && (highestAzimuthInDegrees > 90);
+            var sweep = ! south;
+            var large = (theID == 'sunlight') && ((stopAzimuthInDegrees < startAzimuthInDegrees) != sweep);
+
+            ellipticalArc.sweepFlag = sweep;
+            ellipticalArc.largeArcFlag = large;
+
+            console.log(theID + " " + startAzimuthInDegrees + " " + stopAzimuthInDegrees + " " + large + ", sweep " + sweep);
+
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;
             ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
@@ -176,7 +183,7 @@ var shotclockDraw = {
             var sortedEntry = sortedRanges[i];
             if (shotclockDraw.showCurrentDateTime && (sortedEntry[3] == 'light-best') && (sortedEntry[1] < shotclockDraw.currently.getTime()) && (shotclockDraw.currently.getTime() < sortedEntry[2])) {
                 var minutesLeft = Math.round((sortedEntry[2] - shotclockDraw.currently) / (60 * 1000));
-                return { next: Date.now().add(goodLightNotificationSpacing).minutes(), title: "GO OUT", subtitle: minutesLeft + " minutes left" };
+                return { next: Date.now().add(goodLightNotificationSpacing).minutes(), title: "Shoot", subtitle: minutesLeft + " minutes left" };
             }
         }
 
@@ -186,10 +193,10 @@ var shotclockDraw = {
                 var minutesUntil = Math.round((sortedEntry[1] - shotclockDraw.currently) / (60 * 1000));
                 var hoursUntil = Math.round(minutesUntil / 60.0);
                 if (hoursUntil > 1) {
-                    return { next: Date.now().add(badLightNotificationSpacing).minutes(), title: "WAIT", subtitle: "light could be good in " + hoursUntil + " hours" };
+                    return { next: Date.now().add(badLightNotificationSpacing).minutes(), title: "Wait", subtitle: "light could be good in " + hoursUntil + " hours" };
                 } else {
                     var bestMinutesUntil = Math.min(minutesUntil, goodLightNotificationSpacing);
-                    return { next: Date.now().add(bestMinutesUntil).minutes(), title: "WAIT", subtitle: "light could be good in " + minutesUntil + " minutes" };
+                    return { next: Date.now().add(bestMinutesUntil).minutes(), title: "Wait", subtitle: "light could be good in " + minutesUntil + " minutes" };
                 }
             }
         }
@@ -222,6 +229,8 @@ var shotclockDraw = {
             console.log("SET NOTIFICATION");
         }
 
+        // TODO: need l10n; need template!
+        // $('#summarytab').html(tempNotification.title);
         $('#notificationSummary').html('<div class="notification-subtitle">' + this.locationNameString + '</div><div class="notification-title">' + tempNotification.title + '</div><div class="notification-subtitle">' + tempNotification.subtitle + '</div>');
         console.log(this.locationNameString + ": " + sunAngleUtils.getShortDateString(this.notificationMessage.next) + " @ " + sunAngleUtils.getShortTimeString(this.notificationMessage.next) + " -> " + this.notificationMessage.title + ": " + this.notificationMessage.subtitle);
     },
@@ -303,18 +312,15 @@ var shotclockDraw = {
     logCurrentSunPosition: function(delta) {
         var windowBounds = this.map.calculateBounds();
 
-        // draw radial sections in different colors using today's lightTimes
-        var radialSectionFraction = 0.9;
-
         $('path').hide();
 
         // draw some constant circles
-        this.drawRadialSection('predawn', 'sunset', 1.0, 1.2, '#FFFFFF', 'sunlight');
+        this.drawRadialSection('predawn', 'sunset', 'light-white', 'sunlight');
 
         // for each range, draw a radial section with the right color.
         for (rangeName in this.lightRanges) {
             rangeData = this.lightRanges[rangeName];
-            this.drawRadialSection(rangeData[0], rangeData[1], radialSectionFraction, 1.0, rangeData[2], rangeName);
+            this.drawRadialSection(rangeData[0], rangeData[1], rangeData[2], rangeName);
         }
 
         // label hours of the day using current position
