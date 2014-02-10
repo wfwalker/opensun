@@ -131,15 +131,15 @@
                   </filter>
                 </defs>
                 <g filter='url(#f1)' >
-                  <path id='sunlight' stroke='white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" style='fill: none' />
-                  <path id='Predawn' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='Morning' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='Evening' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='Twilight' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='LateMorning' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='Midday' stroke='#999999' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='Afternoon' stroke='#C4B11B' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
-                  <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" style='fill: none' />
+                  <path id='sunlight' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
+                  <path id='Predawn' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Morning' class='light-best' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Evening' class='light-best' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Twilight' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='LateMorning' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Midday' class='light-harsh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Afternoon' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
 
                   <path id='sunangle' d='M120,120 L120,0' class='light-meh' stroke-width='4' transform='rotate(0 120 120)' />
                   <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
@@ -211,7 +211,7 @@
         <x-tabbar>
           <x-tabbar-tab target-selector="#place">Place</x-tabbar-tab>
           <x-tabbar-tab target-selector="#time">Time</x-tabbar-tab>
-          <x-tabbar-tab target-selector="#summary">Table</x-tabbar-tab>
+          <x-tabbar-tab id="summarytab" target-selector="#summary">Advice</x-tabbar-tab>
           <x-tabbar-tab target-selector="#map">Map</x-tabbar-tab>
         </x-tabbar>
       </footer>
