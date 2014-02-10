@@ -62,8 +62,9 @@ var sunAngleUtils = {
         var listOfTimes = {};
         var firstAngles = new Array();
         var firstNames = new Array();
-        var lowest = 90;
-        var highest = -90;
+        var lowestAltitude = 90;
+        var highestAltitude = -90;
+        var highestAzimuth = 0;
 
         for (key in this.firstSunAngles) {
             firstAngles.push(this.firstSunAngles[key]);
@@ -76,17 +77,18 @@ var sunAngleUtils = {
                 tempDate.setHours(hours);
                 tempDate.setMinutes(minutes);
 
-                var tempAltitude = this.getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
+                var tempSunPosition = this.getSunPositionInDegrees(longitude, latitude, tempDate);
 
-                if (tempAltitude > highest) {
-                    highest = tempAltitude;
+                if (tempSunPosition.altitude > highestAltitude) {
+                    highestAltitude = tempSunPosition.altitude;
+                    highestAzimuth = tempSunPosition.azimuth;
                 }
 
-                if (tempAltitude < lowest) {
-                    lowest = tempAltitude;
+                if (tempSunPosition.altitude < lowestAltitude) {
+                    lowestAltitude = tempSunPosition.altitude;
                 }
 
-                if (tempAltitude >= firstAngles[0]) {
+                if (tempSunPosition.altitude >= firstAngles[0]) {
                     listOfTimes[firstNames[0]] = tempDate;
                     firstAngles.shift();
                     firstNames.shift();
@@ -114,12 +116,12 @@ var sunAngleUtils = {
 
                 var tempAltitude = this.getSunPositionInDegrees(longitude, latitude, tempDate).altitude;
 
-                if (tempAltitude > highest) {
-                    highest = tempAltitude;
+                if (tempAltitude > highestAltitude) {
+                    highestAltitude = tempAltitude;
                 }
 
-                if (tempAltitude < lowest) {
-                    lowest = tempAltitude;
+                if (tempAltitude < lowestAltitude) {
+                    lowestAltitude = tempAltitude;
                 }
 
                 if (tempAltitude >= lastAngles[0]) {
@@ -134,8 +136,9 @@ var sunAngleUtils = {
             }
         }
 
-        listOfTimes['highest'] = highest;
-        listOfTimes['lowest'] = lowest;
+        listOfTimes['highest'] = highestAltitude;
+        listOfTimes['highestAzimuth'] = highestAzimuth;
+        listOfTimes['lowest'] = lowestAltitude;
 
         // privateShowTimesInConsole(listOfTimes);
         return listOfTimes;
