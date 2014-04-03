@@ -81,11 +81,15 @@
             });
         }
 
-        shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
+        document.getElementById('map').addEventListener('show', function() {
+            console.log('about to initialize');
+            shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
+        });          
 
         // automatically hide the splash / about screen after a few seconds
         window.setTimeout(function() {
-            document.getElementById('map').show();            
+            console.log('about to show map');
+            document.getElementById('map').setAttribute('selected', true);
         }, 500);
 
         // clicking the HERE button tries to geolocate
