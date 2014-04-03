@@ -82,8 +82,12 @@
         }
 
         document.getElementById('map').addEventListener('show', function() {
-            console.log('about to initialize');
-            shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
+            if (shotclockDraw.map == '') {
+                console.log('about to initialize');            
+                shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
+            } else {
+                console.log('openlayers map already initialized');
+            }
         });          
 
         // automatically hide the splash / about screen after a few seconds
@@ -112,7 +116,8 @@
                     clearTimeout(location_timeout);
                     $('#geolocatespinner').html('');
                     shotclockDraw.centerMapAt(position.coords.longitude, position.coords.latitude, 15);
-                    document.getElementById('map').show();
+                    document.getElementById('map').setAttribute('selected', true);
+
                 },
                 function(err) {
                     console.log("geolocate failure " + err);
@@ -169,7 +174,7 @@
             }
 
             // immediately flip to map tab
-            document.getElementById('map').show();
+            document.getElementById('map').setAttribute('selected', true);
         });
 
         // clicking in the find text box selects all the text for easy replacing of the sample text
@@ -201,7 +206,7 @@
                         shotclockDraw.centerMapAt(results[0].lon, results[0].lat, 10);
 
                         // immediately flip to map tab
-                        document.getElementById('map').show();
+                        document.getElementById('map').setAttribute('selected', true);
                     }
                     else
                     {
