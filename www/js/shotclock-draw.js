@@ -134,42 +134,60 @@ var shotclockDraw = {
     drawRadialSection: function(startName, stopName, theColor, theID) {
         // console.log("START drawRadialSection " + theID);
         if (this.lightTimes[startName] & this.lightTimes[stopName]) {
+            // get the start and stop azimuth in degrees
             var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[startName]).azimuth;
             var stopAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[stopName]).azimuth;
 
+            // convert the start and stop azimuth in radians
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
             var stopAzimuthInRadians = 2 * Math.PI * stopAzimuthInDegrees / 360;
 
-            // show this one and set its colors
+            // show this segment and its background
             $('#' + theID).show();
+            $('#' + theID + '-w').show();
             $('#' + theID)[0].setAttribute('class', theColor);
 
-            // MOVE TO
-            var arcRadius = (theID == 'sunlight') ? 105 : 95;
+            // set the moveTo coordinates based on those 
+            var arcRadius = 95;
+            var arcRadiusWhite = 105;
             var pathSegList = $('#' + theID)[0].pathSegList;
+            var pathSegListWhite = $('#' + theID + '-w')[0].pathSegList;
             moveTo = pathSegList.getItem(0);
+            moveToWhite = pathSegListWhite.getItem(0);
             moveTo.x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
             moveTo.y = 120 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
+            moveToWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + startAzimuthInRadians);
+            moveToWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + startAzimuthInRadians);
 
             // ELLIPTICAL ARC
             ellipticalArc = pathSegList.getItem(1);
             ellipticalArc.angle = 0;
+            ellipticalArcWhite = pathSegListWhite.getItem(1);
+            ellipticalArcWhite.angle = 0;
 
             // TODO: make this be true when the sun tracks south instead of north
             var highestAzimuthInDegrees = this.lightTimes['highestAzimuth'];
             var south = (highestAzimuthInDegrees < 270) && (highestAzimuthInDegrees > 90);
             var sweep = ! south;
-            var large = (theID == 'sunlight') && ((stopAzimuthInDegrees < startAzimuthInDegrees) != sweep);
+            var large = false;
 
             ellipticalArc.sweepFlag = sweep;
             ellipticalArc.largeArcFlag = large;
+
+            ellipticalArcWhite.sweepFlag = sweep;
+            ellipticalArcWhite.largeArcFlag = large;
 
             console.log(theID + " " + startAzimuthInDegrees + " " + stopAzimuthInDegrees + " " + large + ", sweep " + sweep);
 
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;
+            ellipticalArcWhite.r1 = arcRadiusWhite;
+            ellipticalArcWhite.r2 = arcRadiusWhite;
+
             ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
             ellipticalArc.y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
+            ellipticalArcWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + stopAzimuthInRadians);
+            ellipticalArcWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + stopAzimuthInRadians);
         }
     },
 
@@ -313,9 +331,6 @@ var shotclockDraw = {
         var windowBounds = this.map.calculateBounds();
 
         $('path').hide();
-
-        // draw some constant circles
-        this.drawRadialSection('predawn', 'sunset', 'light-white', 'sunlight');
 
         // for each range, draw a radial section with the right color.
         for (rangeName in this.lightRanges) {
