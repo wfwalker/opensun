@@ -1,0 +1,196 @@
+lat	lon	title	description	iconSize	iconOffset	icon
+37.361500	-121.994003	Our House	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.429600	-121.977997	Alviso Marina	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.272701	-121.842003	Andrew Molera	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.426701	-122.139000	Arastradero Preserve	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+40.857800	-124.088997	Arcata Marsh	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.270302	-121.806000	Big Sur	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.273602	-123.004997	Bodega Bay	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.928001	-122.689003	Bolinas Lagoon	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.201599	-121.828003	Calero Reservoir	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.935001	-74.906403	Cape May	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.536098	-121.927002	Carmel River	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+40.112999	-88.264900	Rural Areas of Champaign County	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.434776	-122.099060	Charleston Slough	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.830002	-121.556000	Clifton Court Forebay	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.594700	-121.880997	Coast Guard Pier	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.420200	-121.987999	Coyote Creek Field Station	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.550598	-122.085999	Coyote Hills Regional Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.567001	-122.366997	Coyote Point Marina	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.432701	-121.961998	Don Edwards Center	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.466400	-121.973999	Drawbridge	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.455715	-121.864311	Ed Levin County Park Sandy Wool	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.804401	-121.786003	Elkhorn Slough	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.733299	-123.032997	Farallon Islands	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.542400	-122.228996	Foster City Radio Tower	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.785702	-122.420998	Golden Gate Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.340801	-121.721001	Grant Ranch County Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.830502	-122.480003	Hawk Hill	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+40.666698	-123.917000	Rural Areas of Humboldt County	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.725601	-122.498001	Lake Merced	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+42.187599	-122.685997	Lithia Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.245800	-121.871002	Los Alamitos Water Recharge Pond	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.265800	-118.843002	Malheur NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.313900	-122.061996	McClellan Ranch	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.296299	-120.484001	Merced NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.316700	-122.147003	Monte Bello Open Space Preserve	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.601299	-121.882004	Monterey Bay	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.331799	-120.841003	Morro Bay	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.813599	-121.789001	Moss Landing State Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.341900	-121.641998	Mount Hamilton	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.394402	-121.976997	Nortel Networks	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.260357	-121.955620	Oka Ponds	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.457329	-122.108826	Palo Alto Duck Pond	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.596901	-120.832001	Panoche Valley	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.422234	-122.071030	Parcourse Marsh	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.203100	-98.229698	McAllen	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+33.502102	-111.952003	Phoenecian Resort	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.291100	-122.085999	Picchetti Ranch	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.186199	-122.397003	Pigeon Point	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.005600	-91.213898	Pikes Peak	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.509701	-122.467003	Pillar Point	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.995800	-123.022003	Point Reyes National Seashore	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.505001	-122.486000	Princeton Harbor	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.331100	-122.092003	Rancho San Antonio	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.525200	-122.266998	Reactivity	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.318100	-122.218002	Russian Ridge Open Space Preserve	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.371498	-122.181999	Sacramento NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+33.333302	-115.833000	Salton Sea	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.343601	-121.452003	San Antonio Valley	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+32.700001	-117.167000	San Diego	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.732800	-122.499001	San Francisco Zoo	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.450001	-122.349998	Rural Areas of San Mateo County	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.974201	-122.029999	Santa Cruz	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+41.583302	-122.516998	Rural Areas of Siskiyou County	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.250599	-90.916702	Southwest Wisconsin	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.424000	-122.165001	Stanford University	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.523300	-122.251999	Starbucks Pond	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.311401	-122.068001	Stevens Creek County Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.768902	-122.472000	Stowe Lake	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.413300	-121.995003	Sunnyvale Baylands	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.419800	-122.016998	Donald M. Somers Water Pollution Control Plant	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.402500	-121.968002	Ulistac Natural Area	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+42.340302	-90.415802	Upper Mississippi NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.243198	-121.969002	Vasona Creek	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.849998	-119.567001	Yosemite	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+29.728600	-99.761101	Leakey	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+25.901400	-97.497200	Brownsville	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.833599	-97.060799	Port Aransas	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.506100	-99.507202	Laredo	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.800301	-97.396103	Corpus Christi	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.616699	-121.083000	Rural Areas of San Benito County	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.744400	-122.212997	Arrowhead Marsh	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.806400	-122.253998	Lake Merritt	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.444401	-122.158997	Downtown Palo Alto	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+42.245800	-122.787003	Bear Creek Greenway	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+25.866100	-97.407898	Sabal Palm Audubon Sanctuary	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.283300	-97.383301	Laguna Atascosa NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.103300	-97.164398	South Padre Island	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+25.980000	-97.441498	Old Port Isabel Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.069700	-98.144997	Santa Ana NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.121799	-97.961700	Estero Llano Grande State Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.146799	-97.990303	Frontera Audubon	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.139400	-98.332199	Anzalduas County Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.669399	-118.315002	Kern River Preserve	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.728371	-118.305779	Fay Ranch Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.730801	-118.136002	Chimney Creek Campground	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.974701	-118.540001	Johnsondale Bridge	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.953300	-118.619003	Holey Meadow	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.119202	-118.546997	Quaking Aspen Meadow	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.649967	-122.147346	Hayward Regional Shoreline	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+33.805000	-106.906998	Bosque del Apache NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.433254	-122.092148	Shoreline Lake	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.569698	-122.285004	Tidelands Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.177200	-121.698997	Ogier Ponds	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.284237	-121.680405	Liberty Island Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.212681	-121.795441	Flannery Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.604301	-121.892998	Fishermans Wharf	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.231701	-122.115997	Castle Rock State Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+40.333302	-105.708000	Rocky Mountain National Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.354198	-122.157997	Hidden Villa	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.783100	-121.793999	Salinas River State Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.837200	-121.801003	Zmudowski State Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.382198	-118.112000	Butterbredt Spring	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.375153	-118.165375	Jawbone Canyon Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+35.351101	-118.218002	Kelso Valley Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.322498	-121.667503	Smith Creek Fire Station	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.529968	-122.249710	Marlin Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.235561	-121.880829	Guadalupe Oak Grove Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.225719	-122.408821	Bean Hollow State Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.778332	-122.510002	Sutro Heights Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.479721	-122.449440	Venice Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.054171	-81.884171	Saddle Creek Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.566669	-81.355560	Harry P. Leu Gardens	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.045860	-82.399933	Venice Rookery	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.463329	-82.089996	Ding Darling NWR	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.583611	-81.358612	Mead Gardens	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.962502	-122.028893	Neary Lagoon	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.704170	-120.859169	Mercey Hot Springs	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.657051	-121.155739	Panoche Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.186668	-121.659439	Ryer Island	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.588058	-122.026108	Union City Library	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.044437	-122.030853	Spring Lakes	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.835831	-121.636940	Byron Hot Springs Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.792915	-122.455406	El Polin Loop	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.441219	-121.825302	Marsh Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.303921	-122.072983	Stevens Creek County Park Villa Maria	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.617500	-120.488892	Yuba Pass	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.629448	-120.282829	Antelope Valley Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.754929	-120.706284	Plumas-Eureka State Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.610737	-120.631386	Sardine Lakes	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+53.264702	-113.553001	Leduc	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+54.472698	-110.115997	Cold Lake Provincial Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+54.831856	-111.974068	Sir Winston Churchill Provincial Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+55.288799	-114.764999	Slave Lake	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+52.857201	-118.085999	Jasper National Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.868061	-122.315277	Berkeley Marina	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.628616	-122.028954	Garin / Dry Creek Regional Parks	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.205830	-121.819168	Sutter Buttes	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.218889	-81.388062	Lake Tohopekaliga	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.226461	-80.763283	Viera Wetlands	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.913610	-81.270279	Lake Kissimmee	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+27.937859	-81.213402	Overstreet Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+28.084446	-81.303764	Lake Cypress	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.501820	-122.371010	Skylawn Memorial Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.455162	-122.443520	Blufftop Coastal Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.142082	-122.323051	Cascade Ranch	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.189169	-98.193542	Allen Williams's Yard	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.662043	-97.830185	El Canelo Ranch	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+26.291525	-98.134880	Edinburg Scenic Wetlands	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.409489	-121.802742	Sierra Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+39.563721	-120.260925	Lemon Canyon Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.118092	-121.550423	Coyote Lake Dam	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+42.658985	-90.732742	Potosi Point	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.027390	-122.892303	Limantour Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.082439	-122.932091	Drake's Bay Oyster Farm	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+44.350788	-121.552200	Calliope Crossing	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+41.004608	-121.438316	Fall River Mills	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.174438	-122.903503	Tomales Bay	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.437576	-121.316574	Del Puerto Canyon (Stanislaus County)	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.971893	-121.949402	Capitola State Beach	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.008560	-121.698563	Mount Madonna County Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.004395	-121.681610	Mount Madonna County Park Sprig Lake	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.457676	-122.101089	Palo Alto Baylands Boat Launch	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+61.218056	-149.900284	Anchorage	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+61.599724	-149.112778	Wasilla and Palmer	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+64.451668	-164.825562	Council Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+64.776001	-165.998993	Teller Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+64.909164	-165.012497	Kougarok Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+32.244244	-111.167877	Arizona-Sonoran Desert Museum	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.471483	-110.976479	Rio Rico	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.882593	-109.203949	Southwestern Research Station	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.915091	-109.284508	Barfoot Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.913702	-109.141449	Portal	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.390165	-110.239731	Ash Canyon Bed and Breakfast	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+31.563023	-110.315559	Sierra Vista	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+38.214085	-122.826935	Chileno Valley	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+36.479767	-120.784424	New Idria Road	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.420094	-122.025093	Yahoo/Moffett Pond	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.203690	-121.805191	Fortini Trail	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.159210	-121.875870	Sierra Azul Open Space Preserve	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.204109	-121.806320	Stile Ranch Trail	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.173332	-87.889725	Schlitz Audubon Nature Center	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.022751	-91.103188	La Riviere Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.896038	-122.580254	Muir Woods National Monument	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+43.068901	-87.870361	Lake Park	desc	21,25	-10,-25	./img/icons/Black_Camera.png
+37.429482	-122.186432	Stanford Community Garden	desc	21,25	-10,-25	./img/icons/Black_Camera.png

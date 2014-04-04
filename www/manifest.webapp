@@ -1,0 +1,26 @@
+{
+  "version": "0.1",
+  "name": "ShotClock",
+  "description": "sun angle calculator for wildlife photographers",
+  "launch_path": "/index.html",
+  "icons": {
+    "64": "/img/shotclock-logo-64.png",
+    "128": "/img/shotclock-logo-128.png"
+  },
+  "developer": {
+    "name": "Bill Walker",
+    "url": "http://wfwalker.github.com/opensun/"
+  },
+  "installs_allowed_from": ["*"],
+  "locales": {
+  },
+  "default_locale": "en",
+  "permissions": {
+    "geolocation": {
+      "description": "Used to position the map to your current position"
+    },
+    "desktop-notification": {
+      "description": "Used to tell the user when the sunlight is good"
+    }    
+  }
+}
