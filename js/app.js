@@ -99,6 +99,7 @@
         // clicking the HERE button tries to geolocate
         $("#herebutton").bind(global.actEvent, function(e) {
             e.preventDefault();
+            console.log('my location button clicked');
 
             // SET THE SPINNER
             // TODO: show/hide pre-existing spinner, don't put HTML in strings.
@@ -117,12 +118,13 @@
                     $('#geolocatespinner').html('');
                     shotclockDraw.centerMapAt(position.coords.longitude, position.coords.latitude, 15);
                     document.getElementById('map').setAttribute('selected', true);
-
                 },
                 function(err) {
                     console.log("geolocate failure " + err);
+
                     clearTimeout(location_timeout);
                     $('#geolocatespinner').html('');
+
                     // TODO: error message not localized
                     console.log("can't find your location: " + err);
                     showErrorMessage("can't find your location");
@@ -142,21 +144,19 @@
             shotclockDraw.showCurrentDateTime = false;
             shotclockDraw.currentTimeChanged(newDate);
 
-            $('#nowbutton').attr('disabled', 'false');
-
             shotclockDraw.logCurrentSunPosition();
         });
 
         // initialize timeslider -- now a web component!
         $('#timeslider').on("change",
             function (event) {
+                console.log("timeslider");
+
                 var newTime = new Date(shotclockDraw.currently);
                 newTime.setMinutes((this.value * 60) % 60);
                 newTime.setHours(this.value);
                 shotclockDraw.showCurrentDateTime = false;
                 shotclockDraw.currentTimeChanged(newTime);
-
-                $('#nowbutton').attr('disabled', 'false');
 
                 shotclockDraw.logCurrentSunPosition();
             }
@@ -170,7 +170,6 @@
                 shotclockDraw.showCurrentDateTime = true;
                 shotclockDraw.currentTimeChanged(Date.now());
                 shotclockDraw.logCurrentSunPosition();
-                $('#nowbutton').attr('disabled', 'true');
             }
 
             // immediately flip to map tab

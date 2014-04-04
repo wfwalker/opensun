@@ -177,7 +177,7 @@ var shotclockDraw = {
             ellipticalArcWhite.sweepFlag = sweep;
             ellipticalArcWhite.largeArcFlag = large;
 
-            console.log(theID + " " + startAzimuthInDegrees + " " + stopAzimuthInDegrees + " " + large + ", sweep " + sweep);
+            // console.log(theID + " " + startAzimuthInDegrees + " " + stopAzimuthInDegrees + " " + large + ", sweep " + sweep);
 
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;

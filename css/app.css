@@ -318,7 +318,21 @@ text.hourlabel {
   fill: none;
 }
 
-.x-appbar:before {content: none;}
+x-tabbar-tab {
+  background-color: #999;
+  border-right: solid 1px black;
+}
+
+x-appbar {
+  background-color: #999 !important;
+}
+
+#trafficlight {
+  padding-left: 10px;
+}
+#aboutbutton {
+  padding-right: 10px;
+}
 
 /* ==|== media queries ======================================================
    EXAMPLE Media Query for Responsive Design.
