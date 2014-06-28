@@ -20,15 +20,21 @@ var shotclockDraw = {
         var bigMove = (Math.abs(this.mapCenterPosition.lat - localStorage.getItem("latitude")) > 0.5) ||
                        (Math.abs(this.mapCenterPosition.lon - localStorage.getItem("longitude")) > 0.5)
 
-        // if we know the current time, get the sun position, get the light times and light ranges for today, update labels.
+        // if we know the current time...
 
         if (this.currently) {
+            // ... recompute the sun position.
             var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
             this.currentSunPosition = temp;
 
+            // if our map center changed by half a degree in latitude or longitude...
             if (bigMove) {
+
+                // ... recompute light times and light ranges
                 this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
+
+                // look up a place name for our new location and display it in the summary tab
 
                 // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
                 // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
@@ -88,14 +94,14 @@ var shotclockDraw = {
         // cache the current time in the this data struct
         this.currently = newTime;
 
-        // if we know the current position, get the sun position
-
+        // if we know the current position...
         if (this.mapCenterPosition) {
+
+            // ... get the sun position
             var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, newTime);
             this.currentSunPosition = temp;
 
             // TODO, only update these if the day changed since last time.
-
             this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
             this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
             this.privateUpdateNotification(false);
@@ -103,12 +109,15 @@ var shotclockDraw = {
             console.log("warning, this.mapCenterPosition undefined");
         }
 
+        // update the date label and picker, and the hour label
         $('#dateLabel').text(sunAngleUtils.getShortDateString(this.currently));
         $('#datepicker')[0].chosen = this.currently;
         $('#datepicker')[0].view = this.currently;
         $('#hourLabel').text(sunAngleUtils.getShortTimeString(this.currently));
 
+        // if we're tracking the current time...
         if (this.showCurrentDateTime) {
+            // ... show the new current time
             $('#timeslider')[0].value = this.currently.getHours() + (this.currently.getMinutes() / 60.0);
         }
     },
@@ -248,7 +257,7 @@ var shotclockDraw = {
         }
 
         // TODO: need l10n; need template!
-        // $('#summarytab').html(tempNotification.title);
+        $('#summarytab').text(tempNotification.title);
         $('#notificationSummary').html('<div class="notification-subtitle">' + this.locationNameString + '</div><div class="notification-title">' + tempNotification.title + '</div><div class="notification-subtitle">' + tempNotification.subtitle + '</div>');
         console.log(this.locationNameString + ": " + sunAngleUtils.getShortDateString(this.notificationMessage.next) + " @ " + sunAngleUtils.getShortTimeString(this.notificationMessage.next) + " -> " + this.notificationMessage.title + ": " + this.notificationMessage.subtitle);
     },
@@ -275,6 +284,7 @@ var shotclockDraw = {
         $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
 
         $('#trafficlight').attr('class', cssClass);
+        $('#summarytab').attr('class', cssClass);
 
         if (this.currentSunPosition.altitude > 0) {
             if (this.currentSunPosition.altitude < 40) {
