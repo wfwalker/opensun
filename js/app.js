@@ -58,7 +58,7 @@
 
             // Otherwise, we can fallback to a regular modal alert
             else {
-              alert("Hi!");
+              alert(inMessage);
             }
           });
         }
