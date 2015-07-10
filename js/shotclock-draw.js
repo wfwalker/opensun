@@ -3,7 +3,6 @@ var shotclockDraw = {
 	mapCenterPosition: '',
 	map: '',
 
-
 	mapCenterChanged: function() {
         // compute map center position in degrees
         this.mapCenterPosition = this.map.getCenter().transform(
@@ -39,7 +38,7 @@ var shotclockDraw = {
                 // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
                 // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
                 $.ajax({
-                    url: "//nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
+                    url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
                     dataType: "json",
 
                     error: function(results) {
@@ -364,23 +363,11 @@ var shotclockDraw = {
         // some interesting tile servers I am experimenting with
 
         var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
-          ["//a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-           "//a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-           "//a.tile.openstreetmap.org/${z}/${x}/${y}.png"]);
-
-        var stamenTerrainBackground = new OpenLayers.Layer.OSM("stamenTerrainBackground",
-          ["//tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "//tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "//tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
-
-        var stamenWatercolor = new OpenLayers.Layer.OSM("stamenWatercolor",
-          ["//tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "//tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "//tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
+          ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+           "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+           "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png"]);
 
         this.map.addLayer(mapquestOSM);
-        // this.map.addLayer(stamenWatercolor);
-        // this.map.addLayer(stamenTerrainBackground);
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {
