@@ -1,9 +1,7 @@
 
     var global = this;
 
-    global.hasTouch = ('ontouchstart' in window) ||
-                   window.DocumentTouch &&
-                   document instanceof DocumentTouch;
+    global.hasTouch = ('ontouchstart' in window);
 
     global.actEvent = hasTouch ? "touchstart" : "click";
 
