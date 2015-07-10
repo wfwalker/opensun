@@ -35,6 +35,7 @@ nbproject
 .CVS
 intermediate
 publish
+node_modules
 .idea
 
 # build script local files
