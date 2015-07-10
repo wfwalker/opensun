@@ -39,7 +39,7 @@ var shotclockDraw = {
                 // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
                 // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
                 $.ajax({
-                    url: "http://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
+                    url: "//nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
                     dataType: "json",
 
                     error: function(results) {
