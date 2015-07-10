@@ -364,19 +364,19 @@ var shotclockDraw = {
         // some interesting tile servers I am experimenting with
 
         var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
-          ["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-           "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-           "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"]);
+          ["//a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+           "//a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+           "//a.tile.openstreetmap.org/${z}/${x}/${y}.png"]);
 
         var stamenTerrainBackground = new OpenLayers.Layer.OSM("stamenTerrainBackground",
-          ["http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
+          ["//tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "//tile.stamen.com/terrain-background/${z}/${x}/${y}.png",
+           "//tile.stamen.com/terrain-background/${z}/${x}/${y}.png"]);
 
         var stamenWatercolor = new OpenLayers.Layer.OSM("stamenWatercolor",
-          ["http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png",
-           "http://tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
+          ["//tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "//tile.stamen.com/watercolor/${z}/${x}/${y}.png",
+           "//tile.stamen.com/watercolor/${z}/${x}/${y}.png"]);
 
         this.map.addLayer(mapquestOSM);
         // this.map.addLayer(stamenWatercolor);
