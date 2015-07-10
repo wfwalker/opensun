@@ -1,0 +1,16 @@
+{
+	"lang": "en",
+	"name": "ShotClock",
+	"start_url": "/index.html",
+	"display": "standalone",
+	"icons": [{
+		"src": "img/shotclock-logo-64.png",
+		"sizes": "64x64",
+		"type": "image/png"
+	}, {
+		"src": "img/shotclock-logo-128.png",
+		"sizes": "128x128",
+		"type": "image/png"
+	}],
+	"orientation": "portrait"
+}
