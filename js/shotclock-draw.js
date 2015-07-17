@@ -282,8 +282,8 @@ var shotclockDraw = {
         $('#shadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
         $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
 
-        $('#trafficlight').attr('class', cssClass);
-        $('#summarytab').attr('class', cssClass);
+        // $('#trafficlight').attr('class', cssClass);
+        // $('#summarytab').attr('class', cssClass);
 
         if (this.currentSunPosition.altitude > 0) {
             if (this.currentSunPosition.altitude < 40) {
