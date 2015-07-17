@@ -1,0 +1,101 @@
+.slider {
+  width: 220px;
+}
+
+div.olControlZoom {
+  position: relative !important;
+  float: right !important;
+  left: -3px !important;
+  top: 60px !important;
+  padding: 3px !important;
+  width: 46px;
+}
+
+#mapdiv {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  opacity: 0.9;
+  height: 100%;
+  width: 100%;
+}
+
+
+#shotclockContainer {
+  position: absolute;
+  z-index: 10000;
+  top: 1px;
+  left: 1px;
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  height: 100%;
+  width: 100%;
+}
+
+text.hourlabel {
+  font-size: 70%;
+}
+
+#currentAzimuth {
+  font-size: 90%;
+}
+
+#currentDate {
+  font-size: 90%;
+}
+
+#currentTime {
+  font-size: 90%;
+}
+
+.light-meh {
+  background-color: #C4B11B;
+  stroke: #C4B11B;
+  fill: none;
+}
+
+.light-white {
+  background-color: #FFFFFF;
+  stroke: #FFFFFF;
+  fill: none;
+}
+
+.light-harsh {
+  background-color: #999999;
+  stroke: #999999;
+  fill: none;
+}
+
+.light-best {
+  background-color: #0F960F;
+  stroke: #0F960F;
+  fill: none;
+}
+
+.light-night {
+  background-color: #000000;
+  stroke: #000000;
+  fill: none;
+}
+
+.notification-title {
+  font-size: 600%;
+  fill: none;
+}
+
+.notification-subtitle {
+  font-size: 120%;
+  fill: none;
+}
+
+#trafficlight {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#aboutbutton {
+  padding-right: 10px;
+}
