@@ -363,8 +363,6 @@ var shotclockDraw = {
 
         // Open Street Maps layer
 
-        // some interesting tile servers I am experimenting with
-
         var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
           ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
            "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
