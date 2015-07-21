@@ -26,7 +26,7 @@ if ('serviceWorker' in navigator &&
   // *Don't* register service worker file in, e.g., a scripts/ sub-directory!
   // See https://github.com/slightlyoff/ServiceWorker/issues/468
   navigator.serviceWorker.register('service-worker.js', {
-    scope: './opensun'
+    scope: './'
   }).then(function(registration) {
     // Check to see if there's an updated version of service-worker.js with new files to cache:
     // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-registration-update-method
