@@ -3,6 +3,51 @@ var shotclockDraw = {
 	mapCenterPosition: '',
 	map: '',
 
+    updateLocationNameString: function() {
+        // look up a place name for our new location and display it in the summary tab
+
+        // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
+        // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
+        $.ajax({
+            url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
+            dataType: "json",
+
+            error: function(results) {
+                console.log("can't reverse lookup, " + results);
+                shotclockDraw.locationNameString = "Unknown";
+                showErrorMessage("can't reverse lookup");
+                shotclockDraw.privateUpdateNotification(true);
+                localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
+            },               
+
+            success: function(results) {     
+                if (results) {
+                    var temp = [];
+                    if (results.address.city) {
+                        temp.push(results.address.city);
+                    }
+                    if (results.address.county) {
+                        temp.push(results.address.county);
+                    }
+                    if (results.address.state) {
+                        temp.push(results.address.state);
+                    }
+                    shotclockDraw.locationNameString = temp.join(', ');
+                    console.log(shotclockDraw.locationNameString);
+                    shotclockDraw.privateUpdateNotification(true);
+                }
+                else
+                {
+                    shotclockDraw.locationNameString = "Unknown";
+                    console.log("reverse lookup no results");
+                    shotclockDraw.privateUpdateNotification(true);
+                }
+
+                localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
+            },
+        });
+    },
+
 	mapCenterChanged: function() {
         // compute map center position in degrees
         this.mapCenterPosition = this.map.getCenter().transform(
@@ -28,53 +73,11 @@ var shotclockDraw = {
 
             // if our map center changed by half a degree in latitude or longitude...
             if (bigMove) {
-
                 // ... recompute light times and light ranges
                 this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
 
-                // look up a place name for our new location and display it in the summary tab
-
-                // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
-                // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
-                $.ajax({
-                    url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
-                    dataType: "json",
-
-                    error: function(results) {
-                        console.log("can't reverse lookup, " + results);
-                        shotclockDraw.locationNameString = "Unknown";
-                        showErrorMessage("can't reverse lookup");
-                        shotclockDraw.privateUpdateNotification(true);
-                        localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
-                    },               
-
-                    success: function(results) {     
-                        if (results) {
-                            var temp = [];
-                            if (results.address.city) {
-                                temp.push(results.address.city);
-                            }
-                            if (results.address.county) {
-                                temp.push(results.address.county);
-                            }
-                            if (results.address.state) {
-                                temp.push(results.address.state);
-                            }
-                            shotclockDraw.locationNameString = temp.join(', ');
-                            console.log(shotclockDraw.locationNameString);
-                            shotclockDraw.privateUpdateNotification(true);
-                        }
-                        else
-                        {
-                            shotclockDraw.locationNameString = "Unknown";
-                            console.log("reverse lookup no results");
-                            shotclockDraw.privateUpdateNotification(true);
-                        }
-
-                        localStorage.setItem("locationNameString", shotclockDraw.locationNameString);
-                    },
-                 });
+                this.updateLocationNameString();
             }
         } else {
             console.log("warning: this.currently undefined");
