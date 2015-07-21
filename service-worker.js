@@ -79,7 +79,7 @@ var stripIgnoredUrlParameters = function (originalUrl, ignoreUrlParametersMatchi
   };
 
 
-var mappings = populateCurrentCacheNames(PrecacheConfig, CacheNamePrefix, self.location);
+var mappings = populateCurrentCacheNames(PrecacheConfig, CacheNamePrefix, self.location + '/opensun/');
 var AbsoluteUrlToCacheName = mappings.absoluteUrlToCacheName;
 var CurrentCacheNamesToAbsoluteUrl = mappings.currentCacheNamesToAbsoluteUrl;
 
