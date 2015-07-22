@@ -45,7 +45,7 @@ var populateCurrentCacheNames = function (precacheConfig, cacheNamePrefix, baseU
     var currentCacheNamesToAbsoluteUrl = {};
 
     precacheConfig.forEach(function(cacheOption) {
-      var absoluteUrl = new URL('/opensun/' + cacheOption[0], baseUrl).toString();
+      var absoluteUrl = new URL('/opensun' + cacheOption[0], baseUrl).toString();
       var cacheName = cacheNamePrefix + absoluteUrl + '-' + cacheOption[1];
       currentCacheNamesToAbsoluteUrl[cacheName] = absoluteUrl;
       absoluteUrlToCacheName[absoluteUrl] = cacheName;
