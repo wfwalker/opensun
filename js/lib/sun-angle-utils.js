@@ -148,23 +148,23 @@ var sunAngleUtils = {
     // into either NIGHT, MEH, BEST, or HARSH.
     getLightRanges: function(highest) {
         ranges = {
-            'Predawn' : ['predawn', 'morningStart', 'light-meh'],
-            'Morning': ['morningStart', 'morningStop', 'light-best'],
-            'Evening': ['eveningStart', 'eveningStop', 'light-best'],
-            'Twilight': ['eveningStop', 'sunset', 'light-meh'],
+            'Predawn' : ['predawn', 'morningStart', 'light-meh', 'Get Ready'],
+            'Morning': ['morningStart', 'morningStop', 'light-best', 'Shoot!'],
+            'Evening': ['eveningStart', 'eveningStop', 'light-best', 'Shoot!'],
+            'Twilight': ['eveningStop', 'sunset', 'light-meh', 'Shoot?'],
         };
 
         // TODO :NIGHT!!
         // TODO: fix Midday as both meh and harsh!
 
         if (highest >= 40.0) { // some of the day is harsh, the rest is meh
-            ranges['LateMorning'] = ['morningStop', 'highStart', 'light-meh'];
-            ranges['Midday'] = ['highStart', 'highStop', 'light-harsh'];
-            ranges['Afternoon'] = ['highStop', 'eveningStart', 'light-meh'];
+            ranges['LateMorning'] = ['morningStop', 'highStart', 'light-meh', 'Shoot?'];
+            ranges['Midday'] = ['highStart', 'highStop', 'light-harsh', 'Nap'];
+            ranges['Afternoon'] = ['highStop', 'eveningStart', 'light-meh', 'Shoot?'];
         } else if (highest >= 25.0) { // all of midday is meh
-            ranges['Midday'] = ['morningStop', 'eveningStart', 'light-meh'];
+            ranges['Midday'] = ['morningStop', 'eveningStart', 'light-meh', 'Nap'];
         } else { // draw these if the sun is good all day
-            ranges['AllDay'] = ['morningStart', 'eveningStop', 'light-best'];
+            ranges['AllDay'] = ['morningStart', 'eveningStop', 'light-best', 'All Day Shoot!'];
         }
 
         return ranges;    
@@ -179,7 +179,7 @@ var sunAngleUtils = {
             var rangeBounds = lightRanges[key];
 
             if (lightTimes[rangeBounds[0]] & lightTimes[rangeBounds[1]]) {
-                var newEntry = [key, lightTimes[rangeBounds[0]], lightTimes[rangeBounds[1]], rangeBounds[2]];
+                var newEntry = [key, lightTimes[rangeBounds[0]], lightTimes[rangeBounds[1]], rangeBounds[2], rangeBounds[3]];
                 sortable.push(newEntry);
             }
             else
