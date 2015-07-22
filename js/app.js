@@ -66,7 +66,37 @@
           // We can fallback to a regular modal alert
           alert(inMessage);
         }        
-    }
+    };
+
+    function searchLocationsAndCenterMap(inText) {
+        $.ajax({
+            url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + inText,
+            dataType: "json",
+
+            error: function(results) {
+                $('#placelookupspinner').html('');    
+                // TODO: localize error msgs    
+                console.log("can't search for places, " + results);
+                showErrorMessage("can't search for places");
+            },               
+
+            success: function(results) {     
+                $('#placelookupspinner').html('');        
+             
+                if (results && results.length > 0) {
+                    shotclockDraw.centerMapAt(results[0].lon, results[0].lat, 10);
+
+                    // immediately flip to map tab
+                    document.getElementById('map').setAttribute('selected', true);
+                }
+                else
+                {
+                    $('#placelookupspinner').html('');        
+                    showErrorMessage("no places found for '" + inText + "'");
+                }
+            },
+         });
+    };
 
     document.addEventListener('DOMComponentsLoaded', function(){        
         // At first, let's check if we have permission for notification
@@ -182,35 +212,7 @@
             $('#placelookupspinner').html('<img src="img/small-progress.gif" />');        
 
             var searchText = $('#findtext').val();
-
-            $.ajax({
-                url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + searchText,
-                dataType: "json",
-
-                error: function(results) {
-                    $('#placelookupspinner').html('');    
-                    // TODO: localize error msgs    
-                    console.log("can't search for places, " + results);
-                    showErrorMessage("can't search for places");
-                },               
-
-                success: function(results) {     
-                    $('#placelookupspinner').html('');        
-                 
-                    if (results && results.length > 0) {
-                        shotclockDraw.centerMapAt(results[0].lon, results[0].lat, 10);
-
-                        // immediately flip to map tab
-                        document.getElementById('map').setAttribute('selected', true);
-                    }
-                    else
-                    {
-                        $('#placelookupspinner').html('');        
-                        showErrorMessage("no places found for '" + searchText + "'");
-                    }
-                },
-             });
-
+            searchLocationsAndCenterMap(searchText);
         });
 
     });
