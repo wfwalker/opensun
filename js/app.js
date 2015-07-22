@@ -148,14 +148,12 @@
         // initialize timeslider -- now a web component!
         $('#timeslider').on("change",
             function (event) {
-                console.log("timeslider");
-
                 var newTime = new Date(shotclockDraw.currently);
                 newTime.setMinutes((this.value * 60) % 60);
                 newTime.setHours(this.value);
                 shotclockDraw.showCurrentDateTime = false;
+                console.log("timeslider", this.value, newTime, shotclockDraw.getLightRangeForTime(newTime));
                 shotclockDraw.currentTimeChanged(newTime);
-
                 shotclockDraw.logCurrentSunPosition();
             }
         );
