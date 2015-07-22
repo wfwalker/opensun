@@ -1,6 +1,6 @@
 var shotclockDraw = {
 	currently: '',
-	mapCenterPosition: '',
+    mapCenterPosition: '',
 	map: '',
 
     updateLocationNameString: function() {
@@ -111,15 +111,20 @@ var shotclockDraw = {
             console.log("warning, this.mapCenterPosition undefined");
         }
 
-        // update the date label and picker, and the hour label
+        // update the date label and picker, and the hour label and the advice
         $('#dateLabel').text(sunAngleUtils.getShortDateString(this.currently));
         $('#datepicker')[0].chosen = this.currently;
         $('#datepicker')[0].view = this.currently;
         $('#hourLabel').text(sunAngleUtils.getShortTimeString(this.currently));
+        var currentLightRange = this.getLightRangeForTime(this.currently);
+        console.log('currentTimeChanged', currentLightRange);
+        if (currentLightRange) {
+            $('#summarytab').text(currentLightRange[4]);
+        }
 
         // if we're tracking the current time...
         if (this.showCurrentDateTime) {
-            // ... show the new current time
+            // ... update the slider
             $('#timeslider')[0].value = this.currently.getHours() + (this.currently.getMinutes() / 60.0);
         }
     },
@@ -200,6 +205,18 @@ var shotclockDraw = {
             ellipticalArcWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + stopAzimuthInRadians);
             ellipticalArcWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + stopAzimuthInRadians);
         }
+    },
+
+    getLightRangeForTime: function(inDate) {
+        var sortedRanges = sunAngleUtils.getSortedLightRangesAndTimes(this.lightTimes, this.lightRanges);
+
+        for (var i = 0; i < sortedRanges.length; i++) {
+            var sortedEntry = sortedRanges[i];
+
+            if ((sortedEntry[1] < inDate.getTime()) && (inDate.getTime() < sortedEntry[2])) {
+                return sortedEntry;
+            }
+        }        
     },
 
     // TODO: needs localization!
