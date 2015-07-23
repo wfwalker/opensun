@@ -83,7 +83,7 @@ $(document).ready(function(){
     console.log('map.show');
     if (shotclockDraw.map == '') {
         console.log('about to initialize');            
-        shotclockDraw.initialize(new OpenLayers.Map("mapdiv", { theme : null }));
+        shotclockDraw.initialize(new ol.Map({target: 'mapdiv'}));        
     } else {
         console.log('openlayers map already initialized');
     }
