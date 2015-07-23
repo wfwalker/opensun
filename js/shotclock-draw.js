@@ -9,7 +9,7 @@ var shotclockDraw = {
         // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
         // http://nominatim.openstreetmap.org/reverse?format=xml&lat=52.5487429714954&lon=-1.81602098644987&zoom=18&addressdetails=1
         $.ajax({
-            url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition.lat + "&lon=" + this.mapCenterPosition.lon + "&zoom=10&addressdetails=1",
+            url: "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + this.mapCenterPosition[1] + "&lon=" + this.mapCenterPosition[0] + "&zoom=10&addressdetails=1",
             dataType: "json",
 
             error: function(results) {
@@ -49,32 +49,33 @@ var shotclockDraw = {
     },
 
 	mapCenterChanged: function() {
-        // compute map center position in degrees
-        this.mapCenterPosition = this.map.getCenter().transform(
-                this.map.getProjectionObject(), // to Spherical Mercator Projection
-                new OpenLayers.Projection("EPSG:4326") // transform from WGS 1984
-            );
+        // transform the center back into lat/long
+        this.mapCenterPosition = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-        var delta = new OpenLayers.LonLat(this.mapCenterPosition.lon - localStorage.getItem("longitude"), this.mapCenterPosition.lat - localStorage.getItem("latitude")).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                this.map.getProjectionObject() // to Spherical Mercator Projection
-              );
+        // compute the delta from the last saved position
+        var delta = [this.mapCenterPosition[0] - localStorage.getItem("longitude"), this.mapCenterPosition[1] - localStorage.getItem("latitude")];
+
+        // save the map center in local storage
+        localStorage.setItem("latitude", this.mapCenterPosition[1]);
+        localStorage.setItem("longitude", this.mapCenterPosition[0]);
+        localStorage.setItem("zoom", this.map.getView().getZoom());
 
         // decide whether we just made a big move and need to recalculate light times
-        var bigMove = (Math.abs(this.mapCenterPosition.lat - localStorage.getItem("latitude")) > 0.5) ||
-                       (Math.abs(this.mapCenterPosition.lon - localStorage.getItem("longitude")) > 0.5)
+        var bigMove = (Math.abs(delta[0]) > 0.5) || (Math.abs(delta[1]) > 0.5);
+
+        console.log('mapCenterChanged', this.mapCenterPosition, delta, bigMove);
 
         // if we know the current time...
 
         if (this.currently) {
             // ... recompute the sun position.
-            var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
+            var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
             this.currentSunPosition = temp;
 
             // if our map center changed by half a degree in latitude or longitude...
             if (bigMove) {
                 // ... recompute light times and light ranges
-                this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
+                this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
 
                 this.updateLocationNameString();
@@ -83,10 +84,6 @@ var shotclockDraw = {
             console.log("warning: this.currently undefined");
         }
 
-        // save the map center in local storage
-        localStorage.setItem("latitude", this.mapCenterPosition.lat);
-        localStorage.setItem("longitude", this.mapCenterPosition.lon);
-        localStorage.setItem("zoom", this.map.getZoom());
     },
 
     // Update the shotclock, date and time pickers when the current time changes
@@ -100,11 +97,11 @@ var shotclockDraw = {
         if (this.mapCenterPosition) {
 
             // ... get the sun position
-            var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, newTime);
+            var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], newTime);
             this.currentSunPosition = temp;
 
             // TODO, only update these if the day changed since last time.
-            this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.currently);
+            this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
             this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
             this.privateUpdateNotification(false);
         } else {
@@ -131,15 +128,13 @@ var shotclockDraw = {
 
     // Center the map on the given location
     // Called after successful geolocation, or on app startup
-    centerMapAt: function(longitude, latitude, zoom) {
-        // compute the new center
-        var newMapCenter = new OpenLayers.LonLat(longitude, latitude).transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                this.map.getProjectionObject() // to Spherical Mercator Projection
-              );
+    centerMapAt: function(longitude, latitude, inZoom) {
+       console.log('centerMapAt', longitude, latitude);
 
-        // send the map there
-        this.map.setCenter(newMapCenter, zoom);  
+        this.map.setView(new ol.View({
+            center: ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857'),
+            zoom: inZoom
+        }));        
 
         // notify event handler
         this.mapCenterChanged();
@@ -151,8 +146,8 @@ var shotclockDraw = {
         // console.log("START drawRadialSection " + theID);
         if (this.lightTimes[startName] & this.lightTimes[stopName]) {
             // get the start and stop azimuth in degrees
-            var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[startName]).azimuth;
-            var stopAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, this.lightTimes[stopName]).azimuth;
+            var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.lightTimes[startName]).azimuth;
+            var stopAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.lightTimes[stopName]).azimuth;
 
             // convert the start and stop azimuth in radians
             var startAzimuthInRadians = 2 * Math.PI * startAzimuthInDegrees / 360;
@@ -336,7 +331,7 @@ var shotclockDraw = {
             hourMarksDate.setMinutes(0);
             hourMarksDate.setSeconds(0);
 
-            var hourMarkSunPositionInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition.lon, this.mapCenterPosition.lat, hourMarksDate);
+            var hourMarkSunPositionInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], hourMarksDate);
 
             if (hourMarkSunPositionInDegrees.altitude >= -1) {
                 $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
@@ -357,8 +352,7 @@ var shotclockDraw = {
 
     // draws the sun rose at the current map center using information in the this data structure
     logCurrentSunPosition: function(delta) {
-        var windowBounds = this.map.calculateBounds();
-
+        console.log('logCurrentSunPosition');
         $('path').hide();
 
         // for each range, draw a radial section with the right color.
@@ -374,18 +368,13 @@ var shotclockDraw = {
     }, 
 
     initialize: function(inMap) {
-        // create the map associated with the div
+        // store map in instance variable
         this.map = inMap;
-        // this.map = new OpenLayers.Map("mapdiv", { theme : null });
 
         // Open Street Maps layer
-
-        var mapquestOSM = new OpenLayers.Layer.OSM("MapQuest-OSM",
-          ["https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-           "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-           "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png"]);
-
-        this.map.addLayer(mapquestOSM);
+        var osmSource = new ol.source.MapQuest({layer: 'osm'});
+        var osmLayer = new ol.layer.Tile({source: osmSource});
+        this.map.addLayer(osmLayer);
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if ( localStorage.getItem("latitude")) {
@@ -394,7 +383,7 @@ var shotclockDraw = {
             var savedZoom = localStorage.getItem("zoom");
             this.locationNameString = localStorage.getItem("locationNameString");
 
-            this.centerMapAt(savedLongitude, savedLatitude, savedZoom);            
+            this.centerMapAt(-98, 38, 4);
         } else {
             // initialize map to center of USA
             //TODO: don't be so USA-o-centric, think l10n
@@ -410,7 +399,7 @@ var shotclockDraw = {
         this.logCurrentSunPosition(); 
 
         // redo the timeline whenever we move the map
-        this.map.events.register('moveend', this.map, function(eventThing) {
+        this.map.on('moveend', function(eventThing) {
             var delta = shotclockDraw.mapCenterChanged();
             shotclockDraw.logCurrentSunPosition(delta);
         });
