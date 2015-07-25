@@ -279,16 +279,10 @@ var shotclockDraw = {
     // rerun whenever light times change or current time changes
     privateDrawShadow: function() {
         var cssClass = 'light-night';
+        var lightRange = this.getLightRangeForTime(this.currently);
 
-        for (key in this.lightRanges) {
-            rangeBounds = this.lightRanges[key];
-
-            if (this.lightTimes[rangeBounds[0]] & this.lightTimes[rangeBounds[1]]) {
-                if ((this.lightTimes[rangeBounds[0]] < this.currently) & (this.currently <= this.lightTimes[rangeBounds[1]])) {
-                    cssClass = rangeBounds[2];
-                    break;
-                }
-            }
+        if (lightRange) {
+            cssClass = lightRange[3];
         }
 
         $('#sunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
@@ -300,19 +294,19 @@ var shotclockDraw = {
         // $('#trafficlight').attr('class', cssClass);
         // $('#summarytab').attr('class', cssClass);
 
-        if (this.currentSunPosition.altitude > 0) {
-            if (this.currentSunPosition.altitude < 40) {
+        if (this.currentSunPosition.altitude > 0) { // if the sun is up
+            if (this.currentSunPosition.altitude < 40) { // low sun, long shadow
                 $('#sunangle').show();
                 $('#shadow').show();
                 $('#shortsunangle').hide();
                 $('#shortshadow').hide();
-            } else {
+            } else { // high sun, short shadow
                 $('#shortsunangle').show();
                 $('#shortshadow').show();
                 $('#sunangle').hide();
                 $('#shadow').hide();
             }
-        } else {
+        } else { // the sun is down, hide all the shadows
             $('#sunangle').hide();
             $('#shadow').hide();
             $('#shortsunangle').hide();
