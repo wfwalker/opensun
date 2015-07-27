@@ -34,40 +34,6 @@ function sendNotification (title, options) {
     sendNotification(title, options);
 };
 
-function notifyUser(inMessage) {
-    // If the user agreed to get notified
-    if (window.Notification && Notification.permission === "granted") {
-      var n = new Notification(inMessage);
-    }
-
-    // If the user hasn't told if he wants to be notified or not
-    // Note: because of Chrome, we are not sure the permission property
-    // is set, therefore it's unsafe to check for the "default" value.
-    else if (Notification && Notification.permission !== "denied") {
-      Notification.requestPermission(function (status) {
-        if (Notification.permission !== status) {
-          Notification.permission = status;
-        }
-
-        // If the user said okay
-        if (status === "granted") {
-          var n = new Notification(inMessage);
-        }
-
-        // Otherwise, we can fallback to a regular modal alert
-        else {
-          alert(inMessage);
-        }
-      });
-    }
-
-    // If the user refuses to get notified
-    else {
-      // We can fallback to a regular modal alert
-      alert(inMessage);
-    }        
-}
-
 $(document).ready(function(){    
     console.log('ready');
 
@@ -195,7 +161,7 @@ $(document).ready(function(){
                 $('#placelookupspinner').html('');        
              
                 if (results && results.length > 0) {
-                    shotclockDraw.centerMapAt([results[0].lon, results[0].lat], 10);
+                    shotclockDraw.centerMapAt([parseFloat(results[0].lon), parseFloat(results[0].lat)], 10);
 
                     // immediately flip to map tab
                     document.getElementById('map').setAttribute('selected', true);
