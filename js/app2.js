@@ -109,7 +109,7 @@ $(document).ready(function(){
                 console.log("geolocate success " + position);
                 clearTimeout(location_timeout);
                 $('#geolocatespinner').html('');
-                shotclockDraw.centerMapAt(position.coords.longitude, position.coords.latitude, 15);
+                shotclockDraw.centerMapAt([position.coords.longitude, position.coords.latitude], 15);
                 $('#maptab').tab('show');
             },
             function(err) {
@@ -195,7 +195,7 @@ $(document).ready(function(){
                 $('#placelookupspinner').html('');        
              
                 if (results && results.length > 0) {
-                    shotclockDraw.centerMapAt(results[0].lon, results[0].lat, 10);
+                    shotclockDraw.centerMapAt([results[0].lon, results[0].lat], 10);
 
                     // immediately flip to map tab
                     document.getElementById('map').setAttribute('selected', true);

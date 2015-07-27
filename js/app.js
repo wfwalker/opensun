@@ -101,24 +101,6 @@
     document.addEventListener('DOMComponentsLoaded', function(){   
         console.log('page loaded', window.location.hash);
 
-        if (window.location.hash) {
-            window.location.queryString = {};
-            window.location.hash.substr(1).split("&").forEach(function (pair) {
-                if (pair === "") return;
-                var parts = pair.split("=");
-                location.queryString[parts[0]] = parts[1] &&
-                    decodeURIComponent(parts[1].replace(/\+/g, " "));
-            });
-
-            if (window.location.queryString.latitude == 'NaN') throw "Bogus latitude" ;
-            if (window.location.queryString.longitude == 'NaN') throw "Bogus longitude" ;
-
-            console.log('parsed', window.location.queryString);
-            shotclockDraw.storePositionAndZoom([window.location.queryString.longitude, window.location.queryString.latitude], window.location.queryString.zoom);
-        } else {
-            console.log('no location.hash');
-        }
-
         // At first, let's check if we have permission for notification
         // If not, let's ask for it
         if (window.Notification && Notification.permission !== "granted") {

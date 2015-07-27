@@ -405,6 +405,25 @@ var shotclockDraw = {
         var osmLayer = new ol.layer.Tile({source: osmSource});
         this.map.addLayer(osmLayer);
 
+        // initialize from URL hash
+        if (window.location.hash) {
+            window.location.queryString = {};
+            window.location.hash.substr(1).split("&").forEach(function (pair) {
+                if (pair === "") return;
+                var parts = pair.split("=");
+                location.queryString[parts[0]] = parts[1] &&
+                    decodeURIComponent(parts[1].replace(/\+/g, " "));
+            });
+
+            if (window.location.queryString.latitude == 'NaN') throw "Bogus latitude" ;
+            if (window.location.queryString.longitude == 'NaN') throw "Bogus longitude" ;
+
+            console.log('parsed', window.location.queryString);
+            shotclockDraw.storePositionAndZoom([window.location.queryString.longitude, window.location.queryString.latitude], window.location.queryString.zoom);
+        } else {
+            console.log('no location.hash');
+        }
+
         // initialize map to saved lat/long and zoom or else zoom to center of USA
         if (this.hasValidStoredData()) {
             var savedData = this.retrievePositionAndZoom();
