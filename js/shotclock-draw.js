@@ -3,6 +3,34 @@ var shotclockDraw = {
     mapCenterPosition: '',
 	map: '',
 
+    hasValidStoredData: function() {
+        var storedLat = parseFloat(localStorage.getItem('latitude'));
+        var storedLong = parseFloat(localStorage.getItem('longitude'));
+        var storedZoom = parseInt(localStorage.getItem('zoom'));
+        console.log('hasValidStoredData', storedLong, storedLat, storedZoom);
+        return storedLong && storedLat && storedZoom;
+    },
+
+    storePositionAndZoom: function(inPosition, inZoom) {
+        console.log('storePositionAndZoom', inPosition, inZoom);
+        localStorage.setItem('longitude', inPosition[0]);
+        localStorage.setItem('latitude', inPosition[1]);
+        localStorage.setItem('zoom', inZoom);
+
+        // update the URL
+        window.history.replaceState({}, '', '#latitude=' + inPosition[1]+ '&longitude=' + inPosition[0] + '&zoom=' + inZoom);
+    },
+
+    retrievePositionAndZoom: function() {
+        var storedLat = parseFloat(localStorage.getItem('latitude'));
+        var storedLong = parseFloat(localStorage.getItem('longitude'));
+        var storedZoom = parseInt(localStorage.getItem('zoom'));
+
+        console.log('retrievePositionAndZoom', storedLat, storedLong, storedZoom);
+
+        return { position: [storedLong, storedLat], zoom: storedZoom };
+    },
+
     updateLocationNameString: function() {
         // look up a place name for our new location and display it in the summary tab
 
@@ -52,16 +80,20 @@ var shotclockDraw = {
         // transform the center back into lat/long
         this.mapCenterPosition = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-        // compute the delta from the last saved position
-        var delta = [this.mapCenterPosition[0] - localStorage.getItem("longitude"), this.mapCenterPosition[1] - localStorage.getItem("latitude")];
+        // assume its a big move
+        var bigMove = true;
+
+        if (this.hasValidStoredData()) {
+            // get stored position
+            var storedPosition = this.retrievePositionAndZoom().position;
+            // compute the delta from the last saved position
+            var delta = [this.mapCenterPosition[0] - storedPosition[0], this.mapCenterPosition[1] - storedPosition[1]];
+            // decide whether we just made a big move and need to recalculate light times
+            bigMove = (Math.abs(delta[0]) > 0.5) || (Math.abs(delta[1]) > 0.5);
+        }
 
         // save the map center in local storage
-        localStorage.setItem("latitude", this.mapCenterPosition[1]);
-        localStorage.setItem("longitude", this.mapCenterPosition[0]);
-        localStorage.setItem("zoom", this.map.getView().getZoom());
-
-        // decide whether we just made a big move and need to recalculate light times
-        var bigMove = (Math.abs(delta[0]) > 0.5) || (Math.abs(delta[1]) > 0.5);
+        this.storePositionAndZoom(this.mapCenterPosition, this.map.getView().getZoom());
 
         console.log('mapCenterChanged', this.mapCenterPosition, delta, bigMove);
 
@@ -128,11 +160,14 @@ var shotclockDraw = {
 
     // Center the map on the given location
     // Called after successful geolocation, or on app startup
-    centerMapAt: function(longitude, latitude, inZoom) {
-       console.log('centerMapAt', longitude, latitude);
+    centerMapAt: function(inPosition, inZoom) {
+       console.log('centerMapAt', inPosition, inZoom);
+
+        if (inPosition[0] == 'NaN') throw "Bogus latitude" ;
+        if (inPosition[1] == 'NaN') throw "Bogus longitude" ;
 
         this.map.setView(new ol.View({
-            center: ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857'),
+            center: ol.proj.transform(inPosition, 'EPSG:4326', 'EPSG:3857'),
             zoom: inZoom
         }));        
 
@@ -345,7 +380,7 @@ var shotclockDraw = {
     },
 
     // draws the sun rose at the current map center using information in the this data structure
-    logCurrentSunPosition: function(delta) {
+    logCurrentSunPosition: function() {
         console.log('logCurrentSunPosition');
         $('path').hide();
 
@@ -371,17 +406,16 @@ var shotclockDraw = {
         this.map.addLayer(osmLayer);
 
         // initialize map to saved lat/long and zoom or else zoom to center of USA
-        if ( localStorage.getItem("latitude")) {
-            var savedLatitude = localStorage.getItem("latitude");
-            var savedLongitude = localStorage.getItem("longitude");
-            var savedZoom = localStorage.getItem("zoom");
-            this.locationNameString = localStorage.getItem("locationNameString");
+        if (this.hasValidStoredData()) {
+            var savedData = this.retrievePositionAndZoom();
 
-            this.centerMapAt(-98, 38, 4);
+            this.locationNameString = localStorage.getItem("locationNameString");
+            this.centerMapAt(savedData.position, savedData.zoom);
         } else {
+            shotclockDraw.storePositionAndZoom([-98, 38], 4);
             // initialize map to center of USA
             //TODO: don't be so USA-o-centric, think l10n
-            this.centerMapAt(-98, 38, 4);
+            this.centerMapAt([-98, 38], 4);
         }  
 
         // initialize so that we show current time and date
@@ -394,8 +428,8 @@ var shotclockDraw = {
 
         // redo the timeline whenever we move the map
         this.map.on('moveend', function(eventThing) {
-            var delta = shotclockDraw.mapCenterChanged();
-            shotclockDraw.logCurrentSunPosition(delta);
+            shotclockDraw.mapCenterChanged();
+            shotclockDraw.logCurrentSunPosition();
         });
 
         // check once a minute to track date/time
