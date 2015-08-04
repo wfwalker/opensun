@@ -32,6 +32,8 @@ var shotclockDraw = {
     },
 
     updateLocationNameString: function() {
+        console.log('start updateLocationNameString');
+
         // look up a place name for our new location and display it in the summary tab
 
         // see http://wiki.openstreetmap.org/wiki/Nominatim#Reverse_Geocoding_.2F_Address_lookup
@@ -61,7 +63,9 @@ var shotclockDraw = {
                         temp.push(results.address.state);
                     }
                     shotclockDraw.locationNameString = temp.join(', ');
-                    console.log(shotclockDraw.locationNameString);
+                    console.log('updateLocationNameString', shotclockDraw.locationNameString);
+                    // TODO: update twitter:description ? 
+                    // document.getElementsByName('twitter:description')[0].setAttribute('content', 'monkey')
                     shotclockDraw.privateUpdateNotification(true);
                 }
                 else
@@ -95,7 +99,7 @@ var shotclockDraw = {
         // save the map center in local storage
         this.storePositionAndZoom(this.mapCenterPosition, this.map.getView().getZoom());
 
-        console.log('mapCenterChanged', this.mapCenterPosition, delta, bigMove);
+        console.log('mapCenterChanged', this.mapCenterPosition, bigMove);
 
         // if we know the current time...
 
@@ -105,7 +109,7 @@ var shotclockDraw = {
             this.currentSunPosition = temp;
 
             // if our map center changed by half a degree in latitude or longitude...
-            if (bigMove) {
+            if (bigMove || (! this.lightTimes) || (! this.lightRanges)) {
                 // ... recompute light times and light ranges
                 this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
@@ -166,13 +170,11 @@ var shotclockDraw = {
         if (inPosition[0] == 'NaN') throw "Bogus latitude" ;
         if (inPosition[1] == 'NaN') throw "Bogus longitude" ;
 
+        // note: this triggers moveend
         this.map.setView(new ol.View({
             center: ol.proj.transform(inPosition, 'EPSG:4326', 'EPSG:3857'),
             zoom: inZoom
         }));        
-
-        // notify event handler
-        this.mapCenterChanged();
     },
 
     // draw a radial section from the map center through a range of angles determined by the 
@@ -441,12 +443,9 @@ var shotclockDraw = {
         this.showCurrentDateTime = true;
         this.currentTimeChanged(Date.now());      
 
-        // show sundial for current date/time
-        this.mapCenterChanged();
-        this.logCurrentSunPosition(); 
-
         // redo the timeline whenever we move the map
         this.map.on('moveend', function(eventThing) {
+            console.log('moveeend', eventThing);
             shotclockDraw.mapCenterChanged();
             shotclockDraw.logCurrentSunPosition();
         });
