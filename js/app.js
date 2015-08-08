@@ -157,6 +157,11 @@
             }
         );
 
+        // clicking the about button goes to the about page
+        $("#aboutbutton").bind(global.actEvent, function(e) {
+            document.getElementById('about').setAttribute('selected', true);
+        });
+
         // clicking the NOW button toggles whether we're tracking the current date/time
         $("#nowbutton").bind(global.actEvent, function(e) {
             e.preventDefault();

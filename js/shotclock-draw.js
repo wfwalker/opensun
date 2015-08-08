@@ -353,6 +353,7 @@ var shotclockDraw = {
         $('#currentAzimuth').text(this.currentSunPosition.altitude.toFixed(0) + "°");
         $('#currentTime').text(sunAngleUtils.getShortTimeString(this.currently));
         $('#currentDate').text(sunAngleUtils.getShortDateString(this.currently));
+        $('#trafficlight').show();
     },
 
     privateLabelHours: function() {
@@ -396,6 +397,8 @@ var shotclockDraw = {
         this.privateLabelHours();
 
         this.privateDrawShadow(this.currentSunPosition);
+
+        $('.shotclock').show();
     }, 
 
     initialize: function(inMap) {
