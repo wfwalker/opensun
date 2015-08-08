@@ -252,7 +252,6 @@ div.olControlZoom {
   z-index: 10000;
   top: 1px;
   left: 1px;
-  opacity: 0.9;
   pointer-events: none;
   user-select: none;
   -moz-user-select: none;
@@ -260,6 +259,14 @@ div.olControlZoom {
   -ms-user-select: none;
   height: 100%;
   width: 100%;
+}
+
+#trafficlight {
+  display: none;
+}
+
+.shotclock {
+  display: none;
 }
 
 text.hourlabel {

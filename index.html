@@ -38,7 +38,7 @@
     <x-layout id="app">
       <x-appbar>
         <div id="trafficlight">
-          <span id="summarytab"></span> &bull;
+          <span id="summarytab">Wait</span> &bull;
           <span id="currentAzimuth"></span> &bull;
           <span id='currentTime'></span> &bull;
           <span id='currentDate'></span>
@@ -53,8 +53,9 @@
         <x-deck>
           <x-card id="about" selected>
             <center>
-              <div style="text-align: left; padding: 30px">
-                <p>ShotClock is made with Mortar, OpenLayers, and OpenStreetMaps</p>
+              <div style="text-align: left; padding: 20px">
+                <h1>ShotClock</h1>
+                <p>ShotClock is made with Brick, OpenLayers, and OpenStreetMaps</p>
 
                 <p>If you like ShotClock and find it useful, please consider making a contribution to
                   <a href='http://www.audubon.org/search-by-zip' target='_blank'>your local Audubon chapter</a>, or
@@ -121,7 +122,7 @@
                     </feMerge>
                   </filter>
                 </defs>
-                <g filter='url(#f1)' >
+                <g filter='url(#f1)' class='shotclock' >
                   <path id='Predawn-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
                   <path id='Predawn' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
 
@@ -224,17 +225,18 @@
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
 
-    <script type="text/javascript" src="js/service-worker-registration.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/service-worker-registration.js" charset="utf-8" defer></script>
 
     <script type="text/javascript" src="js/lib/jquery.js" defer></script>
     <script type="text/javascript" src="js/lib/l10n.js" defer></script>
     <script type="text/javascript" src="js/lib/ol.js" defer></script>
 
-    <script type="text/javascript" src="js/lib/brick-1.0.1.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/lib/date.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/lib/sun-angle-utils.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/lib/date.js" charset="utf-8" defer></script>
+    <script type="text/javascript" src="js/lib/sun-angle-utils.js" charset="utf-8" defer></script>
 
-    <script type="text/javascript" src="js/shotclock-draw.js" charset="utf-8"></script>        
-    <script type="text/javascript" src="js/app.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/shotclock-draw.js" charset="utf-8" defer></script>        
+    <script type="text/javascript" src="js/app.js" charset="utf-8" defer></script>
+
+    <script type="text/javascript" src="js/lib/brick-1.0.1.js" charset="utf-8"></script>
   </body>
 </html>
