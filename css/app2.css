@@ -2,13 +2,11 @@
   width: 220px;
 }
 
-div.olControlZoom {
-  position: relative !important;
-  float: right !important;
-  left: -3px !important;
-  top: 60px !important;
-  padding: 3px !important;
-  width: 46px;
+.ol-control.ol-zoom{
+   top: 60px
+}
+.ol-control.ol-attribution{
+   bottom: 70px
 }
 
 #mapdiv {
