@@ -148,10 +148,9 @@
                   <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
 
                   <path id='sunangle' d='M120,120 L120,0' class='light-meh' stroke-width='4' transform='rotate(0 120 120)' />
-                  <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
 
-                  <line id='shortsunangle' x1='120' y1='40' x2='120' y2='0' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
-                  <line id='shortshadow' x1='120' y1='120' x2='120' y2='150' stroke='black' stroke-width=4 transform='rotate(0 120 120)' />
+                  <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='#333' stroke-width=7 transform='rotate(0 120 120)' />
+                  <line id='shortshadow' x1='120' y1='120' x2='120' y2='150' stroke='#333' stroke-width=7 transform='rotate(0 120 120)' />
 
                   <text text-anchor='middle' id='hour0' class='hourlabel' x='120' y='12' transform='rotate(0 120 120)'>00</text>
                   <text text-anchor='middle' id='hour1' class='hourlabel' x='120' y='12' transform='rotate(15 120 120)'>01</text>
@@ -203,7 +202,9 @@
                   <line id='hour22tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(330 120 120)' />        
                   <line id='hour23tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(345 120 120)' />        
 
-                  <circle filter='url(#f1)' cx='120' cy='120' r='12' style='fill: black'> </circle>
+                  <circle filter='url(#f1)' cx='120' cy='120' r='7' style='fill: #333'> </circle>
+
+                  <image x="105" y="10" id='shortsunangle' width="40" height="40" xlink:href="./img/icons/Sunny.png" transform='rotate(0 120 120)'/>
                 </g>
               </svg>
               </td>
