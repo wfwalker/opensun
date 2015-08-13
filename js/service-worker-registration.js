@@ -28,6 +28,7 @@ if ('serviceWorker' in navigator &&
   navigator.serviceWorker.register('service-worker.js', {
     scope: './'
   }).then(function(registration) {
+    console.log('registered', registration);
     // Check to see if there's an updated version of service-worker.js with new files to cache:
     // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-registration-update-method
     if (typeof registration.update == 'function') {
@@ -36,6 +37,7 @@ if ('serviceWorker' in navigator &&
 
     // updatefound is fired if service-worker.js changes.
     registration.onupdatefound = function() {
+      console.log('registraion.onupdatefound');
       // The updatefound event implies that registration.installing is set; see
       // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
       var installingWorker = registration.installing;
