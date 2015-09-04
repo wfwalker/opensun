@@ -409,6 +409,11 @@ var shotclockDraw = {
         // Open Street Maps layer
         var osmSource = new ol.source.MapQuest({layer: 'osm'});
         var osmLayer = new ol.layer.Tile({source: osmSource});
+
+        osmSource.addEventListener('tileloaderror', function (e) {
+            console.log('tileloaderror, we are probably offline');
+        })
+
         this.map.addLayer(osmLayer);
 
         // initialize from URL hash
