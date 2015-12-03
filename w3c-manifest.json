@@ -11,6 +11,10 @@
 		"src": "img/shotclock-logo-128.png",
 		"sizes": "128x128",
 		"type": "image/png"
+	}, {
+		"src": "img/shotclock-logo-144.png",
+		"sizes": "144x144",
+		"type": "image/png"
 	}],
 	"orientation": "portrait"
 }
