@@ -414,6 +414,10 @@ var shotclockDraw = {
             console.log('tileloaderror, we are probably offline');
         })
 
+        osmSource.addEventListener('tileloadend', function (e) {
+            console.log('tileload done, we are probably ONLINE');
+        })
+
         this.map.addLayer(osmLayer);
 
         // initialize from URL hash
