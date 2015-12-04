@@ -1,6 +1,7 @@
 {
 	"lang": "en",
 	"name": "ShotClock",
+	"short_name": "ShotClock",
 	"start_url": "/index.html",
 	"display": "standalone",
 	"icons": [{
