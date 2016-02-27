@@ -18,6 +18,7 @@
   "homepage": "https://github.com/wfwalker/opensun",
   "dependencies": {
     "sw-precache": "^2.0.0",
+    "gulp-connect": "^2.2.0",
     "gulp": "^3.9.0"
   }
 }

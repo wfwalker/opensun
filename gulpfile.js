@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var connect = require('gulp-connect');
 
 gulp.task('default', ['generate-service-worker']);
 
@@ -19,3 +20,10 @@ gulp.task('generate-service-worker', function(callback) {
     stripPrefix: rootDir
   }, callback);
 });
+
+gulp.task('serve', ['generate-service-worker'], function () {
+  connect.server({
+    root: '.',
+  });
+});
+
