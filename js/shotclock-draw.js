@@ -180,7 +180,7 @@ var shotclockDraw = {
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     drawRadialSection: function(startName, stopName, theColor, theID) {
-        // console.log("START drawRadialSection " + theID);
+        console.log("START drawRadialSection", startName, stopName, theColor, theID);
         if (this.lightTimes[startName] & this.lightTimes[stopName]) {
             // get the start and stop azimuth in degrees
             var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.lightTimes[startName]).azimuth;
@@ -200,6 +200,12 @@ var shotclockDraw = {
             var arcRadiusWhite = 105;
             var pathSegList = $('#' + theID)[0].pathSegList;
             var pathSegListWhite = $('#' + theID + '-w')[0].pathSegList;
+            if (pathSegList == null) {
+                throw new Error('empty pathSegList for ' + theID);
+            }
+            if (pathSegListWhite == null) {
+                throw new Error('empty pathSegListWhite for ' + theID);
+            }
             moveTo = pathSegList.getItem(0);
             moveToWhite = pathSegListWhite.getItem(0);
             moveTo.x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
@@ -236,6 +242,8 @@ var shotclockDraw = {
             ellipticalArc.y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
             ellipticalArcWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + stopAzimuthInRadians);
             ellipticalArcWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + stopAzimuthInRadians);
+        } else {
+            console.log('not found', startName, stopName);
         }
     },
 
