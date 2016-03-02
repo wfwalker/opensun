@@ -1,3 +1,0 @@
-h1. ShotClock
-
-ShotClock (formerly OpenSun) helps wildlife and landscape photographers to know when and where to get optimal sunlight for outdoor shooting.
