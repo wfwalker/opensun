@@ -22,6 +22,12 @@ gulp.task('offline', ['build'], function() {
   });
 });
 
+gulp.task('deploy', function() {
+  return oghliner.deploy({
+    rootDir: 'dist',
+  });
+});
+
 gulp.task('serve', ['offline'], function () {
   connect.server({
     root: 'dist',
