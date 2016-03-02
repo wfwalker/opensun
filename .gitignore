@@ -38,6 +38,9 @@ publish
 node_modules
 .idea
 
+#dist folder created by oghliner
+dist
+
 # build script local files
 build/buildinfo.properties
 build/config/buildinfo.properties
