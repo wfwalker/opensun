@@ -37,7 +37,7 @@
 
     // This is the unique name for the cache controlled by this version of the worker.
     get CACHE_NAME() {
-      return this.CACHE_PREFIX + '14081a3fdba0f7884c066089c21e0b039e1cb104';
+      return this.CACHE_PREFIX + 'f0a369c85632e91e75db41b24651c9f1deb1620c';
     },
 
     // This is a list of resources that will be cached.
@@ -45,7 +45,6 @@
       './', // cache always the current root to make the default page available
       './css/app.css', // 5843f82d173782494c78c04c29ab5d7a8f528881
       './css/app2.css', // da5e3ac02fcbde82aecc917d6f837f21734a1826
-      './css/brick-0.9.1.css', // c9a0634e8684ff0fa1a48512399aab68ea06a419
       './css/brick-1.0.1.css', // 83d6cd80a74436faab4fd95bc2b59638013da3b9
       './css/qunit.css', // 1cf8b4bfff4b27bfdff531b3f51a34ba1bc7c236
       './css/sticky-footer-navbar.css', // b9c32ded3bc22a761f626ba91252bde5f3c8405a
@@ -68,21 +67,11 @@
       './img/time-menu.png', // 15fbe8e43254f7457c07a525905acb9f71a38322
       './js/app.js', // 6f3dbf825e65742bbdbce151e7228dfb2b017cef
       './js/offline-manager.js', // 40bdf40ed1714f16bf388909b40b5bdccaefe569
-      './js/service-worker-registration.js', // 4d2f25733088b50f09f4c16665c8c27d37429eac
       './js/shotclock-draw.js', // d069e1eb9f64d897551083db2500825f223f2da6
       './js/tests.js', // 84a12f5762481e028427fb2268f43a0c87396101
-      './css/lib/bootstrap-responsive.css', // f003266a5fa7718705b5346fa99f6d3a63c86249
-      './css/lib/bootstrap-theme.css', // 815675548997eadc98fc4beb1b698b35c2d5c5cb
-      './css/lib/bootstrap-theme.min.css', // 36f0fd5cb451590d055b38f6afad8c69f74bfc9a
-      './css/lib/bootstrap.css', // 41c54bf695145ae0b4d9020a1da308ceb05dcaf3
-      './css/lib/bootstrap.min.css', // 973e37a8502921d56bc02bb55321f45b072b6f71
       './css/lib/ol.css', // 908395d47d4540e482400362e39cc7358a133fc3
-      './js/lib/bootstrap-datepicker.js', // 1145806572c76f0caf59c02d5a149b44bbf58117
-      './js/lib/bootstrap.js', // f8752e9ae24daec0a0baffd7819122f8c6fd9103
-      './js/lib/bootstrap.min.js', // b3f2ef9f985e7906c9360756b73cd64bf7733647
       './js/lib/brick-1.0.1.js', // 67ca1fcd8361f6a6c07cac77cc1333cd38ce5484
       './js/lib/date.js', // 8f4b0b0fa5306722c30a80521530d56d1ee18806
-      './js/lib/github.js', // 9ffa3ecf6cd8c039945e93cba5b9eadeb540545a
       './js/lib/jquery.js', // 79db35e3a94da9ce724c4d3c8ccc5d1864b23a95
       './js/lib/l10n.js', // 871e33d80d1f04737d6c452ac8566bd49f8b2dd9
       './js/lib/ol.js', // c68ccdcbfd3ec10789c9ccaaff0b20df25402578
