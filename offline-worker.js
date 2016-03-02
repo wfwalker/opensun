@@ -37,7 +37,7 @@
 
     // This is the unique name for the cache controlled by this version of the worker.
     get CACHE_NAME() {
-      return this.CACHE_PREFIX + '26c985a374a9cb9d3539c66a37a5500ce7ef554a';
+      return this.CACHE_PREFIX + '14081a3fdba0f7884c066089c21e0b039e1cb104';
     },
 
     // This is a list of resources that will be cached.
@@ -67,6 +67,7 @@
       './img/splashscreen.png', // 714a1c4a18de38d9a5565da8083c48430b291997
       './img/time-menu.png', // 15fbe8e43254f7457c07a525905acb9f71a38322
       './js/app.js', // 6f3dbf825e65742bbdbce151e7228dfb2b017cef
+      './js/offline-manager.js', // 40bdf40ed1714f16bf388909b40b5bdccaefe569
       './js/service-worker-registration.js', // 4d2f25733088b50f09f4c16665c8c27d37429eac
       './js/shotclock-draw.js', // d069e1eb9f64d897551083db2500825f223f2da6
       './js/tests.js', // 84a12f5762481e028427fb2268f43a0c87396101
@@ -88,7 +89,7 @@
       './js/lib/pathseg.js', // 5b87213295f0a107e9d9bda242600db056fc5eb4
       './js/lib/qunit.js', // 0d8fdaeec180bcc70af77f58ca31d99f6bded201
       './js/lib/sun-angle-utils.js', // dbbc2b68d093428de1cbfae8d42361187fb31568
-      './index.html', // d13f59ff9a8b74412cfb67b2c1bc6763b131efbc
+      './index.html', // 570db3c4915959c7a62015ff89d758a4dc740e60
       './l10n-data.ini', // 933d99da3d95d8d6bf284cc6c65296d733cc9a57
       './favicon.ico', // b9d0388bda136f470ddac410059646ba4c4998fc
       './w3c-manifest.json', // 8d6fd3d61195b7cacb2d1e04959a527933fd74fa
