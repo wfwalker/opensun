@@ -37,7 +37,7 @@
 
     // This is the unique name for the cache controlled by this version of the worker.
     get CACHE_NAME() {
-      return this.CACHE_PREFIX + 'f0a369c85632e91e75db41b24651c9f1deb1620c';
+      return this.CACHE_PREFIX + '824b1ba294bd5742684391537f48d4abcbf45916';
     },
 
     // This is a list of resources that will be cached.
@@ -48,15 +48,12 @@
       './css/brick-1.0.1.css', // 83d6cd80a74436faab4fd95bc2b59638013da3b9
       './css/qunit.css', // 1cf8b4bfff4b27bfdff531b3f51a34ba1bc7c236
       './css/sticky-footer-navbar.css', // b9c32ded3bc22a761f626ba91252bde5f3c8405a
-      './img/arrow.png', // 5dd26e7f84cdc271ca1b85e05836b0f2eb47f3b7
       './img/buttons-annotated.png', // 64c0ec87a2b0b5b65ef29f1311b1df471090e236
       './img/buttons.png', // 4c45c17f1f2f1506d4125286ee3084b724c60bf7
       './img/doohickey-annotated.png', // 6b4916c54fe51c23a0b2f6054a438da4f033c2f3
       './img/doohickey.png', // e8696cd450807c635881c1d46c75a57adbf10662
       './img/glyphicons-halflings-white.png', // a25c4705320fd63c33790e666872910e702b9bf6
       './img/glyphicons-halflings.png', // 5f8440da149709940c6bb72ff544b5abba7e8ab4
-      './img/opensun-logo-clear.png', // f5373a66e68969bdd9c1c7512a527292507976cb
-      './img/opensun-logo.png', // f404fe8d52f89baf4e1198b9f9709cca67d6472d
       './img/place-menu.png', // bf6390e41627ec824351a050d636c83ae70a9285
       './img/shotclock-logo-128.png', // 7e5795c4aa49f32733ac706e9f90060e33ba87a2
       './img/shotclock-logo-144.gif', // 7aa394721e2c568cc45721e3481948c3fd996f65
@@ -78,9 +75,8 @@
       './js/lib/pathseg.js', // 5b87213295f0a107e9d9bda242600db056fc5eb4
       './js/lib/qunit.js', // 0d8fdaeec180bcc70af77f58ca31d99f6bded201
       './js/lib/sun-angle-utils.js', // dbbc2b68d093428de1cbfae8d42361187fb31568
-      './index.html', // 570db3c4915959c7a62015ff89d758a4dc740e60
+      './index.html', // e0ac7f752159c46eacf390ac7376856e47cdf4fb
       './l10n-data.ini', // 933d99da3d95d8d6bf284cc6c65296d733cc9a57
-      './favicon.ico', // b9d0388bda136f470ddac410059646ba4c4998fc
       './w3c-manifest.json', // 8d6fd3d61195b7cacb2d1e04959a527933fd74fa
 
     ],
