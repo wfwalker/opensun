@@ -65,7 +65,7 @@ function searchLocationsAndCenterMap(inText) {
      });
 };
 
-document.addEventListener('DOMComponentsLoaded', function(){
+function addControls() {
     console.log('page loaded', window.location.hash);
 
     // At first, let's check if we have permission for notification
@@ -188,5 +188,12 @@ document.addEventListener('DOMComponentsLoaded', function(){
         var searchText = $('#findtext').val();
         searchLocationsAndCenterMap(searchText);
     });
+};
 
-});
+// REDIRECT to HTTPS!
+var host = 'wfwalker.github.io';
+if ((host == window.location.host) && (window.location.protocol != 'https:')) {
+    window.location.protocol = 'https';
+} else {
+    document.addEventListener('DOMComponentsLoaded', addControls);
+}
