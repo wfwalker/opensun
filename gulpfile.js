@@ -43,6 +43,7 @@ gulp.task('deploy', function() {
 gulp.task('serve', ['offline'], function () {
   connect.server({
     root: 'dist',
+    port: 8081,
   });
 });
 
