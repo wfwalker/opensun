@@ -65,6 +65,78 @@ function searchLocationsAndCenterMap(inText) {
      });
 };
 
+function handleLocationButton(e) {
+    e.preventDefault();
+    console.log('my location button clicked');
+
+    // SET THE SPINNER
+    // TODO: show/hide pre-existing spinner, don't put HTML in strings.
+    $('#geolocatespinner').html('<img src="img/small-progress.gif" />');
+
+    var location_timeout = window.setTimeout(function() {
+        console.log("location timeout");
+        $('#geolocatespinner').html('');
+    }, 32000);
+
+    console.log("about to start geolocate");
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            console.log("geolocate success " + position);
+            clearTimeout(location_timeout);
+            $('#geolocatespinner').html('');
+            shotclockDraw.centerMapAt([position.coords.longitude, position.coords.latitude], 15);
+            document.getElementById('map').setAttribute('selected', true);
+        },
+        function(err) {
+            console.log("geolocate failure " + err);
+
+            clearTimeout(location_timeout);
+            $('#geolocatespinner').html('');
+
+            // TODO: error message not localized
+            console.log("can't find your location: " + err);
+            showErrorMessage("can't find your location");
+        },
+        {timeout: 30000, maximumAge: 60000, enableHighAccuracy:true});
+    console.log("just started geolocate");
+}
+
+function handleDatePicker(event) {
+    var chosenDate = Date.parse(event.originalEvent.detail.iso);
+    // parse date and notify event listener
+    var newDate = new Date(shotclockDraw.currently);
+    newDate.setDate(chosenDate.getDate());
+    newDate.setMonth(chosenDate.getMonth());
+    newDate.setFullYear(chosenDate.getFullYear());
+    shotclockDraw.showCurrentDateTime = false;
+    shotclockDraw.currentTimeChanged(newDate);
+
+    shotclockDraw.logCurrentSunPosition();
+}
+
+function handleTimePicker(event) {
+    var newTime = new Date(shotclockDraw.currently);
+    newTime.setMinutes((this.value * 60) % 60);
+    newTime.setHours(this.value);
+    shotclockDraw.showCurrentDateTime = false;
+    console.log("timeslider", this.value, newTime, shotclockDraw.getLightRangeForTime(newTime));
+    shotclockDraw.currentTimeChanged(newTime);
+    shotclockDraw.logCurrentSunPosition();
+}
+
+function handleNowButton(e) {
+    e.preventDefault();
+
+    if (! shotclockDraw.showCurrentDateTime) {
+        shotclockDraw.showCurrentDateTime = true;
+        shotclockDraw.currentTimeChanged(Date.now());
+        shotclockDraw.logCurrentSunPosition();
+    }
+
+    // immediately flip to map tab
+    document.getElementById('map').setAttribute('selected', true);
+}
+
 function addControls() {
     console.log('page loaded', window.location.hash);
 
@@ -94,68 +166,13 @@ function addControls() {
     }, 500);
 
     // clicking the HERE button tries to geolocate
-    $("#herebutton").bind(global.actEvent, function(e) {
-        e.preventDefault();
-        console.log('my location button clicked');
-
-        // SET THE SPINNER
-        // TODO: show/hide pre-existing spinner, don't put HTML in strings.
-        $('#geolocatespinner').html('<img src="img/small-progress.gif" />');
-
-        var location_timeout = window.setTimeout(function() {
-            console.log("location timeout");
-            $('#geolocatespinner').html('');
-        }, 32000);
-
-        console.log("about to start geolocate");
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                console.log("geolocate success " + position);
-                clearTimeout(location_timeout);
-                $('#geolocatespinner').html('');
-                shotclockDraw.centerMapAt([position.coords.longitude, position.coords.latitude], 15);
-                document.getElementById('map').setAttribute('selected', true);
-            },
-            function(err) {
-                console.log("geolocate failure " + err);
-
-                clearTimeout(location_timeout);
-                $('#geolocatespinner').html('');
-
-                // TODO: error message not localized
-                console.log("can't find your location: " + err);
-                showErrorMessage("can't find your location");
-            },
-            {timeout: 30000, maximumAge: 60000, enableHighAccuracy:true});
-        console.log("just started geolocate");
-    });
+    $("#herebutton").bind(global.actEvent, handleLocationButton);
 
     // initialize datepicker
-    $("#datepicker").on("datetoggleon", function (event) {
-        var chosenDate = Date.parse(event.originalEvent.detail.iso);
-        // parse date and notify event listener
-        var newDate = new Date(shotclockDraw.currently);
-        newDate.setDate(chosenDate.getDate());
-        newDate.setMonth(chosenDate.getMonth());
-        newDate.setFullYear(chosenDate.getFullYear());
-        shotclockDraw.showCurrentDateTime = false;
-        shotclockDraw.currentTimeChanged(newDate);
-
-        shotclockDraw.logCurrentSunPosition();
-    });
+    $("#datepicker").on("datetoggleon", handleDatePicker);
 
     // initialize timeslider -- now a web component!
-    $('#timeslider').on("change",
-        function (event) {
-            var newTime = new Date(shotclockDraw.currently);
-            newTime.setMinutes((this.value * 60) % 60);
-            newTime.setHours(this.value);
-            shotclockDraw.showCurrentDateTime = false;
-            console.log("timeslider", this.value, newTime, shotclockDraw.getLightRangeForTime(newTime));
-            shotclockDraw.currentTimeChanged(newTime);
-            shotclockDraw.logCurrentSunPosition();
-        }
-    );
+    $('#timeslider').on("change", handleTimePicker);
 
     // clicking the about button goes to the about page
     $("#aboutbutton").bind(global.actEvent, function(e) {
@@ -163,18 +180,7 @@ function addControls() {
     });
 
     // clicking the NOW button toggles whether we're tracking the current date/time
-    $("#nowbutton").bind(global.actEvent, function(e) {
-        e.preventDefault();
-
-        if (! shotclockDraw.showCurrentDateTime) {
-            shotclockDraw.showCurrentDateTime = true;
-            shotclockDraw.currentTimeChanged(Date.now());
-            shotclockDraw.logCurrentSunPosition();
-        }
-
-        // immediately flip to map tab
-        document.getElementById('map').setAttribute('selected', true);
-    });
+    $("#nowbutton").bind(global.actEvent, handleNowButton);
 
     // clicking in the find text box selects all the text for easy replacing of the sample text
     $('#findtext').bind(global.actEvent, function (e) { this.select() });
