@@ -138,6 +138,13 @@ function handleNowButton(e) {
 }
 
 function addControls() {
+    ga('send', {
+        hitType: 'event',
+        eventCategory: 'Lifecycle',
+        eventAction: 'initialize',
+        eventLabel: 'controls',
+    });
+
     console.log('page loaded', window.location.hash);
 
     // At first, let's check if we have permission for notification
