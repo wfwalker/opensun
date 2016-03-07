@@ -37,7 +37,7 @@
 
     // This is the unique name for the cache controlled by this version of the worker.
     get CACHE_NAME() {
-      return this.CACHE_PREFIX + 'c95b7409e1e3a1514cc52fd89a57eb97160c65f8';
+      return this.CACHE_PREFIX + 'a8d504deae03e5019f972b42c05fc60ebc21d667';
     },
 
     // This is a list of resources that will be cached.
@@ -62,7 +62,7 @@
       './img/small-progress.gif', // 9d8f230d5e14ff93c7523804faca71e5f46180d1
       './img/splashscreen.png', // 714a1c4a18de38d9a5565da8083c48430b291997
       './img/time-menu.png', // 15fbe8e43254f7457c07a525905acb9f71a38322
-      './js/app.js', // a45948d9fefa8e07cbc5b9fad17392b10f639b9b
+      './js/app.js', // f9efdc34d341cb23f5030590ab37aa8248cbae39
       './js/offline-manager.js', // 40bdf40ed1714f16bf388909b40b5bdccaefe569
       './js/shotclock-draw.js', // d069e1eb9f64d897551083db2500825f223f2da6
       './js/tests.js', // 84a12f5762481e028427fb2268f43a0c87396101

@@ -36,7 +36,7 @@ function sendNotification (title, options) {
 
 function searchLocationsAndCenterMap(inText) {
     $.ajax({
-        url: "http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + inText,
+        url: "https://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + inText,
         dataType: "json",
 
         error: function(results) {
