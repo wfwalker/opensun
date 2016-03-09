@@ -15,11 +15,15 @@ var server = express();
 
 server.use('/', express.static('dist'));
 
-server.get('/forecast', function (request, response) {
-	console.log('forecast');
+server.get('/forecast/:lat,:long', function (request, response) {
+	console.log('forecast', request.params.lat, request.params.long);
 
-	forecast.get(37.41766794184146, -122.1377402251622, function (err, res, data) {
+	if (request.params.lat == 'undefined') return;
+	if (request.params.long == 'undefined') return;
+
+	forecast.get(request.params.lat, request.params.long, function (err, res, data) {
 		if (err) throw err;
+		console.log('got response', data.currently);
 		response.setHeader('Content-Type', 'application/json');
 		response.send(data);
 	});
@@ -27,7 +31,7 @@ server.get('/forecast', function (request, response) {
 
 // start server
 
-server.listen(8083, function () {
-  console.log('shotclock server listening on port 8083!');
+server.listen(process.env.PORT || 8083, function () {
+  console.log('shotclock server listening', process.env.PORT || 8083);
 });
 
