@@ -131,6 +131,13 @@ var shotclockDraw = {
 
         // if we know the current position...
         if (this.mapCenterPosition) {
+            // ...ask for current weather from my server with /forecast/:lat,:long
+            console.log('GETTING FORECAST');
+            $.ajax({
+                url: '/forecast/' + this.mapCenterPosition[1] + ',' + this.mapCenterPosition[0],
+            }).done(function(data) {
+                console.log('Got Forecast!', data.currently.summary);
+            });
 
             // ... get the sun position
             var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], newTime);

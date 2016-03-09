@@ -1,7 +1,7 @@
 var gulp = require('gulp');
-var connect = require('gulp-connect');
 var oghliner = require('oghliner');
 var eslint = require('gulp-eslint');
+var nodemon = require('gulp-nodemon');
 
 gulp.task('default', ['offline']);
 
@@ -40,10 +40,8 @@ gulp.task('deploy', function() {
   });
 });
 
-gulp.task('serve', ['offline'], function () {
-  connect.server({
-    root: 'dist',
-    port: 8081,
+gulp.task('serve', ['offline'], function() {
+  nodemon({
+    script: 'server.js'
   });
 });
-
