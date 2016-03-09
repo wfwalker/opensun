@@ -6,10 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "gulp-eslint": "^1.1.0",
-    "gulp-nodemon": "^2.0.6"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/wfwalker/opensun.git"
@@ -21,6 +17,8 @@
   },
   "homepage": "https://github.com/wfwalker/opensun",
   "dependencies": {
+    "gulp-eslint": "^1.1.0",
+    "gulp-nodemon": "^2.0.6",
     "express": "^4.13.4",
     "forecast.io": "0.0.9",
     "gulp": "^3.9.0",
