@@ -119,7 +119,6 @@ var shotclockDraw = {
         } else {
             console.log("warning: this.currently undefined");
         }
-
     },
 
     // Update the shotclock, date and time pickers when the current time changes
@@ -171,8 +170,8 @@ var shotclockDraw = {
 
     // Center the map on the given location
     // Called after successful geolocation, or on app startup
-    centerMapAt: function(inPosition, inZoom) {
-       console.log('centerMapAt', inPosition, inZoom);
+    initializeMap: function(inPosition, inZoom) {
+       console.log('initializeMap', inPosition, inZoom);
 
         if (inPosition[0] == 'NaN') throw "Bogus latitude" ;
         if (inPosition[1] == 'NaN') throw "Bogus longitude" ;
@@ -451,12 +450,12 @@ var shotclockDraw = {
             var savedData = this.retrievePositionAndZoom();
 
             this.locationNameString = localStorage.getItem("locationNameString");
-            this.centerMapAt(savedData.position, savedData.zoom);
+            this.initializeMap(savedData.position, savedData.zoom);
         } else {
             shotclockDraw.storePositionAndZoom([-98, 38], 4);
             // initialize map to center of USA
             //TODO: don't be so USA-o-centric, think l10n
-            this.centerMapAt([-98, 38], 4);
+            this.initializeMap([-98, 38], 4);
         }  
 
         // initialize so that we show current time and date
@@ -473,6 +472,7 @@ var shotclockDraw = {
         // check once a minute to track date/time
         window.setInterval(function() {
             if (shotclockDraw.showCurrentDateTime) {
+                console.log('interval timer');
                 shotclockDraw.currentTimeChanged(Date.now());
                 shotclockDraw.logCurrentSunPosition();
             }
