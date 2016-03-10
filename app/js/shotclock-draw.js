@@ -337,30 +337,22 @@ var shotclockDraw = {
             cssClass = lightRange[3];
         }
 
-        // $('#sunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
         $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
 
         $('#sunangle').attr('class', cssClass);
         $('#shadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
         $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
 
-        // $('#trafficlight').attr('class', cssClass);
-        // $('#summarytab').attr('class', cssClass);
-
         if (this.currentSunPosition.altitude > 0) { // if the sun is up
             if (this.currentSunPosition.altitude < 40) { // low sun, long shadow
-                // $('#sunangle').show();
                 $('#shadow').show();
                 $('#shortsunangle').show();
                 $('#shortshadow').hide();
             } else { // high sun, short shadow
-                // $('#shortsunangle').show();
                 $('#shortshadow').show();
-                // $('#sunangle').hide();
                 $('#shadow').hide();
             }
         } else { // the sun is down, hide all the shadows
-            // $('#sunangle').hide();
             $('#shadow').hide();
             $('#shortsunangle').hide();
             $('#shortshadow').hide();
