@@ -42,7 +42,7 @@
       <x-appbar>
         <div id="trafficlight">
           <span id="summarytab">Wait</span> &bull;
-          <span id="currentAzimuth"></span> &bull;
+          <span id="currentWeather"></span> &bull;
           <span id='currentTime'></span> &bull;
           <span id='currentDate'></span>
         </div>
@@ -54,58 +54,6 @@
       </x-appbar>
       <section>
         <x-deck>
-          <x-card id="about" selected>
-            <center>
-              <div style="text-align: left; padding: 20px">
-                <h1>ShotClock</h1>
-                <p>ShotClock is made with Brick, OpenLayers, and OpenStreetMaps</p>
-
-                <p>If you like ShotClock and find it useful, please consider making a contribution to
-                  <a href='http://www.audubon.org/search-by-zip' target='_blank'>your local Audubon chapter</a>, or
-                  <a href='http://www.scvas.org/index.php?page=text&id=donate' target='_blank'>mine</a>!</p>
-
-                <p>Bill Walker</p>
-              </div>
-            </center>
-          </x-card>
-
-          <x-card id="place" style='padding: 10px'>
-            <span data-l10n-id="showsunanglefor">Show sun for</span>:
-            <a class="myButton" data-l10n-id="herebutton" id="herebutton" href="#">My location</a><span id="geolocatespinner"></span>
-
-            <div style='padding-top: 0.8em'><span data-l10n-id="showsunanglefor">Show sun angle for</span>:</div>
-
-            <form id="findform">
-              <input id="findtext" type="text" value="location name" />
-              <input class="myButton" data-l10n-id="findbutton" type="submit" value="Find" onclick="" />
-              <span id="placelookupspinner"></span>
-            </form>
-          </x-card>
-
-          <x-card id="time" style='padding: 10px'>
-            <div style='padding: 0.5em 0em 1em 0em'>
-              <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
-              <a class="myButton" data-l10n-id="nowbutton" id="nowbutton" href="#">Current Time</a>
-            </div>
-
-            <div style="padding: 0.5em 0em 0em 0em; width: 11.5em">
-              <span data-l10n-id="showsunanglefor">Show sun angle for</span>:
-              <x-calendar id='datepicker' controls style='font-size: 0.75em'> </x-calendar>
-
-              <div><x-slider id='timeslider' min="0" max="24" step="0.25" style='width: 100%'> </x-slider></div>
-              <div>
-                <span style='float: left'>0</span>
-                <span style='padding-left: 35%; text-align: center' id="hourLabel"></span>
-                <span style='float: right'>24</span>
-              </div>
-            </div>
-          </x-card>
-
-          <x-card id="summary" style='padding: 10px'>
-            <div id="notificationSummary">    
-            </div>
-          </x-card>    
-
           <x-card id="map">
             <div id="mapdiv">
             </div>
@@ -217,14 +165,6 @@
             </x-card>
         </x-deck>
       </section>
-      <footer>
-        <x-tabbar>
-          <x-tabbar-tab target-selector="#place"><span data-l10n-id="placebutton">Place</span></x-tabbar-tab>
-          <x-tabbar-tab target-selector="#time"><span data-l10n-id="timebutton">Time</span></x-tabbar-tab>
-          <x-tabbar-tab target-selector="#summary"><span data-l10n-id="advicebutton">Advice</span></x-tabbar-tab>
-          <x-tabbar-tab target-selector="#map"><span data-l10n-id="mapbutton">Map</span></x-tabbar-tab>
-        </x-tabbar>
-      </footer>
     </x-layout>
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
