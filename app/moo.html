@@ -29,24 +29,33 @@
     <meta name="description" content="">
 
     <link rel="stylesheet" type="text/css" href="css/app.css">
+    <link rel="stylesheet" type="text/css" href="css/brick-1.0.1.css">
     <link rel="stylesheet" type="text/css" href="css/lib/ol.css">
 
     <!-- l10n data -->
     <link rel="resource" type="application/l10n" href="l10n-data.ini" />
 
   </head>
-
-
   <body>
+      <section>
+        <div class='bar topbar'>
+          <div class='item' id="summarytab">Wait</div>
+          <div class='item' id="currentWeather"></div>
+          <div class='item' id='currentTime'></div>
+          <div class='item' id='currentDate'></div>
+          <div class='item'><img height="24px" width="24px" src="img/shotclock-logo-64.png" /></div>
+        </div>
+      </section>
+      <x-layout>
+        <section>
+          <x-deck>
+            <x-card id="map">
+            <div id="mapdiv">
+            </div>
 
-    <div id="map">
-
-      <div id="mapdiv">
-      </div>
-
-      <div id="shotclockContainer">
-        <table style='vertical-align: middle; text-align: center' height='100%' width='100%'>
-          <tr style='vertical-align: middle; text-align: center' height='100%' width='100%'>
+            <div id="shotclockContainer">
+            <table style='vertical-align: middle; text-align: center' height='100%' width='100%'>
+            <tr style='vertical-align: middle; text-align: center' height='100%' width='100%'>
             <td style='vertical-align: middle; text-align: center' width='250px' height='250px'>
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='250px' height='250px'>
                 <defs>
@@ -144,19 +153,14 @@
                   <image x="105" y="10" id='shortsunangle' width="40" height="40" xlink:href="./img/icons/Sunny.png" transform='rotate(0 120 120)'/>
                 </g>
               </svg>
-            </td>
-          </tr>
-        </table>
-      </div>
-
-      <div id="trafficlight">
-        <span id="summarytab">Wait</span> &bull;
-        <span id="currentWeather"></span> &bull;
-        <span id='currentTime'></span> &bull;
-        <span id='currentDate'></span>
-      </div>
-
-    </div>
+              </td>
+              </tr>
+              </table>
+            </div>
+            </x-card>
+          </x-deck>
+      </section>
+    </x-layout>
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
 

@@ -157,14 +157,12 @@ function addControls() {
         });
     }
 
-    document.getElementById('map').addEventListener('show', function() {
-        if (shotclockDraw.map == '') {
-            console.log('about to initialize');
-            shotclockDraw.initialize(new ol.Map({target: 'mapdiv'}));
-        } else {
-            console.log('openlayers map already initialized');
-        }
-    });          
+    if (shotclockDraw.map == '') {
+        console.log('about to initialize');
+        shotclockDraw.initialize(new ol.Map({target: 'mapdiv'}));
+    } else {
+        console.log('openlayers map already initialized');
+    }
 
     // automatically hide the splash / about screen after a few seconds
     window.setTimeout(function() {
@@ -203,10 +201,4 @@ function addControls() {
     });
 };
 
-// REDIRECT to HTTPS!
-var host = 'wfwalker.github.io';
-if ((host == window.location.host) && (window.location.protocol != 'https:')) {
-    window.location.protocol = 'https';
-} else {
-    document.addEventListener('DOMComponentsLoaded', addControls);
-}
+$(document).ready(addControls);
