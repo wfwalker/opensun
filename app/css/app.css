@@ -3,6 +3,16 @@
    Author: Bill Walker
    ========================================================================== */
 
+.bar .item {
+  padding: 10px;
+  border-right: solid 4px rgba(255,255,255,0.7);
+}
+
+.bar {
+  display: flex;
+  align: center;
+}
+
 #mapdiv {
   position: absolute;
   top: 0px;
@@ -24,8 +34,7 @@
   font-family: sans-serif;
   color: white;
   background-color: rgba(0,60,136,0.5);
-  padding: 5px;
-  border: solid 4px rgba(255,255,255,0.4);
+  border: solid 4px rgba(255,255,255,0.7);
   border-radius: 4px;
 }
 
