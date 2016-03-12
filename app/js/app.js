@@ -3,7 +3,7 @@ var global = this;
 
 global.hasTouch = ('ontouchstart' in window);
 
-global.actEvent = hasTouch ? "touchstart" : "click";
+global.actEvent = hasTouch ? 'touchstart' : 'click';
 
 function showErrorMessage(inErrorMessageText) {
     $('#errorMessageLabel').text(inErrorMessageText);
@@ -14,11 +14,11 @@ function showErrorMessage(inErrorMessageText) {
 // from https://raw.github.com/nickdesaulniers/fxos-irc/master/notification.js
 function sendNotification (title, options) {
     // Memoize based on feature detection.
-    if ("Notification" in window) {
+    if ('Notification' in window) {
         sendNotification = function (title, options) {
             new Notification(title, options);
         };
-    } else if ("mozNotification" in navigator) {
+    } else if ('mozNotification' in navigator) {
         sendNotification = function (title, options) {
             // Gecko < 22
             navigator.mozNotification
@@ -27,7 +27,7 @@ function sendNotification (title, options) {
         };
     } else {
         sendNotification = function (title, options) {
-            alert(title + ": " + options.body);
+            alert(title + ': ' + options.body);
         };
     }
 
@@ -36,14 +36,14 @@ function sendNotification (title, options) {
 
 function searchLocationsAndCenterMap(inText) {
     $.ajax({
-        url: "https://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=" + inText,
-        dataType: "json",
+        url: 'https://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=' + inText,
+        dataType: 'json',
 
         error: function(results) {
             $('#placelookupspinner').html('');    
             // TODO: localize error msgs    
-            console.log("can't search for places, " + results);
-            showErrorMessage("can't search for places");
+            console.log('can\'t search for places, ' + results);
+            showErrorMessage('can\'t search for places');
         },               
 
         success: function(results) {     
@@ -59,7 +59,7 @@ function searchLocationsAndCenterMap(inText) {
             else
             {
                 $('#placelookupspinner').html('');        
-                showErrorMessage("no places found for '" + inText + "'");
+                showErrorMessage('no places found for "' + inText + '"');
             }
         },
      });
@@ -74,31 +74,31 @@ function handleLocationButton(e) {
     $('#geolocatespinner').html('<img src="img/small-progress.gif" />');
 
     var location_timeout = window.setTimeout(function() {
-        console.log("location timeout");
+        console.log('location timeout');
         $('#geolocatespinner').html('');
     }, 32000);
 
-    console.log("about to start geolocate");
+    console.log('about to start geolocate');
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            console.log("geolocate success " + position);
+            console.log('geolocate success ' + position);
             clearTimeout(location_timeout);
             $('#geolocatespinner').html('');
             shotclockDraw.centerMapAt([position.coords.longitude, position.coords.latitude], 15);
             document.getElementById('map').setAttribute('selected', true);
         },
         function(err) {
-            console.log("geolocate failure " + err);
+            console.log('geolocate failure:', err);
 
             clearTimeout(location_timeout);
             $('#geolocatespinner').html('');
 
             // TODO: error message not localized
-            console.log("can't find your location: " + err);
-            showErrorMessage("can't find your location");
+            console.log('cannot find your location:', err);
+            showErrorMessage('cannot find your location');
         },
         {timeout: 30000, maximumAge: 60000, enableHighAccuracy:true});
-    console.log("just started geolocate");
+    console.log('just started geolocate');
 }
 
 function handleDatePicker(event) {
@@ -119,7 +119,7 @@ function handleTimePicker(event) {
     newTime.setMinutes((this.value * 60) % 60);
     newTime.setHours(this.value);
     shotclockDraw.showCurrentDateTime = false;
-    console.log("timeslider", this.value, newTime, shotclockDraw.getLightRangeForTime(newTime));
+    console.log('timeslider', this.value, newTime, shotclockDraw.getLightRangeForTime(newTime));
     shotclockDraw.currentTimeChanged(newTime);
     shotclockDraw.logCurrentSunPosition();
 }
@@ -149,7 +149,7 @@ function addControls() {
 
     // At first, let's check if we have permission for notification
     // If not, let's ask for it
-    if (window.Notification && Notification.permission !== "granted") {
+    if (window.Notification && Notification.permission !== 'granted') {
         Notification.requestPermission(function (status) {
             if (Notification.permission !== status) {
                 Notification.permission = status;
@@ -171,24 +171,24 @@ function addControls() {
     }, 500);
 
     // clicking the HERE button tries to geolocate
-    $("#herebutton").bind(global.actEvent, handleLocationButton);
+    $('#herebutton').bind(global.actEvent, handleLocationButton);
 
     // initialize datepicker
-    $("#datepicker").on("datetoggleon", handleDatePicker);
+    $('#datepicker').on('datetoggleon', handleDatePicker);
 
     // initialize timeslider -- now a web component!
-    $('#timeslider').on("change", handleTimePicker);
+    $('#timeslider').on('change', handleTimePicker);
 
     // clicking the about button goes to the about page
-    $("#aboutbutton").bind(global.actEvent, function(e) {
+    $('#aboutbutton').bind(global.actEvent, function(e) {
         document.getElementById('about').setAttribute('selected', true);
     });
 
     // clicking the NOW button toggles whether we're tracking the current date/time
-    $("#nowbutton").bind(global.actEvent, handleNowButton);
+    $('#nowbutton').bind(global.actEvent, handleNowButton);
 
     // clicking in the find text box selects all the text for easy replacing of the sample text
-    $('#findtext').bind(global.actEvent, function (e) { this.select() });
+    $('#findtext').bind(global.actEvent, function (e) { this.select(); });
 
     $('#findform').submit(function(e) {
         e.preventDefault();
