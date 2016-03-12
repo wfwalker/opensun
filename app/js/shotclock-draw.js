@@ -66,7 +66,7 @@ var shotclockDraw = {
                 this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
             }
         } else {
-            console.log("warning: this.currently undefined");
+            console.log('warning: this.currently undefined');
         }
     },
 
@@ -96,7 +96,7 @@ var shotclockDraw = {
             this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
             this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
         } else {
-            console.log("warning, this.mapCenterPosition undefined");
+            console.log('warning, this.mapCenterPosition undefined');
         }
 
         // update the date label and picker, and the hour label and the advice
@@ -116,20 +116,20 @@ var shotclockDraw = {
     initializeMap: function(inPosition, inZoom) {
        console.log('initializeMap', inPosition, inZoom);
 
-        if (inPosition[0] == 'NaN') throw "Bogus latitude" ;
-        if (inPosition[1] == 'NaN') throw "Bogus longitude" ;
+        if (inPosition[0] == 'NaN') throw 'Bogus latitude' ;
+        if (inPosition[1] == 'NaN') throw 'Bogus longitude' ;
 
         // note: this triggers moveend
         this.map.setView(new ol.View({
             center: ol.proj.transform(inPosition, 'EPSG:4326', 'EPSG:3857'),
-            zoom: inZoom
+            zoom: inZoom,
         }));        
     },
 
     // draw a radial section from the map center through a range of angles determined by the 
     // sun's azimuth at the given times of day
     drawRadialSection: function(startName, stopName, theColor, theID) {
-        console.log("START drawRadialSection", startName, stopName, theColor, theID);
+        console.log('START drawRadialSection', startName, stopName, theColor, theID);
         if (this.lightTimes[startName] & this.lightTimes[stopName]) {
             // get the start and stop azimuth in degrees
             var startAzimuthInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.lightTimes[startName]).azimuth;
@@ -180,7 +180,7 @@ var shotclockDraw = {
             ellipticalArcWhite.sweepFlag = sweep;
             ellipticalArcWhite.largeArcFlag = large;
 
-            // console.log(theID + " " + startAzimuthInDegrees + " " + stopAzimuthInDegrees + " " + large + ", sweep " + sweep);
+            // console.log(theID + ' ' + startAzimuthInDegrees + ' ' + stopAzimuthInDegrees + ' ' + large + ', sweep ' + sweep);
 
             ellipticalArc.r1 = arcRadius;
             ellipticalArc.r2 = arcRadius;
@@ -300,26 +300,26 @@ var shotclockDraw = {
 
         osmSource.addEventListener('tileloaderror', function (e) {
             console.log('tileloaderror, we are probably offline');
-        })
+        });
 
         osmSource.addEventListener('tileloadend', function (e) {
             console.log('tileload done, we are probably ONLINE');
-        })
+        });
 
         this.map.addLayer(osmLayer);
 
         // initialize from URL hash
         if (window.location.hash) {
             window.location.queryString = {};
-            window.location.hash.substr(1).split("&").forEach(function (pair) {
-                if (pair === "") return;
-                var parts = pair.split("=");
+            window.location.hash.substr(1).split('&').forEach(function (pair) {
+                if (pair === '') return;
+                var parts = pair.split('=');
                 location.queryString[parts[0]] = parts[1] &&
-                    decodeURIComponent(parts[1].replace(/\+/g, " "));
+                    decodeURIComponent(parts[1].replace(/\+/g, ' '));
             });
 
-            if (window.location.queryString.latitude == 'NaN') throw "Bogus latitude" ;
-            if (window.location.queryString.longitude == 'NaN') throw "Bogus longitude" ;
+            if (window.location.queryString.latitude == 'NaN') throw 'Bogus latitude' ;
+            if (window.location.queryString.longitude == 'NaN') throw 'Bogus longitude' ;
 
             console.log('parsed', window.location.queryString);
             shotclockDraw.storePositionAndZoom([window.location.queryString.longitude, window.location.queryString.latitude], window.location.queryString.zoom);
@@ -357,6 +357,6 @@ var shotclockDraw = {
                 shotclockDraw.currentTimeChanged(Date.now());
                 shotclockDraw.logCurrentSunPosition();
             }
-        }, 60000)      
+        }, 60000);
     },
-}
+};
