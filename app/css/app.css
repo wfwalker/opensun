@@ -3,9 +3,14 @@
    Author: Bill Walker
    ========================================================================== */
 
+.ol-zoom {
+  bottom: 0.5em !important;
+  top: unset !important;
+}
+
 .bar .item {
   padding: 10px;
-  border-right: solid 4px rgba(255,255,255,0.7);
+  border-right: solid 1px rgba(255,255,255,0.7);
 }
 
 .bar {
@@ -32,6 +37,7 @@
   top: 0.5em;
   right: 0.5em;
   font-family: sans-serif;
+  font-size: 12pt;
   color: white;
   background-color: rgba(0,60,136,0.5);
   border: solid 4px rgba(255,255,255,0.7);
