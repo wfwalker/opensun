@@ -106,6 +106,8 @@ var shotclockDraw = {
         console.log('currentTimeChanged', currentLightRange);
         if (currentLightRange) {
             $('#summarytab').text(currentLightRange[4]);
+        } else {
+            $('#summarytab').text('Night');
         }
     },
 
@@ -203,7 +205,9 @@ var shotclockDraw = {
             if ((sortedEntry[1] < inDate.getTime()) && (inDate.getTime() < sortedEntry[2])) {
                 return sortedEntry;
             }
-        }        
+        }    
+
+        return null;
     },
 
     // rerun whenever light times change or current time changes
