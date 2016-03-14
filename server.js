@@ -22,10 +22,14 @@ server.get('/forecast/:lat,:long', function (request, response) {
 	if (request.params.long == 'undefined') return;
 
 	forecast.get(request.params.lat, request.params.long, function (err, res, data) {
-		if (err) throw err;
-		console.log('got response', data.currently);
-		response.setHeader('Content-Type', 'application/json');
-		response.send(data);
+		if (err) {
+			console.log('cannot get weather', err);
+			response.status(500).send('Cannot get weather ' + err);
+		} else {
+			console.log('got weather', data.currently);
+			response.setHeader('Content-Type', 'application/json');
+			response.send(data);
+		}
 	});
 });
 
