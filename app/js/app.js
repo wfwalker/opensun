@@ -159,7 +159,10 @@ function addControls() {
 
     if (shotclockDraw.map == '') {
         console.log('about to initialize');
-        shotclockDraw.initialize(new ol.Map({target: 'mapdiv'}));
+        shotclockDraw.initialize(new ol.Map({
+            target: 'mapdiv',
+            interactions: [],
+        }));
     } else {
         console.log('openlayers map already initialized');
     }

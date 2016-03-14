@@ -51,8 +51,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='250px' height='250px'>
                 <defs>
                   <filter id="f1" width="200%" height="200%" filterUnits='userSpaceOnUse'>
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                    <feOffset dx="2" dy="4" />
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                    <feOffset dx="0" dy="0" />
                     <feMerge>
                       <feMergeNode />
                       <feMergeNode in="SourceGraphic" />
@@ -60,88 +60,90 @@
                   </filter>
                 </defs>
                 <g filter='url(#f1)' class='shotclock' >
-                  <path id='Predawn-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Predawn' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Predawn-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Predawn' class='light-meh' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='Morning-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Morning' class='light-best' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Morning-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Morning' class='light-best' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='Evening-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Evening' class='light-best' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Evening-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Evening' class='light-best' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='Twilight-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Twilight' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Twilight-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Twilight' class='light-meh' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='LateMorning-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='LateMorning' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='LateMorning-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='LateMorning' class='light-meh' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='Midday-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Midday' class='light-harsh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Midday-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Midday' class='light-harsh' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='Afternoon-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='Afternoon' class='light-meh' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='Afternoon-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='Afternoon' class='light-meh' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='AllDay-w' class='light-white' stroke-width=30 d="M120,30 A 95 95 0 0 1 215 120" />
-                  <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M120,30 A 95 95 0 0 1 210 120" />
+                  <path id='AllDay-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
+                  <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <path id='sunangle' d='M120,120 L120,0' class='light-meh' stroke-width='4' transform='rotate(0 120 120)' />
+                  <path id='sunangle' d='M125,125 L120,0' class='light-meh' stroke-width='4' transform='rotate(0 125 125)' />
 
-                  <line id='shadow' x1='120' y1='120' x2='120' y2='200' stroke='#333' stroke-width=7 transform='rotate(0 120 120)' />
-                  <line id='shortshadow' x1='120' y1='120' x2='120' y2='150' stroke='#333' stroke-width=7 transform='rotate(0 120 120)' />
+                  <line id='shadow' x1='125' y1='125' x2='125' y2='200' stroke='#333' stroke-width=7 transform='rotate(0 125 125)' />
+                  <line id='shortshadow' x1='125' y1='125' x2='125' y2='150' stroke='#333' stroke-width=7 transform='rotate(0 125 125)' />
 
-                  <text text-anchor='middle' id='hour0' class='hourlabel' x='120' y='12' transform='rotate(0 120 120)'>00</text>
-                  <text text-anchor='middle' id='hour1' class='hourlabel' x='120' y='12' transform='rotate(15 120 120)'>01</text>
-                  <text text-anchor='middle' id='hour2' class='hourlabel' x='120' y='12' transform='rotate(30 120 120)'>02</text>
-                  <text text-anchor='middle' id='hour3' class='hourlabel' x='120' y='12' transform='rotate(45 120 120)'>03</text>
-                  <text text-anchor='middle' id='hour4' class='hourlabel' x='120' y='12' transform='rotate(60 120 120)'>04</text>
-                  <text text-anchor='middle' id='hour5' class='hourlabel' x='120' y='12' transform='rotate(75 120 120)'>05</text>
-                  <text text-anchor='middle' id='hour6' class='hourlabel' x='120' y='12' transform='rotate(90 120 120)'>06</text>
-                  <text text-anchor='middle' id='hour7' class='hourlabel' x='120' y='12' transform='rotate(105 120 120)'>07</text>
-                  <text text-anchor='middle' id='hour8' class='hourlabel' x='120' y='12' transform='rotate(120 120 120)'>08</text>
-                  <text text-anchor='middle' id='hour9' class='hourlabel' x='120' y='12' transform='rotate(135 120 120)'>09</text>
-                  <text text-anchor='middle' id='hour10' class='hourlabel' x='120' y='12' transform='rotate(150 120 120)'>10</text>
-                  <text text-anchor='middle' id='hour11' class='hourlabel' x='120' y='12' transform='rotate(165 120 120)'>11</text>
-                  <text text-anchor='middle' id='hour12' class='hourlabel' x='120' y='12' transform='rotate(180 120 120)'>12</text>
-                  <text text-anchor='middle' id='hour13' class='hourlabel' x='120' y='12' transform='rotate(205 120 120)'>13</text>
-                  <text text-anchor='middle' id='hour14' class='hourlabel' x='120' y='12' transform='rotate(210 120 120)'>14</text>
-                  <text text-anchor='middle' id='hour15' class='hourlabel' x='120' y='12' transform='rotate(225 120 120)'>15</text>
-                  <text text-anchor='middle' id='hour16' class='hourlabel' x='120' y='12' transform='rotate(240 120 120)'>16</text>
-                  <text text-anchor='middle' id='hour17' class='hourlabel' x='120' y='12' transform='rotate(255 120 120)'>17</text>
-                  <text text-anchor='middle' id='hour18' class='hourlabel' x='120' y='12' transform='rotate(270 120 120)'>18</text>
-                  <text text-anchor='middle' id='hour19' class='hourlabel' x='120' y='12' transform='rotate(285 120 120)'>19</text>
-                  <text text-anchor='middle' id='hour20' class='hourlabel' x='120' y='12' transform='rotate(300 120 120)'>20</text>
-                  <text text-anchor='middle' id='hour21' class='hourlabel' x='120' y='12' transform='rotate(315 120 120)'>21</text>
-                  <text text-anchor='middle' id='hour22' class='hourlabel' x='120' y='12' transform='rotate(330 120 120)'>22</text>
-                  <text text-anchor='middle' id='hour23' class='hourlabel' x='120' y='12' transform='rotate(345 120 120)'>23</text>
+                  <text text-anchor='middle' id='hour0' class='hourlabel' x='125' y='17' transform='rotate(0 125 125)'>00</text>
+                  <text text-anchor='middle' id='hour1' class='hourlabel' x='125' y='17' transform='rotate(15 125 125)'>01</text>
+                  <text text-anchor='middle' id='hour2' class='hourlabel' x='125' y='17' transform='rotate(30 125 125)'>02</text>
+                  <text text-anchor='middle' id='hour3' class='hourlabel' x='125' y='17' transform='rotate(45 125 125)'>03</text>
+                  <text text-anchor='middle' id='hour4' class='hourlabel' x='125' y='17' transform='rotate(60 125 125)'>04</text>
+                  <text text-anchor='middle' id='hour5' class='hourlabel' x='125' y='17' transform='rotate(75 125 125)'>05</text>
+                  <text text-anchor='middle' id='hour6' class='hourlabel' x='125' y='17' transform='rotate(90 125 125)'>06</text>
+                  <text text-anchor='middle' id='hour7' class='hourlabel' x='125' y='17' transform='rotate(105 125 125)'>07</text>
+                  <text text-anchor='middle' id='hour8' class='hourlabel' x='125' y='17' transform='rotate(125 125 120)'>08</text>
+                  <text text-anchor='middle' id='hour9' class='hourlabel' x='125' y='17' transform='rotate(135 125 125)'>09</text>
+                  <text text-anchor='middle' id='hour10' class='hourlabel' x='125' y='17' transform='rotate(150 125 125)'>10</text>
+                  <text text-anchor='middle' id='hour11' class='hourlabel' x='125' y='17' transform='rotate(165 125 125)'>11</text>
+                  <text text-anchor='middle' id='hour12' class='hourlabel' x='125' y='17' transform='rotate(180 125 125)'>12</text>
+                  <text text-anchor='middle' id='hour13' class='hourlabel' x='125' y='17' transform='rotate(205 125 125)'>13</text>
+                  <text text-anchor='middle' id='hour14' class='hourlabel' x='125' y='17' transform='rotate(210 125 125)'>14</text>
+                  <text text-anchor='middle' id='hour15' class='hourlabel' x='125' y='17' transform='rotate(225 125 125)'>15</text>
+                  <text text-anchor='middle' id='hour16' class='hourlabel' x='125' y='17' transform='rotate(240 125 125)'>16</text>
+                  <text text-anchor='middle' id='hour17' class='hourlabel' x='125' y='17' transform='rotate(255 125 125)'>17</text>
+                  <text text-anchor='middle' id='hour18' class='hourlabel' x='125' y='17' transform='rotate(270 125 125)'>18</text>
+                  <text text-anchor='middle' id='hour19' class='hourlabel' x='125' y='17' transform='rotate(285 125 125)'>19</text>
+                  <text text-anchor='middle' id='hour20' class='hourlabel' x='125' y='17' transform='rotate(300 125 125)'>20</text>
+                  <text text-anchor='middle' id='hour21' class='hourlabel' x='125' y='17' transform='rotate(315 125 125)'>21</text>
+                  <text text-anchor='middle' id='hour22' class='hourlabel' x='125' y='17' transform='rotate(330 125 125)'>22</text>
+                  <text text-anchor='middle' id='hour23' class='hourlabel' x='125' y='17' transform='rotate(345 125 125)'>23</text>
 
-                  <line id='hour0tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(0 120 120)' />        
-                  <line id='hour1tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(15 120 120)' />        
-                  <line id='hour2tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(30 120 120)' />        
-                  <line id='hour3tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(45 120 120)' />        
-                  <line id='hour4tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(60 120 120)' />        
-                  <line id='hour5tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(75 120 120)' />        
-                  <line id='hour6tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(90 120 120)' />        
-                  <line id='hour7tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(105 120 120)' />        
-                  <line id='hour8tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(120 120 120)' />        
-                  <line id='hour9tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(135 120 120)' />        
-                  <line id='hour10tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(150 120 120)' />        
-                  <line id='hour11tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(165 120 120)' />        
-                  <line id='hour12tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(180 120 120)' />        
-                  <line id='hour13tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(195 120 120)' />        
-                  <line id='hour14tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(210 120 120)' />        
-                  <line id='hour15tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(225 120 120)' />        
-                  <line id='hour16tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(240 120 120)' />        
-                  <line id='hour17tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(255 120 120)' />        
-                  <line id='hour18tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(270 120 120)' />        
-                  <line id='hour19tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(285 120 120)' />        
-                  <line id='hour20tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(300 120 120)' />        
-                  <line id='hour21tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(315 120 120)' />        
-                  <line id='hour22tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(330 120 120)' />        
-                  <line id='hour23tick' class='hourtick' x1='120' y1='12' x2='120' y2='20' stroke='black' stroke-width=2 transform='rotate(345 120 120)' />        
+                  <line id='hour0tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(0 125 125)' />
+                  <line id='hour1tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(15 125 125)' />
+                  <line id='hour2tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(30 125 125)' />
+                  <line id='hour3tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(45 125 125)' />
+                  <line id='hour4tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(60 125 125)' />
+                  <line id='hour5tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(75 125 125)' />
+                  <line id='hour6tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(90 125 125)' />
+                  <line id='hour7tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(105 125 125)' />
+                  <line id='hour8tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(125 125 120)' />
+                  <line id='hour9tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(135 125 125)' />
+                  <line id='hour10tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(150 125 125)' />
+                  <line id='hour11tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(165 125 125)' />
+                  <line id='hour12tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(180 125 125)' />
+                  <line id='hour13tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(195 125 125)' />
+                  <line id='hour14tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(210 125 125)' />
+                  <line id='hour15tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(225 125 125)' />
+                  <line id='hour16tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(240 125 125)' />
+                  <line id='hour17tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(255 125 125)' />
+                  <line id='hour18tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(270 125 125)' />
+                  <line id='hour19tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(285 125 125)' />
+                  <line id='hour20tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(300 125 125)' />
+                  <line id='hour21tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(315 125 125)' />
+                  <line id='hour22tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(330 125 125)' />
+                  <line id='hour23tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(345 125 125)' />
 
-                  <circle filter='url(#f1)' cx='120' cy='120' r='7' style='fill: #333'> </circle>
+                  <circle filter='url(#f1)' cx='125' cy='125' r='7' style='fill: #333'> </circle>
 
-                  <image x="105" y="10" id='shortsunangle' width="40" height="40" xlink:href="./img/icons/Sunny.png" transform='rotate(0 120 120)'/>
+                  <circle filter='url(#f1)' cx='125' cy='125' r='120' style='fill: none; stroke: #333'> </circle>
+
+                  <image x="112" y="22" id='shortsunangle' width="25" height="25" xlink:href="./img/icons/Sunny.png" transform='rotate(0 125 125)'/>
                 </g>
               </svg>
             </td>

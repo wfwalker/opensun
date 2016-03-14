@@ -157,10 +157,10 @@ var shotclockDraw = {
             }
             moveTo = pathSegList.getItem(0);
             moveToWhite = pathSegListWhite.getItem(0);
-            moveTo.x = 120 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
-            moveTo.y = 120 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
-            moveToWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + startAzimuthInRadians);
-            moveToWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + startAzimuthInRadians);
+            moveTo.x = 125 + arcRadius * Math.sin(Math.PI + startAzimuthInRadians);
+            moveTo.y = 125 + arcRadius * Math.cos(Math.PI + startAzimuthInRadians);
+            moveToWhite.x = 125 + arcRadiusWhite * Math.sin(Math.PI + startAzimuthInRadians);
+            moveToWhite.y = 125 + arcRadiusWhite * Math.cos(Math.PI + startAzimuthInRadians);
 
             // ELLIPTICAL ARC
             ellipticalArc = pathSegList.getItem(1);
@@ -187,10 +187,10 @@ var shotclockDraw = {
             ellipticalArcWhite.r1 = arcRadiusWhite;
             ellipticalArcWhite.r2 = arcRadiusWhite;
 
-            ellipticalArc.x = 120 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
-            ellipticalArc.y = 120 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
-            ellipticalArcWhite.x = 120 + arcRadiusWhite * Math.sin(Math.PI + stopAzimuthInRadians);
-            ellipticalArcWhite.y = 120 + arcRadiusWhite * Math.cos(Math.PI + stopAzimuthInRadians);
+            ellipticalArc.x = 125 + arcRadius * Math.sin(Math.PI + stopAzimuthInRadians);
+            ellipticalArc.y = 125 + arcRadius * Math.cos(Math.PI + stopAzimuthInRadians);
+            ellipticalArcWhite.x = 125 + arcRadiusWhite * Math.sin(Math.PI + stopAzimuthInRadians);
+            ellipticalArcWhite.y = 125 + arcRadiusWhite * Math.cos(Math.PI + stopAzimuthInRadians);
         } else {
             console.log('not found', startName, stopName);
         }
@@ -219,11 +219,11 @@ var shotclockDraw = {
             cssClass = lightRange[3];
         }
 
-        $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
+        $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
 
         $('#sunangle').attr('class', cssClass);
-        $('#shadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
-        $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 120, 120);
+        $('#shadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
+        $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
 
         if (this.currentSunPosition.altitude > 0) { // if the sun is up
             if (this.currentSunPosition.altitude < 40) { // low sun, long shadow
@@ -255,12 +255,12 @@ var shotclockDraw = {
             var hourMarkSunPositionInDegrees = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], hourMarksDate);
 
             if (hourMarkSunPositionInDegrees.altitude >= -1) {
-                $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
+                $('#hour'+hourIndex+'tick')[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 125, 125);
                 $('#hour'+hourIndex+'tick').show();
 
                 if (hourMarkSunPositionInDegrees.altitude < 45) {
-                    $('#hour'+hourIndex)[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 120, 120);
-                    $('#hour'+hourIndex).hide();
+                    $('#hour'+hourIndex)[0].transform.baseVal.getItem(0).setRotate(hourMarkSunPositionInDegrees.azimuth, 125, 125);
+                    $('#hour'+hourIndex).show();
                 } else {
                     $('#hour'+hourIndex).hide();
                 }

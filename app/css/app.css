@@ -18,6 +18,11 @@
   align: center;
 }
 
+.hourlabel {
+  font-family: sans-serif;
+  font-size: 7pt;
+}
+
 #mapdiv {
   position: absolute;
   top: 0px;
