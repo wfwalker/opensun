@@ -32,12 +32,6 @@ var shotclockDraw = {
     },
 
 	mapCenterChanged: function() {
-        // transform the center back into lat/long
-        this.mapCenterPosition = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
-
-        // save the map center in local storage
-        this.storePositionAndZoom(this.mapCenterPosition, this.map.getView().getZoom());
-
         console.log('mapCenterChanged', this.mapCenterPosition);
 
         // if we know the current time...
@@ -103,11 +97,13 @@ var shotclockDraw = {
         if (inPosition[0] == 'NaN') throw 'Bogus latitude' ;
         if (inPosition[1] == 'NaN') throw 'Bogus longitude' ;
 
-        // note: this triggers moveend
         this.map.setView(new ol.View({
             center: ol.proj.transform(inPosition, 'EPSG:4326', 'EPSG:3857'),
             zoom: inZoom,
         }));        
+
+        // transform the center back into lat/long
+        this.mapCenterPosition = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
     },
 
     // draw a radial section from the map center through a range of angles determined by the 
