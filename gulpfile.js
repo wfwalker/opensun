@@ -13,8 +13,10 @@ gulp.task('offline', ['build'], function() {
   return oghliner.offline({
     rootDir: 'dist/',
     fileGlobs: [
-      '{css,img,js}/*.{js,css,png,jpg,gif}',
-      '{css,js}/lib/*.{js,css}',
+      'css/*.css',
+      'js/lib/*.js',
+      'img/*.{png,jpg,gif}',
+      'img/icons/*.{png,jpg,gif}',
       'index\.html',
       'l10n-data\.ini',
       'favicon\.ico',
