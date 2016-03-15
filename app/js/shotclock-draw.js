@@ -342,12 +342,8 @@ var shotclockDraw = {
         this.showCurrentDateTime = true;
         this.currentTimeChanged(Date.now());      
 
-        // redo the timeline whenever we move the map
-        this.map.on('moveend', function(eventThing) {
-            console.log('moveeend', eventThing);
-            shotclockDraw.mapCenterChanged();
-            shotclockDraw.logCurrentSunPosition();
-        });
+        shotclockDraw.mapCenterChanged();
+        shotclockDraw.logCurrentSunPosition();
 
         // check once a minute to track date/time
         window.setInterval(function() {

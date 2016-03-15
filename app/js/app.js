@@ -11,29 +11,6 @@ function showErrorMessage(inErrorMessageText) {
     var location_timeout = window.setTimeout(function() { $('#errorMessageContainer').fadeOut(); }, 5000);
 }
 
-// from https://raw.github.com/nickdesaulniers/fxos-irc/master/notification.js
-function sendNotification (title, options) {
-    // Memoize based on feature detection.
-    if ('Notification' in window) {
-        sendNotification = function (title, options) {
-            new Notification(title, options);
-        };
-    } else if ('mozNotification' in navigator) {
-        sendNotification = function (title, options) {
-            // Gecko < 22
-            navigator.mozNotification
-            .createNotification(title, options.body, options.icon)
-            .show();
-        };
-    } else {
-        sendNotification = function (title, options) {
-            alert(title + ': ' + options.body);
-        };
-    }
-
-    sendNotification(title, options);
-};
-
 function searchLocationsAndCenterMap(inText) {
     $.ajax({
         url: 'https://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=1&q=' + inText,
