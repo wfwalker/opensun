@@ -14,6 +14,9 @@ gulp.task('offline', ['build'], function() {
     rootDir: 'dist/',
     fileGlobs: [
       'css/*.css',
+      'css/lib/*.css',
+      'js/app.js',
+      'js/shotclock-draw.js',
       'js/lib/*.js',
       'img/*.{png,jpg,gif}',
       'img/icons/*.{png,jpg,gif}',
