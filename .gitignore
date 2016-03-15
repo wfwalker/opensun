@@ -38,6 +38,10 @@ publish
 node_modules
 .idea
 
+#compressed JS
+app/js/compressed.js
+app/js/compressed.js.map
+
 #dist folder created by oghliner
 dist
 
