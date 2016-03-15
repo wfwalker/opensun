@@ -4,7 +4,8 @@ var express = require('express');
 var Forecast = require('forecast.io');
 
 var forecastOptions = {
-  APIKey: process.env.FORECAST_API_KEY
+  APIKey: process.env.FORECAST_API_KEY,
+  timeout: 60000,
 };
 
 var forecast = new Forecast(forecastOptions);
