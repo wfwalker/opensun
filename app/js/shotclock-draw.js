@@ -35,22 +35,10 @@ var shotclockDraw = {
         // transform the center back into lat/long
         this.mapCenterPosition = ol.proj.transform(this.map.getView().getCenter(), 'EPSG:3857', 'EPSG:4326');
 
-        // assume its a big move
-        var bigMove = true;
-
-        if (this.hasValidStoredData()) {
-            // get stored position
-            var storedPosition = this.retrievePositionAndZoom().position;
-            // compute the delta from the last saved position
-            var delta = [this.mapCenterPosition[0] - storedPosition[0], this.mapCenterPosition[1] - storedPosition[1]];
-            // decide whether we just made a big move and need to recalculate light times
-            bigMove = (Math.abs(delta[0]) > 0.5) || (Math.abs(delta[1]) > 0.5);
-        }
-
         // save the map center in local storage
         this.storePositionAndZoom(this.mapCenterPosition, this.map.getView().getZoom());
 
-        console.log('mapCenterChanged', this.mapCenterPosition, bigMove);
+        console.log('mapCenterChanged', this.mapCenterPosition);
 
         // if we know the current time...
 
@@ -59,12 +47,8 @@ var shotclockDraw = {
             var temp = sunAngleUtils.getSunPositionInDegrees(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
             this.currentSunPosition = temp;
 
-            // if our map center changed by half a degree in latitude or longitude...
-            if (bigMove || (! this.lightTimes) || (! this.lightRanges)) {
-                // ... recompute light times and light ranges
-                this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
-                this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
-            }
+            this.lightTimes = sunAngleUtils.getLightTimes(this.mapCenterPosition[0], this.mapCenterPosition[1], this.currently);
+            this.lightRanges = sunAngleUtils.getLightRanges(this.lightTimes['highest']);
         } else {
             console.log('warning: this.currently undefined');
         }
