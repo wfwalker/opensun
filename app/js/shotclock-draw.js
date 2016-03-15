@@ -61,8 +61,10 @@ var shotclockDraw = {
             console.log('GETTING FORECAST');
             $.ajax({
                 url: '/forecast/' + this.mapCenterPosition[1] + ',' + this.mapCenterPosition[0],
+                timeout: 60000,
             }).done(function(data) {
                 console.log('Got Forecast!', data.currently.summary);
+                console.log('Got Timezone', data.timezone);
                 $('#currentWeather').text(data.currently.summary);
             });
 

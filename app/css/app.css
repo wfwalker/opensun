@@ -23,6 +23,12 @@
   font-size: 7pt;
 }
 
+.compasslabel {
+  font-family: sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
 #mapdiv {
   position: absolute;
   top: 0px;
