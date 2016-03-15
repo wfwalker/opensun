@@ -2,10 +2,30 @@ var gulp = require('gulp');
 var oghliner = require('oghliner');
 var eslint = require('gulp-eslint');
 var nodemon = require('gulp-nodemon');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 
 gulp.task('default', ['offline']);
 
-gulp.task('build', function(callback) {
+gulp.task('compress', function(){
+  return gulp.src([
+    'app/js/lib/jquery.js',
+    'app/js/lib/date.js',
+    'app/js/lib/l10n.js',
+    'app/js/lib/ol.js',
+    'app/js/lib/sun-angle-utils.js',
+    'app/js/shotclock-draw.js',
+    'app/js/app.js',
+  ])
+    .pipe(sourcemaps.init())
+    .pipe(concat('compressed.js'))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('app/js'));
+});
+
+gulp.task('build', ['compress'], function(callback) {
   return gulp.src('app/**').pipe(gulp.dest('dist'));
 });
 
@@ -15,9 +35,8 @@ gulp.task('offline', ['build'], function() {
     fileGlobs: [
       'css/*.css',
       'css/lib/*.css',
-      'js/app.js',
-      'js/shotclock-draw.js',
-      'js/lib/*.js',
+      'js/lib/pathseg.js',
+      'js/compressed.js',
       'img/*.{png,jpg,gif}',
       'img/icons/*.{png,jpg,gif}',
       'index\.html',
