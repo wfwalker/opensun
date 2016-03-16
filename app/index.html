@@ -87,8 +87,15 @@
                   <path id='AllDay-w' class='light-white' stroke-width=30 d="M125,30 A 95 95 0 0 1 215 125" />
                   <path id='AllDay' stroke='#0F960F' stroke-width=10 d="M125,30 A 95 95 0 0 1 210 125" />
 
-                  <line id='shadow' x1='125' y1='125' x2='125' y2='200' stroke='#333' stroke-width=7 transform='rotate(0 125 125)' />
-                  <line id='shortshadow' x1='125' y1='125' x2='125' y2='150' stroke='#333' stroke-width=7 transform='rotate(0 125 125)' />
+                  <g id='sunangle' transform='rotate(0 125 125)' >
+                    <line x1='125' y1='125' x2='125' y2='25' stroke='#555' stroke-width='1' />
+                    <line x1='125' y1='125' x2='125' y2='225' stroke='#555' stroke-width='1' />
+
+                    <line id='shadow' x1='125' y1='125' x2='125' y2='200' stroke='#444' stroke-width='7' />
+                    <line id='shortshadow' x1='125' y1='125' x2='125' y2='150' stroke='#444' stroke-width='7' />
+
+                    <image x="112" y="22" id='shortsunangle' width="25" height="25" xlink:href="./img/icons/Sunny.png" />
+                  </g>
 
                   <text text-anchor='middle' id='hour0' class='hourlabel' x='125' y='17' transform='rotate(0 125 125)'>00</text>
                   <text text-anchor='middle' id='hour1' class='hourlabel' x='125' y='17' transform='rotate(15 125 125)'>01</text>
@@ -141,8 +148,6 @@
                   <line id='hour23tick' class='hourtick' x1='125' y1='17' x2='125' y2='25' stroke='black' stroke-width='1' transform='rotate(345 125 125)' />
 
                   <circle cx='125' cy='125' r='7' style='fill: #333'> </circle>
-
-                  <image x="112" y="22" id='shortsunangle' width="25" height="25" xlink:href="./img/icons/Sunny.png" transform='rotate(0 125 125)'/>
 
                   <text text-anchor='middle' id='N' class='compasslabel' x='125' y='25' >N</text>
                   <text text-anchor='middle' id='S' class='compasslabel' x='125' y='240' >S</text>

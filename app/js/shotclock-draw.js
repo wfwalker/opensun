@@ -201,10 +201,8 @@ var shotclockDraw = {
             cssClass = lightRange[3];
         }
 
-        $('#shortsunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
-
-        $('#shadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
-        $('#shortshadow')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
+        // rotate the collection of objects associated with the sun angle
+        $('#sunangle')[0].transform.baseVal.getItem(0).setRotate(this.currentSunPosition.azimuth, 125, 125);
 
         if (this.currentSunPosition.altitude > 0) { // if the sun is up
             if (this.currentSunPosition.altitude < 40) { // low sun, long shadow
